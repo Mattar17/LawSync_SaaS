@@ -1,78 +1,65 @@
 import React, { useState } from "react";
 
-const navLinks: string[] = ["Features", "Pricing", "Contact", "About"];
+const navLinks = [
+  { id: "#contact", label: "تواصل معنا" },
+  { id: "#pricing", label: "الأسعار" },
+  { id: "#lawyer-portal", label: "بوابة المحامي" },
+  { id: "#features", label: "عن البرنامج" },
+];
 
 const Navbar = (): React.ReactElement => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-8 md:px-16">
+    <nav className="bg-white flex justify-center shadow-sm sticky top-0 z-50">
+      <div className="w-[95%] mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          <div className="flex-shrink-0 flex items-center">
-            <div className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">L</span>
-            </div>
-            <span className="ml-3 text-xl font-semibold text-[#282828]">
-              LawSync
-            </span>
+          {/* Logo */}
+          {/* Desktop Nav */}
+          <div className="hidden md:flex">
+            <ul className="flex gap-4">
+              {navLinks.map((link) => (
+                <li key={link.id} className="inline-block ml-8">
+                  <a
+                    href={link.id}
+                    className="text-[#282828] font-medium hover:text-gray-600 transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link: string) => (
-              <a
-                key={link}
-                href={`#${link.toLowerCase()}`}
-                className="text-[#282828] hover:text-gray-600 transition-colors font-medium"
-              >
-                {link}
-              </a>
-            ))}
-          </div>
-
+          {/* Mobile Button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-[#282828] hover:text-gray-600 focus:outline-none p-2"
+              className="text-[#282828] hover:text-gray-600 p-2"
             >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                {isOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                )}
-              </svg>
+              {isOpen ? "✕" : "☰"}
             </button>
           </div>
+          <img
+            src="Logo.png"
+            alt="Logo"
+            className="max-h-16 max-w-45 md:h-16 md:w-45"
+          />
         </div>
       </div>
 
+      {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t">
-          <div className="px-8 py-4 space-y-2">
-            {navLinks.map((link: string) => (
+        <div className="md:hidden w-screen absolute top-16 bg-white border-t">
+          <div className="px-8 py-4 space-y-2 flex flex-col gap-1 justify-center items-center">
+            {navLinks.map((link) => (
               <a
-                key={link}
-                href={`#${link.toLowerCase()}`}
-                className="block px-4 py-3 text-[#282828] hover:bg-gray-50 transition-colors font-medium"
+                key={link.id}
+                href={link.id}
+                className="block px-4 py-3 text-[#282828] hover:bg-gray-50 font-medium"
                 onClick={() => setIsOpen(false)}
               >
-                {link}
+                {link.label}
               </a>
             ))}
           </div>
