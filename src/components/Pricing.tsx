@@ -129,24 +129,22 @@ const PricingCard = ({
     } else if (buttonType === "monthly_key") {
       setSoon(true);
     } else if (buttonType === "free") {
-      const res = await fetch(
-        "https://api.counterapi.dev/v2/mohamed-salahs-team-3220/lawsync/up",
-        {
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_COUNTER_TOKEN}`,
-          },
-        },
+      // const res = await fetch(
+      //   "https://api.counterapi.dev/v2/mohamed-salahs-team-3220/lawsync/up",
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${import.meta.env.VITE_COUNTER_TOKEN}`,
+      //     },
+      //   },
+      // );
+
+      // const data = await res.json();
+      // setDownloadCount(data.data);
+
+      window.open(
+        "https://www.mediafire.com/file/nluokrbc5x30yc8/LawSync+Setup+1.1.1.exe/file",
+        "_blank",
       );
-
-      const data = await res.json();
-      setDownloadCount(data.data);
-
-      const link = document.createElement("a");
-      link.href = "/LawsynSetup.exe";
-      link.download = "LawsynSetup.exe";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     }
   };
 
