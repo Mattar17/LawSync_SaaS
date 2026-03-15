@@ -7,6 +7,7 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "./AppLayout";
 import LawyerPortal from "./LawyerPortal";
+import LawyerCases from "./LawyerCases";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -53,6 +54,7 @@ function App(): React.ReactElement {
         <Routes>
           <Route path="/" element={<AppLayout />} />
           <Route path="/portal" element={<LawyerPortal />} />
+          <Route path="/portal/:id" element={<LawyerCases />} />
         </Routes>
       </BrowserRouter>
     </div>

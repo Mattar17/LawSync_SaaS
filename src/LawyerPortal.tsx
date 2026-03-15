@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
 
-import lawyers from "./lawyersData";
+import { lawyers } from "./lawyersData";
+import { useNavigate } from "react-router-dom";
 
 const LawyerPortal = (): React.ReactElement => {
   const [openLawyerId, setOpenLawyerId] = useState<number | null>(null);
@@ -31,12 +32,13 @@ const LawyerPortal = (): React.ReactElement => {
     setFilteredLawyers(filtered);
   };
 
+  const navigate = useNavigate();
   const handlePasswordSubmit = (e: any) => {
     const lawyerId = Number(e.target.dataset.lawyer);
     console.log(lawyerId);
     const lawyer = lawyers.find((l) => l.id === lawyerId);
     if (password === lawyer?.portal_password) {
-      console.log("successfull Login");
+      navigate(`/portal/${lawyerId}`);
     }
   };
 
