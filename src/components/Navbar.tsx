@@ -41,7 +41,7 @@ const Navbar = (): React.ReactElement => {
             </button>
           </div>
           <img
-            src="Logo.png"
+            src="/Logo.png"
             alt="Logo"
             className="max-h-16 max-w-45 md:h-16 md:w-45"
           />

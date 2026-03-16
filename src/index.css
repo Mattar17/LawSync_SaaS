@@ -146,3 +146,26 @@ body {
     @apply font-sans;
   }
 }
+
+.case-swiper {
+  width: 100%;
+  padding: 0 30px; /* space for arrows */
+}
+
+.case-swiper .swiper-button-prev,
+.case-swiper .swiper-button-next {
+  color: #2563eb;
+  transform: scale(0.8);
+}
+
+.case-swiper .swiper-button-prev {
+  left: -5px;
+}
+
+.case-swiper .swiper-button-next {
+  right: -5px;
+}
+.case-swiper .swiper-button-prev::after,
+.case-swiper .swiper-button-next::after {
+  font-size: 18px;
+}

@@ -137,6 +137,18 @@ export const Cases = [
     latest_court_date: "2026-03-04",
     latest_updates: "Ownership verification documents submitted.",
   },
+  {
+    lawyer_id: 4,
+    case_number: "4201",
+    case_year: 2024,
+    client_name: "أحمد حسن",
+    client_national_id: "29504151234567",
+    opponent_name: "Real Estate Authority",
+    opponent_national_id: "00000000000001",
+    next_court_date: "2026-04-18",
+    latest_court_date: "2026-03-04",
+    latest_updates: "Ownership verification documents submitted.",
+  },
 
   {
     lawyer_id: 5,
