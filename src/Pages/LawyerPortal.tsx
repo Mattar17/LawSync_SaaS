@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import {
   Card,
@@ -9,14 +9,20 @@ import {
 } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
 
-import { lawyers } from "./lawyersData";
 import { useNavigate } from "react-router-dom";
+import { getAllLawyers } from "@/api/lawyers";
 
 const LawyerPortal = (): React.ReactElement => {
   const [openLawyerId, setOpenLawyerId] = useState<number | null>(null);
   const [password, setPassword] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<null | string>(null);
-  const [filteredLawyers, setFilteredLawyers] = useState(lawyers);
+  const [filteredLawyers, setFilteredLawyers] = useState<any>(null);
+
+  useEffect(() => {
+    getAllLawyers()
+      .then(setFilteredLawyers)
+      .catch((err) => console.log(err));
+  }, []);
 
   const handlePasswordChange = (e: any) => {
     setPassword(e.target.value);
@@ -26,17 +32,22 @@ const LawyerPortal = (): React.ReactElement => {
     const value = e.target.value;
     setSearchQuery(value);
     console.log(searchQuery);
-    const filtered = lawyers.filter((l) =>
-      l.name.toLowerCase().includes(value.toLowerCase()),
-    );
-    setFilteredLawyers(filtered);
+    if (filteredLawyers) {
+      const filtered = filteredLawyers.filter((l: any) =>
+        l.name.toLowerCase().includes(value.toLowerCase()),
+      );
+      setFilteredLawyers(filtered);
+    }
   };
 
   const navigate = useNavigate();
   const handlePasswordSubmit = (e: any) => {
     const lawyerId = Number(e.target.dataset.lawyer);
     console.log(lawyerId);
-    const lawyer = lawyers.find((l) => l.id === lawyerId);
+    console.log(filteredLawyers);
+    const lawyer = filteredLawyers.find((l: any) => l.id === `${lawyerId}`);
+
+    console.log(lawyer);
     if (password === lawyer?.portal_password) {
       navigate(`/portal/${lawyerId}`);
     }
@@ -45,6 +56,14 @@ const LawyerPortal = (): React.ReactElement => {
   return (
     <>
       <div className="mx-auto mt-8 w-full max-w-xl px-4">
+        <div className="flex items-center justify-center mb-6">
+          <button
+            onClick={() => navigate("/login")}
+            className="cursor-pointer underline font-semibold"
+          >
+            هل لديك حساب محامي؟
+          </button>
+        </div>
         <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl p-2 shadow-sm">
           <input
             value={searchQuery as string}
@@ -61,7 +80,7 @@ const LawyerPortal = (): React.ReactElement => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 py-10 px-4 md:px-8">
-        {filteredLawyers.map((l) => (
+        {filteredLawyers?.map((l: any) => (
           <motion.div layout key={l.id}>
             <Card className="h-full flex flex-col">
               <div className="flex justify-center pt-6">

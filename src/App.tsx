@@ -5,9 +5,11 @@ import Lenis from "lenis";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AppLayout from "./AppLayout";
-import LawyerPortal from "./LawyerPortal";
-import LawyerCases from "./LawyerCases";
+import AppLayout from "./Pages/AppLayout";
+import LawyerPortal from "./Pages/LawyerPortal";
+import LawyerCases from "./Pages/LawyerCases";
+import LawyerDashboard from "./Pages/LawyerDashboard";
+import Login from "./Pages/Login";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -55,6 +57,8 @@ function App(): React.ReactElement {
           <Route path="/" element={<AppLayout />} />
           <Route path="/portal" element={<LawyerPortal />} />
           <Route path="/portal/:id" element={<LawyerCases />} />
+          <Route path="/profile" element={<LawyerDashboard />}></Route>
+          <Route path="/login" element={<Login />}></Route>
         </Routes>
       </BrowserRouter>
     </div>

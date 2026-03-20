@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Cases } from "./lawyersData";
+import { useParams, useNavigate } from "react-router-dom";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
@@ -11,28 +10,16 @@ import {
   Shield,
   IdCard,
   FolderClock,
-  Clock,
   Calendar,
+  ArrowBigLeft,
 } from "lucide-react";
-//import "swiper/swiper.css";
+import ICase from "@/interfaces/ICase";
+import { getAllCases } from "@/api/cases";
 
 type searchCriteriaT = "case_number" | "client_national_id" | "client_name";
 
-interface ICase {
-  lawyer_id: number;
-  case_number: string;
-  case_year: number;
-  client_name: string;
-  client_national_id: string;
-  opponent_name: string;
-  opponent_national_id: string;
-  next_court_date: string;
-  latest_court_date: string;
-  latest_updates: string;
-}
-
-const LawyerCases = (): React.ReactElement => {
-  const [lawyerCases, setLawyerCases] = useState<any[]>([]);
+const Cases = (): React.ReactElement => {
+  const [Cases, setCases] = useState<null | ICase[]>(null);
   const [searchedCase, setsearchedCase] = useState<null | ICase[]>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchCriteria, setSearchCriteria] =
@@ -40,8 +27,9 @@ const LawyerCases = (): React.ReactElement => {
   const { id } = useParams();
 
   useEffect(() => {
-    const filterdCases = Cases.filter((c: any) => c.lawyer_id === Number(id));
-    setLawyerCases(filterdCases);
+    getAllCases!(id as string)
+      .then(setCases)
+      .catch((err) => console.log(err));
   }, [id]);
 
   const handleSearchQuery = (e: any) => {
@@ -50,7 +38,24 @@ const LawyerCases = (): React.ReactElement => {
   };
 
   const handleSearchCase = () => {
-    const caseFound = lawyerCases.filter((c) => c.case_number === searchQuery);
+    let caseFound: ICase[] = [];
+    console.log(searchQuery, searchCriteria, Cases);
+
+    switch (searchCriteria) {
+      case "case_number":
+        caseFound = Cases!.filter((c) => c.case_number === searchQuery);
+        break;
+
+      case "client_name":
+        caseFound = Cases!.filter((c) =>
+          c.client_name.toLowerCase().includes(searchQuery.toLowerCase()),
+        );
+        break;
+
+      case "client_national_id":
+        caseFound = Cases!.filter((c) => c.client_national_id === searchQuery);
+        break;
+    }
     console.log(caseFound);
     setsearchedCase(caseFound);
   };
@@ -67,9 +72,17 @@ const LawyerCases = (): React.ReactElement => {
   };
 
   const currentCase = searchedCase?.[currentIndex];
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col items-center px-4 py-12">
+      <button
+        onClick={() => navigate(-1)}
+        className="cursor-pointer absolute left-4 top-27 flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg shadow hover:bg-slate-800 transition"
+      >
+        <ArrowBigLeft className="w-5 h-5" />
+        <span className="text-sm font-medium">العودة</span>
+      </button>
       <h1 className="text-[#222] font-bold text-center text-2xl mb-10">
         ابحث من خلال الاسم أو الرقم القومي أو رقم القضية
       </h1>
@@ -97,9 +110,57 @@ const LawyerCases = (): React.ReactElement => {
                 />
 
                 <InfoRow
+                  icon={BadgeCheck}
+                  label="صفة الموكل"
+                  value={currentCase.client_role}
+                />
+
+                <InfoRow
+                  icon={Users}
+                  label="اسم الخصم"
+                  value={currentCase.client_opponent_name}
+                />
+
+                <InfoRow
+                  icon={Shield}
+                  label="صفة الخصم"
+                  value={currentCase.client_opponent_role}
+                />
+
+                <InfoRow
                   icon={IdCard}
-                  label="الرقم القومي"
+                  label="الرقم القومي للموكل"
                   value={currentCase.client_national_id}
+                />
+
+                <InfoRow
+                  icon={IdCard}
+                  label="الرقم القومي للخصم"
+                  value={currentCase.client_opponent_national_id}
+                />
+
+                <InfoRow
+                  icon={Calendar}
+                  label="تاريخ الجلسة الماضية"
+                  value={
+                    currentCase.latest_court_session_date
+                      ? `${new Date(currentCase.latest_court_session_date).toLocaleDateString("ar-EG", { weekday: "long" })}, ${new Date(currentCase.latest_court_session_date).toLocaleDateString("ar-EG")}`
+                      : "غير محدد"
+                  }
+                />
+                <InfoRow
+                  icon={Calendar}
+                  label="تاريخ الجلسة القادمة"
+                  value={
+                    currentCase.next_court_session_date
+                      ? `${new Date(currentCase.next_court_session_date).toLocaleDateString("ar-EG", { weekday: "long" })}, ${new Date(currentCase.next_court_session_date).toLocaleDateString("ar-EG")}`
+                      : "غير محدد"
+                  }
+                />
+                <InfoRow
+                  icon={FolderClock}
+                  label="آخر المستجدات"
+                  value={currentCase.case_status}
                 />
               </div>
 
@@ -152,14 +213,14 @@ const LawyerCases = (): React.ReactElement => {
               <Label htmlFor="option-two" className="text-sm">
                 الرقم القومي
               </Label>
-              <RadioGroupItem value="national_id" id="option-two" />
+              <RadioGroupItem value="client_national_id" id="option-two" />
             </div>
 
             <div className="flex items-center gap-2">
               <Label htmlFor="option-three" className="text-sm">
                 الإسم
               </Label>
-              <RadioGroupItem value="name" id="option-three" />
+              <RadioGroupItem value="client_name" id="option-three" />
             </div>
           </RadioGroup>
 
@@ -203,4 +264,4 @@ function InfoRow({ icon: Icon, label, value }: InfoRowProps) {
   );
 }
 
-export default LawyerCases;
+export default Cases;
