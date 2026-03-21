@@ -1,9 +1,12 @@
+import { getLawyerById } from "@/api/lawyers";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+  const navigate = useNavigate();
 
   // Load saved ID on mount
   useEffect(() => {
@@ -22,10 +25,20 @@ const Login = () => {
     } else {
       localStorage.removeItem("rememberedId");
     }
+    function checkPassword(LawyerPassword: string) {
+      return LawyerPassword === password;
+    }
+    let successfullLogin = false;
+    getLawyerById(id).then((data) => {
+      console.log(data.profile_password);
+      console.log(password);
+      successfullLogin = checkPassword(data.profile_password);
+      console.log(successfullLogin, password);
+      if (successfullLogin) navigate(`/profile/${id}`);
+      else console.log("wrong pass or id");
 
-    console.log("Login with:", { id, password });
-
-    setPassword(""); // clear password after submit
+      setPassword("");
+    });
   };
 
   return (

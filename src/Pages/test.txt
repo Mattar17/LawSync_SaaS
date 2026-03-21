@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { getLawyerById } from "@/api/lawyers";
+import { useState } from "react";
 
 export default function SettingsDashboard() {
   const [form, setForm] = useState({
@@ -19,14 +17,14 @@ export default function SettingsDashboard() {
         ...form,
         name: data.name,
         description: data.description,
+        picture: data.avatarUrl,
       });
-      setPreview(data.avatarUrl);
     });
   }, []);
 
-  const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
+  const [preview, setPreview] = useState(null);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e) => {
     const { name, value, files } = e.target;
 
     if (files) {
@@ -105,7 +103,7 @@ export default function SettingsDashboard() {
 
             {preview && (
               <img
-                src={preview as string}
+                src={preview}
                 alt="Preview"
                 className="mt-3 w-24 h-24 object-cover rounded-full border"
               />

@@ -57,7 +57,7 @@ function App(): React.ReactElement {
           <Route path="/" element={<AppLayout />} />
           <Route path="/portal" element={<LawyerPortal />} />
           <Route path="/portal/:id" element={<LawyerCases />} />
-          <Route path="/profile" element={<LawyerDashboard />}></Route>
+          <Route path="/profile/:id" element={<LawyerDashboard />}></Route>
           <Route path="/login" element={<Login />}></Route>
         </Routes>
       </BrowserRouter>
