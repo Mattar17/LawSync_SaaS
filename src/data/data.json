@@ -1,7 +1,7 @@
 {
   "lawyers": [
     {
-      "id": 1,
+      "id": "1",
       "name": "أحمد السيد",
       "avatarUrl": "https://images.unsplash.com/photo-1556157382-97eda2d62296",
       "portal_password": "12345",
@@ -10,16 +10,17 @@
       "description": "محامي شركات يتمتع بخبرة 12 عامًا في تقديم الاستشارات للشركات الناشئة والشركات متعددة الجنسيات في العقود وعمليات الاندماج والامتثال القانوني."
     },
     {
-      "id": 2,
-      "name": "محمود عبد الرحمن",
+      "id": "2",
+      "name": "محمود عبد الرحمن خيري",
       "avatarUrl": "https://images.unsplash.com/photo-1544723795-3fb6469f5b39",
-      "portal_password": "12345",
-      "profile_password": "12345",
+      "portal_password": "123456",
+      "profile_password": "654321",
       "sync_key": "qwer123xy",
-      "description": "محامي جنائي معروف بقوة المرافعة أمام المحاكم وخبرة واسعة في التعامل مع القضايا المعقدة."
+      "description": "محامي جنائي معروف بقوة المرافعة أمام المحاكم وخبرة واسعة في التعامل مع القضايا المعقدة. في كل أنواع القضايا بإنتظار تواصلك",
+      "picture": null
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "يوسف خليل",
       "avatarUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d",
       "portal_password": "12345",
@@ -28,7 +29,7 @@
       "description": "متخصص في قانون الأحوال الشخصية يساعد العملاء في قضايا الطلاق والحضانة والميراث بسرية تامة."
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "عمر فاروق",
       "avatarUrl": "https://images.unsplash.com/photo-1560250097-0b93528c311a",
       "portal_password": "12345",
@@ -37,7 +38,7 @@
       "description": "خبير في قانون العقارات يساعد العملاء في نزاعات الملكية وإجراءات التوثيق والصفقات العقارية الكبرى."
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "كريم نبيل",
       "avatarUrl": "https://images.unsplash.com/photo-1527980965255-d3b416303d12",
       "portal_password": "12345",
@@ -46,13 +47,22 @@
       "description": "محامي ملكية فكرية يساعد شركات التكنولوجيا في حماية العلامات التجارية وبراءات الاختراع والأصول الرقمية."
     },
     {
-      "id": 6,
+      "id": "6",
       "name": "طارق مصطفى",
       "avatarUrl": "https://images.unsplash.com/photo-1552374196-c4e7ffc6e126",
       "portal_password": "12345",
       "profile_password": "12345",
       "sync_key": "dfg55ks21",
       "description": "محامي منازعات تجارية متخصص في نزاعات العقود والتحكيم وقانون التجارة الدولية."
+    },
+    {
+      "id": "raWtWqD4s40",
+      "name": "هاني الدقاق",
+      "description": "محامي عقر",
+      "profile_password": "123456",
+      "portal_password": "123456",
+      "avatarUrl": "",
+      "picture": null
     }
   ],
   "cases": [
@@ -68,7 +78,8 @@
       "client_opponent_role": "مدعي عليه",
       "next_court_session_date": "2026-04-10",
       "latest_court_session_date": "2026-03-01",
-      "case_status": "طلبت المحكمة مستندات مالية إضافية."
+      "case_status": "طلبت المحكمة مستندات مالية إضافية.",
+      "id": "2tIMk81kouw"
     },
     {
       "lawyer_id": 1,
@@ -82,7 +93,8 @@
       "client_opponent_role": "مدعي عليه",
       "next_court_session_date": "2026-04-25",
       "latest_court_session_date": "2026-03-05",
-      "case_status": "تم تحديد جلسة الاستماع لشهادة الشهود في الجلسة القادمة."
+      "case_status": "تم تحديد جلسة الاستماع لشهادة الشهود في الجلسة القادمة.",
+      "id": "-8MmWM4aAak"
     },
     {
       "lawyer_id": 1,
@@ -96,7 +108,8 @@
       "client_opponent_role": "مدعي",
       "next_court_session_date": "2026-05-02",
       "latest_court_session_date": "2026-03-07",
-      "case_status": "أجل القاضي الجلسة بسبب عدم وجود التقرير."
+      "case_status": "أجل القاضي الجلسة بسبب عدم وجود التقرير.",
+      "id": "259UyiC2CnA"
     },
     {
       "lawyer_id": 2,
@@ -110,7 +123,8 @@
       "client_opponent_role": "مدعي",
       "next_court_session_date": "2026-04-15",
       "latest_court_session_date": "2026-03-02",
-      "case_status": "قدم الدفاع مراجعة للأدلة الجنائية."
+      "case_status": "قدم الدفاع مراجعة للأدلة الجنائية.",
+      "id": "BvvMvq_NcJU"
     },
     {
       "lawyer_id": 3,
@@ -124,7 +138,8 @@
       "client_opponent_role": "مدعي عليه",
       "next_court_session_date": "2026-04-12",
       "latest_court_session_date": "2026-03-03",
-      "case_status": "تم تقديم تقرير تقييم الحضانة."
+      "case_status": "تم تقديم تقرير تقييم الحضانة.",
+      "id": "RWCL6c_r3EA"
     },
     {
       "lawyer_id": 4,
@@ -138,7 +153,8 @@
       "client_opponent_role": "مدعي عليه",
       "next_court_session_date": "2026-04-18",
       "latest_court_session_date": "2026-03-04",
-      "case_status": "تم تقديم مستندات التحقق من الملكية."
+      "case_status": "تم تقديم مستندات التحقق من الملكية.",
+      "id": "xr0UKrg_Kis"
     },
     {
       "lawyer_id": 4,
@@ -152,7 +168,8 @@
       "client_opponent_role": "مدعي عليه",
       "next_court_session_date": "2026-04-18",
       "latest_court_session_date": "2026-03-04",
-      "case_status": "تم تقديم مستندات التحقق من الملكية."
+      "case_status": "تم تقديم مستندات التحقق من الملكية.",
+      "id": "lfXnNDb4qRA"
     },
     {
       "lawyer_id": 5,
@@ -166,7 +183,8 @@
       "client_opponent_role": "مدعي عليه",
       "next_court_session_date": "2026-04-11",
       "latest_court_session_date": "2026-03-02",
-      "case_status": "تم تقديم مستندات نزاع العلامة التجارية."
+      "case_status": "تم تقديم مستندات نزاع العلامة التجارية.",
+      "id": "jClEYvBrmcg"
     },
     {
       "lawyer_id": 6,
@@ -180,7 +198,9 @@
       "client_opponent_role": "مدعي عليه",
       "next_court_session_date": "2026-04-14",
       "latest_court_session_date": "2026-03-03",
-      "case_status": "تم تقديم مستندات التحكيم."
+      "case_status": "تم تقديم مستندات التحكيم.",
+      "id": "TtXVeHzdpy4"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

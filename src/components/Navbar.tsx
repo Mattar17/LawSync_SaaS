@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const navLinks = [
   { id: "#contact", label: "تواصل معنا" },
   { id: "#pricing", label: "الأسعار" },
-  { id: "portal", label: "بوابة المحامي" },
+  { id: "/portal", label: "بوابة المحامي" },
   { id: "#features", label: "عن البرنامج" },
 ];
 

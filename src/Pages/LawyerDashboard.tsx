@@ -1,41 +1,51 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getLawyerById } from "@/api/lawyers";
+import { getLawyerById, updateLawyerInfo } from "@/api/lawyers";
 
 export default function SettingsDashboard() {
+  const { id } = useParams();
+
   const [form, setForm] = useState({
     name: "",
     description: "",
-    picture: null,
+    picture: null as File | null,
+
     oldPassword: "",
     newPassword: "",
     confirmPassword: "",
+
+    oldPortalPassword: "",
+    newPortalPassword: "",
+    confirmPortalPassword: "",
   });
 
-  const { id } = useParams();
+  const [preview, setPreview] = useState<string | null>(null);
+
   useEffect(() => {
-    getLawyerById(id!).then((data) => {
-      setForm({
-        ...form,
+    if (!id) return;
+
+    getLawyerById(id).then((data) => {
+      setForm((prev) => ({
+        ...prev,
         name: data.name,
         description: data.description,
-      });
+      }));
+
       setPreview(data.avatarUrl);
     });
-  }, []);
+  }, [id]);
 
-  const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
 
-  const handleChange = (e: any) => {
-    const { name, value, files } = e.target;
-
-    if (files) {
-      const file = files[0];
+    if ("files" in e.target && e.target.files) {
+      const file = e.target.files[0];
       setForm((prev) => ({ ...prev, [name]: file }));
 
-      // create preview
       const reader = new FileReader();
-      reader.onloadend = () => setPreview(reader.result);
+      reader.onloadend = () => setPreview(reader.result as string);
       if (file) reader.readAsDataURL(file);
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
@@ -48,6 +58,13 @@ export default function SettingsDashboard() {
       description: form.description,
       picture: form.picture,
     });
+    const body = {
+      name: form.name,
+      description: form.description,
+      picture: form.picture,
+    };
+
+    updateLawyerInfo(id!, body).then((data) => console.log(data));
   };
 
   const handlePasswordChange = () => {
@@ -60,6 +77,22 @@ export default function SettingsDashboard() {
       oldPassword: form.oldPassword,
       newPassword: form.newPassword,
     });
+    const body = { profile_password: form.newPassword };
+    updateLawyerInfo(id!, body).then((data) => console.log(data));
+  };
+
+  const handlePortalPasswordChange = () => {
+    if (form.newPortalPassword !== form.confirmPortalPassword) {
+      alert("Portal passwords do not match");
+      return;
+    }
+
+    console.log("Change portal password:", {
+      oldPortalPassword: form.oldPortalPassword,
+      newPortalPassword: form.newPortalPassword,
+    });
+    const body = { portal_password: form.newPortalPassword };
+    updateLawyerInfo(id!, body).then((data) => console.log(data));
   };
 
   return (
@@ -76,7 +109,6 @@ export default function SettingsDashboard() {
             <input
               type="text"
               name="name"
-              placeholder="Enter your name"
               value={form.name}
               onChange={handleChange}
               className="w-full border p-2 rounded"
@@ -87,7 +119,6 @@ export default function SettingsDashboard() {
             <label className="block mb-1 font-medium">Description</label>
             <textarea
               name="description"
-              placeholder="Enter description"
               value={form.description}
               onChange={handleChange}
               className="w-full border p-2 rounded"
@@ -100,12 +131,12 @@ export default function SettingsDashboard() {
               type="file"
               name="picture"
               onChange={handleChange}
-              className="w-full"
+              className="w-full bg-gray-200 rounded-2xl"
             />
 
             {preview && (
               <img
-                src={preview as string}
+                src={preview}
                 alt="Preview"
                 className="mt-3 w-24 h-24 object-cover rounded-full border"
               />
@@ -129,7 +160,6 @@ export default function SettingsDashboard() {
             <input
               type="password"
               name="oldPassword"
-              placeholder="Enter old password"
               value={form.oldPassword}
               onChange={handleChange}
               className="w-full border p-2 rounded"
@@ -141,7 +171,6 @@ export default function SettingsDashboard() {
             <input
               type="password"
               name="newPassword"
-              placeholder="Enter new password"
               value={form.newPassword}
               onChange={handleChange}
               className="w-full border p-2 rounded"
@@ -153,7 +182,6 @@ export default function SettingsDashboard() {
             <input
               type="password"
               name="confirmPassword"
-              placeholder="Confirm new password"
               value={form.confirmPassword}
               onChange={handleChange}
               className="w-full border p-2 rounded"
@@ -165,6 +193,57 @@ export default function SettingsDashboard() {
             className="w-full bg-black text-white py-2 rounded"
           >
             Update Password
+          </button>
+        </div>
+
+        {/* Portal Password Section */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold">Change Portal Password</h2>
+
+          <div>
+            <label className="block mb-1 font-medium">
+              Old Portal Password
+            </label>
+            <input
+              type="password"
+              name="oldPortalPassword"
+              value={form.oldPortalPassword}
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium">
+              New Portal Password
+            </label>
+            <input
+              type="password"
+              name="newPortalPassword"
+              value={form.newPortalPassword}
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium">
+              Confirm Portal Password
+            </label>
+            <input
+              type="password"
+              name="confirmPortalPassword"
+              value={form.confirmPortalPassword}
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+            />
+          </div>
+
+          <button
+            onClick={handlePortalPasswordChange}
+            className="w-full bg-black text-white py-2 rounded"
+          >
+            Update Portal Password
           </button>
         </div>
       </div>

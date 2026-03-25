@@ -10,6 +10,7 @@ import LawyerPortal from "./Pages/LawyerPortal";
 import LawyerCases from "./Pages/LawyerCases";
 import LawyerDashboard from "./Pages/LawyerDashboard";
 import Login from "./Pages/Login";
+import AdminDashboard from "./Pages/AdminDashboard";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -59,6 +60,7 @@ function App(): React.ReactElement {
           <Route path="/portal/:id" element={<LawyerCases />} />
           <Route path="/profile/:id" element={<LawyerDashboard />}></Route>
           <Route path="/login" element={<Login />}></Route>
+          <Route path="/admin" element={<AdminDashboard />}></Route>
         </Routes>
       </BrowserRouter>
     </div>

@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 import { useNavigate } from "react-router-dom";
 import { getAllLawyers } from "@/api/lawyers";
@@ -42,7 +43,7 @@ const LawyerPortal = (): React.ReactElement => {
 
   const navigate = useNavigate();
   const handlePasswordSubmit = (e: any) => {
-    const lawyerId = Number(e.target.dataset.lawyer);
+    const lawyerId = e.target.dataset.lawyer;
     console.log(lawyerId);
     console.log(filteredLawyers);
     const lawyer = filteredLawyers.find((l: any) => l.id === `${lawyerId}`);
@@ -84,10 +85,17 @@ const LawyerPortal = (): React.ReactElement => {
           <motion.div layout key={l.id}>
             <Card className="h-full flex flex-col">
               <div className="flex justify-center pt-6">
-                <img
-                  src={l.avatarUrl}
-                  className="rounded-full w-20 h-20 object-cover"
-                />
+                <Avatar className="w-20 h-20">
+                  <AvatarImage
+                    src={
+                      l.avatarUrl ||
+                      `https://ui-avatars.com/api/?name=L&background=cccccc&color=555555`
+                    }
+                  />
+                  <AvatarFallback>
+                    {l.name?.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
               </div>
 
               <CardHeader className="flex flex-col justify-center items-center text-center px-6">
