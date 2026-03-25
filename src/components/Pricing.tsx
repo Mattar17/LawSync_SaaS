@@ -1,5 +1,5 @@
 import { DownloadIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type FeatureState = "supported" | "not_supported" | "infinitity" | "clock";
 type ButtonType = "whatsapp" | "monthly_key" | "free";
@@ -42,20 +42,32 @@ const featuresIcons: Record<string, React.ReactElement> = {
   ),
 
   infinitity: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
-        d="M18.6 0C21.58 0 24 5.30855 24 12C24 18.6022 21.58 23.9777 18.6 23.9777C17.15 23.9777 15.8 22.7286 14.78 20.4758L12 14.9888L9.17 20.5874C8.2 22.7509 6.84 24 5.4 24C2.42 24 0 18.6022 0 12C0 5.39777 2.42 0 5.4 0C6.84 0 8.2 1.24907 9.22 3.52416L12 9.01115L14.83 3.41264C15.8 1.24907 17.16 0 18.6 0Z"
+        d="M18.6 0C21.58 0 24 5.30855 24 12C24 18.6022 21.58 23.9777 18.6 23.9777C17.15 23.9777 15.8 22.7286 14.78 20.4758L12 14.9888L9.17 20.5874C8.2 22.7509 6.84 24 5.4 24C2.42 24 0 18.6022 0 12C0 5.39777 2.42 0 5.4 0C6.84 0 8.2 1.24907 9.22 3.52416L12 9.01115L14.83 3.41264C15.8 1.24907 17.16 0 18.6 0ZM7.8 17.3309L10.5 12L7.84 6.75836C7.16 5.24164 6.31 4.46097 5.4 4.46097C3.53 4.46097 2 7.829 2 12C2 16.171 3.53 19.539 5.4 19.539C6.31 19.539 7.16 18.7584 7.8 17.3309ZM16.2 6.66915L13.5 12L16.16 17.2416C16.84 18.7584 17.7 19.539 18.6 19.539C20.47 19.539 22 16.171 22 12C22 7.829 20.47 4.46097 18.6 4.46097C17.69 4.46097 16.84 5.24164 16.2 6.66915Z"
         fill="#7CC3E1"
       />
     </svg>
   ),
 
   clock: (
-    <svg width="24" height="27" viewBox="0 0 24 27" fill="none">
+    <svg
+      width="24"
+      height="27"
+      viewBox="0 0 24 27"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M12 27C18.6274 27 24 21.6863 24 15.2892C24 8.89202 18.6274 3.57831 12 3.57831C5.37258 3.57831 0 8.89202 0 15.2892C0 21.6863 5.37258 27 12 27Z"
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M12 27C13.5759 27 15.1363 26.6971 16.5922 26.1086C18.0481 25.52 19.371 24.6574 20.4853 23.57C21.5996 22.4825 22.4835 21.1915 23.0866 19.7707C23.6896 18.3499 24 16.827 24 15.2892C24 13.7513 23.6896 12.2284 23.0866 10.8076C22.4835 9.38679 21.5996 8.09579 20.4853 7.00834C19.371 5.92089 18.0481 5.05827 16.5922 4.46975C15.1363 3.88122 13.5759 3.57831 12 3.57831C8.8174 3.57831 5.76516 4.81213 3.51472 7.00834C1.26428 9.20455 0 12.1832 0 15.2892C0 18.3951 1.26428 21.3738 3.51472 23.57C5.76516 25.7662 8.8174 27 12 27ZM12 9.10843C12.2652 9.10843 12.5196 9.21125 12.7071 9.39427C12.8946 9.57729 13 9.82551 13 10.0843V15.2892C13 15.548 12.8946 15.7962 12.7071 15.9792C12.5196 16.1622 12.2652 16.2651 12 16.2651C11.7348 16.2651 11.4804 16.1622 11.2929 15.9792C11.1054 15.7962 11 15.548 11 15.2892V10.0843C11 9.82551 11.1054 9.57729 11.2929 9.39427C11.4804 9.21125 11.7348 9.10843 12 9.10843ZM8.33333 0.975904C8.33333 0.717078 8.43869 0.468853 8.62623 0.285836C8.81376 0.102818 9.06812 0 9.33333 0H14.6667C14.9319 0 15.1862 0.102818 15.3738 0.285836C15.5613 0.468853 15.6667 0.717078 15.6667 0.975904C15.6667 1.23473 15.5613 1.48295 15.3738 1.66597C15.1862 1.84899 14.9319 1.95181 14.6667 1.95181H9.33333C9.06812 1.95181 8.81376 1.84899 8.62623 1.66597C8.43869 1.48295 8.33333 1.23473 8.33333 0.975904Z"
         fill="#D4D4D4"
       />
     </svg>
@@ -119,6 +131,19 @@ const PricingCard = ({
   const [soon, setSoon] = useState<boolean>(false);
   const [downloadCount, setDownloadCount] = useState<number>(0);
 
+  useEffect(() => {
+    const fetchDownloadsCounter = async function () {
+      const res = await fetch(
+        "https://law-sync-activation-api.vercel.app/api/analytics/downloads",
+      );
+      if (!res.ok) throw new Error("Error while fetching downloads");
+      const data = await res.json();
+      console.log(data);
+      setDownloadCount(data);
+    };
+    fetchDownloadsCounter();
+  }, []);
+
   const handleClick = async (
     e: React.MouseEvent<HTMLButtonElement>,
   ): Promise<void> => {
@@ -129,17 +154,20 @@ const PricingCard = ({
     } else if (buttonType === "monthly_key") {
       setSoon(true);
     } else if (buttonType === "free") {
-      // const res = await fetch(
-      //   "https://api.counterapi.dev/v2/mohamed-salahs-team-3220/lawsync/up",
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${import.meta.env.VITE_COUNTER_TOKEN}`,
-      //     },
-      //   },
-      // );
+      const res = await fetch(
+        "https://law-sync-activation-api.vercel.app/api/analytics/downloads",
+        {
+          method: "PATCH",
+          headers: {
+            "x-api-key": import.meta.env.VITE_API_KEY,
+          },
+        },
+      );
 
-      // const data = await res.json();
-      // setDownloadCount(data.data);
+      const data = await res.json();
+      if (data.success) {
+        setDownloadCount((prev) => prev + 1);
+      }
 
       window.open(
         "https://www.mediafire.com/file/nluokrbc5x30yc8/LawSync+Setup+1.1.1.exe/file",
