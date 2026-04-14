@@ -130,11 +130,34 @@ const PricingCard = ({
 }: PricingCardProps): React.ReactElement => {
   const [soon, setSoon] = useState<boolean>(false);
   const [downloadCount, setDownloadCount] = useState<number>(0);
+  const apiUrl =
+    "https://law-sync-activation-api.vercel.app/api/analytics/downloads";
+  useEffect(() => {
+    async function fetchDownloadCount(apiUrl: string) {
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": import.meta.env.VITE_API_KEY,
+        },
+      });
+      if (!res.ok) throw new Error("error while fetching downloadCount");
+      const data = await res.json();
+      setDownloadCount(data);
+    }
+    fetchDownloadCount(apiUrl);
+  }, []);
 
   useEffect(() => {
     const fetchDownloadsCounter = async function () {
       const res = await fetch(
         "https://law-sync-activation-api.vercel.app/api/analytics/downloads",
+        {
+          method: "POST",
+          headers: {
+            "x-api-key": import.meta.env.VITE_API_KEY,
+          },
+        },
       );
       if (!res.ok) throw new Error("Error while fetching downloads");
       const data = await res.json();
@@ -155,9 +178,9 @@ const PricingCard = ({
       setSoon(true);
     } else if (buttonType === "free") {
       const res = await fetch(
-        "https://law-sync-activation-api.vercel.app/api/analytics/downloads",
+        "https://law-sync-activation-api.vercel.app/api/analytics/downloads?increment=1",
         {
-          method: "PATCH",
+          method: "POST",
           headers: {
             "x-api-key": import.meta.env.VITE_API_KEY,
           },

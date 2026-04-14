@@ -1,13 +1,16 @@
 import React from "react";
 import { useEffect } from "react";
 import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Features from "./components/Features";
-import Pricing from "./components/Pricing";
-import Contact from "./components/Contact";
 import Lenis from "lenis";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AppLayout from "./Pages/AppLayout";
+import LawyerPortal from "./Pages/LawyerPortal";
+import LawyerCases from "./Pages/LawyerCases";
+import LawyerDashboard from "./Pages/LawyerDashboard";
+import Login from "./Pages/Login";
+import AdminDashboard from "./Pages/AdminDashboard";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -49,13 +52,17 @@ function App(): React.ReactElement {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]" id="smooth-wrapper">
-      <Navbar />
-      <main id="smooth-content">
-        <Hero />
-        <Features />
-        <Pricing />
-        <Contact />
-      </main>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<AppLayout />} />
+          <Route path="/portal" element={<LawyerPortal />} />
+          <Route path="/portal/:id" element={<LawyerCases />} />
+          <Route path="/profile/:id" element={<LawyerDashboard />}></Route>
+          <Route path="/login" element={<Login />}></Route>
+          <Route path="/admin" element={<AdminDashboard />}></Route>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
