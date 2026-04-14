@@ -7,6 +7,7 @@ export default interface ILawyer {
   //   "sync_key": "asx91ksl2",
   //   "description":
   id: string;
+  token: string;
   name: string;
   avatarUrl: string;
   portal_password: string;

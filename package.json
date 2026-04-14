@@ -18,7 +18,9 @@
     "counterapi": "^2.1.2",
     "framer-motion": "^12.36.0",
     "gsap": "^3.14.2",
+    "js-cookie": "^3.0.5",
     "json-server": "^1.0.0-beta.14",
+    "jwt-decode": "^4.0.0",
     "lenis": "^1.3.18",
     "lucide-react": "^0.577.0",
     "radix-ui": "^1.4.3",
@@ -33,6 +35,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^25.3.5",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

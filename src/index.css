@@ -169,3 +169,7 @@ body {
 .case-swiper .swiper-button-next::after {
   font-size: 18px;
 }
+
+button {
+  cursor: pointer;
+}

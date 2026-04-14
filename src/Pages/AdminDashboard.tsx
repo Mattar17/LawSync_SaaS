@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useEffect, useState } from "react";
-import { createLawyer, getAllLawyers, deleteLawyer } from "@/api/lawyers";
+import { createLawyer, getAllLawyersAdmin, deleteLawyer } from "@/api/lawyers";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -30,6 +30,7 @@ function TabButton({ active, onClick, children }: TabButtonProps) {
 
 type Lawyer = {
   id: string;
+  token: string;
   name: string;
   description: string;
   avatarUrl?: string;
@@ -41,28 +42,46 @@ export default function AdminDashboard() {
   const [name, setName] = useState("");
   const [lawyers, setLawyers] = useState<Lawyer[]>([]);
 
-  // Fake analytics
+  const [toast, setToast] = useState<string | null>(null);
+
+  const [loadingCreate, setLoadingCreate] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState<string | null>(null);
+  const [loadingFetch, setLoadingFetch] = useState(false);
+
   const [analytics] = useState({
     totalLawyers: 12,
     totalCases: 48,
     visits: 1342,
   });
 
-  const fetchLawyers = async () => {
-    try {
-      const data = await getAllLawyers();
-      setLawyers(data);
-    } catch (err) {
-      console.error(err);
-    }
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 3000);
   };
 
   useEffect(() => {
-    fetchLawyers();
+    async function getLawyers() {
+      setLoadingFetch(true);
+      try {
+        const data = await getAllLawyersAdmin();
+
+        if (!data.success) {
+          showToast(data.message || "Failed to fetch lawyers");
+          return;
+        }
+
+        setLawyers(data.data);
+      } catch (err) {
+        showToast("Something went wrong");
+      } finally {
+        setLoadingFetch(false);
+      }
+    }
+    getLawyers();
   }, []);
 
   const handleCreateLawyer = async () => {
-    if (!name.trim()) return alert("Name is required");
+    if (!name.trim()) return showToast("Name is required");
 
     const body = {
       id: `${Date.now()}`,
@@ -73,30 +92,60 @@ export default function AdminDashboard() {
       avatarUrl: "",
     };
 
+    setLoadingCreate(true);
+
     try {
-      await createLawyer(body);
+      const res = await createLawyer(body);
+
+      if (!res.success) {
+        showToast(res.message || "Failed to create lawyer");
+        return;
+      }
+
+      showToast(res.message || "Lawyer created");
+
+      setLawyers((prev) => [...prev, res.data]);
       setName("");
-      fetchLawyers();
       setActiveTab("manage");
     } catch (err) {
-      console.error(err);
-      alert("Error creating lawyer");
+      showToast("Something went wrong");
+    } finally {
+      setLoadingCreate(false);
     }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this lawyer?")) return;
 
+    setLoadingDelete(id);
+
     try {
-      await deleteLawyer(id);
-      fetchLawyers();
+      const res = await deleteLawyer(id);
+
+      if (!res.success) {
+        showToast(res.message || "Failed to delete");
+        return;
+      }
+
+      showToast(res.message || "Deleted successfully");
+
+      setLawyers((prev) => prev.filter((l) => l.id !== id));
     } catch (err) {
-      console.error(err);
+      showToast("Something went wrong");
+    } finally {
+      setLoadingDelete(null);
     }
   };
 
   return (
-    <div className="min-h-screen bg-muted flex justify-center p-6">
+    <div className="min-h-screen bg-muted flex justify-center p-6 relative">
+      {/* TOAST */}
+      {toast && (
+        <div className="absolute top-2 mx-auto bg-black text-white px-4 py-2 rounded shadow">
+          {toast}
+        </div>
+      )}
+
       <div className="w-full max-w-5xl space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
@@ -140,11 +189,16 @@ export default function AdminDashboard() {
                   placeholder="Enter lawyer name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  disabled={loadingCreate}
                 />
               </div>
 
-              <Button onClick={handleCreateLawyer} className="w-full">
-                Create Lawyer
+              <Button
+                onClick={handleCreateLawyer}
+                className="w-full"
+                disabled={loadingCreate}
+              >
+                {loadingCreate ? "Creating..." : "Create Lawyer"}
               </Button>
 
               <div className="text-sm text-muted-foreground border rounded-md p-3">
@@ -161,39 +215,61 @@ export default function AdminDashboard() {
         {activeTab === "manage" && (
           <Card>
             <CardHeader>
-              <CardTitle>Manage Lawyers</CardTitle>
+              <CardTitle className="text-xl font-semibold">
+                Manage Lawyers
+              </CardTitle>
             </CardHeader>
 
-            <CardContent className="space-y-4">
-              {lawyers.length === 0 ? (
-                <p className="text-muted-foreground">No lawyers yet</p>
+            <CardContent className="space-y-3">
+              {loadingFetch ? (
+                <p className="text-sm text-muted-foreground">Loading...</p>
+              ) : lawyers.length === 0 ? (
+                <p className="text-muted-foreground text-sm">No lawyers yet</p>
               ) : (
                 lawyers.map((lawyer) => (
                   <div
                     key={lawyer.id}
-                    className="flex items-center justify-between border rounded-lg p-3 hover:shadow-sm transition"
+                    className="flex items-center justify-between rounded-xl border bg-background p-4 hover:shadow-md transition-all"
                   >
-                    <div className="flex items-center gap-3">
-                      <Avatar>
+                    <div className="flex items-center gap-4">
+                      <Avatar className="h-12 w-12">
                         <AvatarImage src={lawyer.avatarUrl} />
                         <AvatarFallback>{lawyer.name.charAt(0)}</AvatarFallback>
                       </Avatar>
 
                       <div>
-                        <p className="font-medium">{lawyer.name}</p>
+                        <p className="font-semibold">{lawyer.name}</p>
                         <p className="text-sm text-muted-foreground">
                           {lawyer.description}
                         </p>
+
+                        <span className="text-xs font-mono bg-muted px-2 py-1 rounded">
+                          {lawyer.token}
+                        </span>
                       </div>
                     </div>
 
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDelete(lawyer.id)}
-                    >
-                      Delete
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          navigator.clipboard.writeText(lawyer.token)
+                        }
+                        disabled={loadingDelete === lawyer.id}
+                      >
+                        Copy
+                      </Button>
+
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(lawyer.id)}
+                        disabled={loadingDelete === lawyer.id}
+                      >
+                        {loadingDelete === lawyer.id ? "Deleting..." : "Delete"}
+                      </Button>
+                    </div>
                   </div>
                 ))
               )}

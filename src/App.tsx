@@ -52,8 +52,8 @@ function App(): React.ReactElement {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]" id="smooth-wrapper">
-      <Navbar />
       <BrowserRouter>
+        <Navbar />
         <Routes>
           <Route path="/" element={<AppLayout />} />
           <Route path="/portal" element={<LawyerPortal />} />

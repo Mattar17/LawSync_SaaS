@@ -19,45 +19,79 @@ import { getAllCases } from "@/api/cases";
 type searchCriteriaT = "case_number" | "client_national_id" | "client_name";
 
 const Cases = (): React.ReactElement => {
-  const [Cases, setCases] = useState<null | ICase[]>(null);
-  const [searchedCase, setsearchedCase] = useState<null | ICase[]>(null);
+  const [Cases, setCases] = useState<ICase[] | null>(null);
+  const [searchedCase, setsearchedCase] = useState<ICase[] | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchCriteria, setSearchCriteria] =
     useState<searchCriteriaT>("case_number");
+
+  const [toast, setToast] = useState<string | null>(null);
+  const [loadingFetch, setLoadingFetch] = useState(false);
+  const [loadingSearch, setLoadingSearch] = useState(false);
+
   const { id } = useParams();
+  const navigate = useNavigate();
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 3000);
+  };
 
   useEffect(() => {
-    getAllCases!(id as string)
-      .then(setCases)
-      .catch((err) => console.log(err));
+    async function getLawyerCases() {
+      setLoadingFetch(true);
+      try {
+        const data = await getAllCases(id as string);
+
+        if (!data.success) {
+          showToast(data.message || "Failed to load cases");
+          return;
+        }
+
+        setCases(data.data);
+      } catch {
+        showToast("Something went wrong");
+      } finally {
+        setLoadingFetch(false);
+      }
+    }
+    getLawyerCases();
   }, [id]);
 
   const handleSearchQuery = (e: any) => {
-    const value = e.target.value;
-    setSearchQuery(value);
+    setSearchQuery(e.target.value);
   };
 
   const handleSearchCase = () => {
+    if (!Cases) return;
+
+    setLoadingSearch(true);
+
     let caseFound: ICase[] = [];
-    console.log(searchQuery, searchCriteria, Cases);
 
     switch (searchCriteria) {
       case "case_number":
-        caseFound = Cases!.filter((c) => c.case_number === searchQuery);
+        caseFound = Cases.filter((c) => c.case_number === searchQuery);
         break;
 
       case "client_name":
-        caseFound = Cases!.filter((c) =>
+        caseFound = Cases.filter((c) =>
           c.client_name.toLowerCase().includes(searchQuery.toLowerCase()),
         );
         break;
 
       case "client_national_id":
-        caseFound = Cases!.filter((c) => c.client_national_id === searchQuery);
+        caseFound = Cases.filter((c) => c.client_national_id === searchQuery);
         break;
     }
-    console.log(caseFound);
+
     setsearchedCase(caseFound);
+    setLoadingSearch(false);
+    setCurrentIndex(0); // 🔥 important fix
+
+    if (caseFound.length === 0) {
+      showToast("لم يتم العثور على نتائج");
+    }
   };
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -72,29 +106,40 @@ const Cases = (): React.ReactElement => {
   };
 
   const currentCase = searchedCase?.[currentIndex];
-  const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center px-4 py-12">
+    <div className="flex flex-col items-center px-4 py-12 relative">
+      {/* TOAST */}
+      {toast && (
+        <div className="fixed bottom-10 mx-auto bg-black/80 text-white px-4 py-2 rounded shadow z-50">
+          {toast}
+        </div>
+      )}
+
       <button
         onClick={() => navigate(-1)}
-        className="cursor-pointer absolute left-4 top-27 flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg shadow hover:bg-slate-800 transition"
+        className="absolute left-4 top-10 flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg"
       >
         <ArrowBigLeft className="w-5 h-5" />
-        <span className="text-sm font-medium">العودة</span>
+        <span className="text-sm">العودة</span>
       </button>
-      <h1 className="text-[#222] font-bold text-center text-2xl mb-10">
+
+      <h1 className="font-bold text-2xl mb-10 text-center">
         ابحث من خلال الاسم أو الرقم القومي أو رقم القضية
       </h1>
 
       <div className="flex flex-col md:flex-row gap-8 max-w-4xl w-full justify-center">
-        {/* Case Info */}
-        <div className="bg-white shadow-lg border border-gray-100 rounded-2xl p-6 w-full md:w-[360px] min-h-[280px]">
-          <h2 className="text-lg font-semibold text-gray-800 mb-6 text-right">
+        {/* CASE INFO */}
+        <div className="bg-white shadow-lg border rounded-2xl p-6 w-full md:w-[360px] min-h-[280px]">
+          <h2 className="text-lg font-semibold mb-6 text-right">
             معلومات القضية
           </h2>
 
-          {searchedCase && currentCase ? (
+          {loadingFetch ? (
+            <p className="text-center text-sm text-gray-500 mt-10">
+              Loading cases...
+            </p>
+          ) : searchedCase && currentCase ? (
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-4 items-start">
                 <InfoRow
@@ -141,22 +186,16 @@ const Cases = (): React.ReactElement => {
 
                 <InfoRow
                   icon={Calendar}
-                  label="تاريخ الجلسة الماضية"
-                  value={
-                    currentCase.latest_court_session_date
-                      ? `${new Date(currentCase.latest_court_session_date).toLocaleDateString("ar-EG", { weekday: "long" })}, ${new Date(currentCase.latest_court_session_date).toLocaleDateString("ar-EG")}`
-                      : "غير محدد"
-                  }
-                />
-                <InfoRow
-                  icon={Calendar}
                   label="تاريخ الجلسة القادمة"
                   value={
                     currentCase.next_court_session_date
-                      ? `${new Date(currentCase.next_court_session_date).toLocaleDateString("ar-EG", { weekday: "long" })}, ${new Date(currentCase.next_court_session_date).toLocaleDateString("ar-EG")}`
+                      ? new Date(
+                          currentCase.next_court_session_date,
+                        ).toLocaleDateString("ar-EG")
                       : "غير محدد"
                   }
                 />
+
                 <InfoRow
                   icon={FolderClock}
                   label="آخر المستجدات"
@@ -165,79 +204,68 @@ const Cases = (): React.ReactElement => {
               </div>
 
               {searchedCase.length > 1 && (
-                <div className="flex items-center justify-between mt-4">
+                <div className="flex justify-between mt-4">
                   <button
                     onClick={nextCase}
                     disabled={currentIndex === searchedCase.length - 1}
-                    className="cursor-pointer text-slate-900 text-sm font-medium disabled:text-gray-300"
                   >
-                    القضية التالية →
+                    →
                   </button>
 
-                  <span className="text-sm text-gray-500">
+                  <span>
                     {currentIndex + 1} / {searchedCase.length}
                   </span>
 
-                  <button
-                    onClick={prevCase}
-                    disabled={currentIndex === 0}
-                    className="cursor-pointer text-slate-900 text-sm font-medium disabled:text-gray-300"
-                  >
-                    ← القضية السابقة
+                  <button onClick={prevCase} disabled={currentIndex === 0}>
+                    ←
                   </button>
                 </div>
               )}
             </div>
           ) : (
-            <p className="text-sm text-gray-500 text-center mt-10">
-              يرجى إدخال البيانات للبحث عن القضية
+            <p className="text-center text-sm text-gray-500 mt-10">
+              يرجى إدخال البيانات للبحث
             </p>
           )}
         </div>
 
-        {/* Search */}
-        <div className="bg-white shadow-lg border border-gray-100 rounded-2xl p-6 w-full md:w-[360px] flex flex-col gap-6">
+        {/* SEARCH */}
+        <div className="bg-white shadow-lg border rounded-2xl p-6 w-full md:w-[360px] flex flex-col gap-6">
           <RadioGroup
             className="flex flex-col items-end gap-4"
             defaultValue={searchCriteria}
             onValueChange={(v) => setSearchCriteria(v as searchCriteriaT)}
           >
-            <div className="flex items-center gap-2">
-              <Label htmlFor="option-one" className="text-sm">
-                رقم القضية
-              </Label>
-              <RadioGroupItem value="case_number" id="option-one" />
+            <div className="flex gap-2">
+              <Label>رقم القضية</Label>
+              <RadioGroupItem value="case_number" />
             </div>
 
-            <div className="flex items-center gap-2">
-              <Label htmlFor="option-two" className="text-sm">
-                الرقم القومي
-              </Label>
-              <RadioGroupItem value="client_national_id" id="option-two" />
+            <div className="flex gap-2">
+              <Label>الرقم القومي</Label>
+              <RadioGroupItem value="client_national_id" />
             </div>
 
-            <div className="flex items-center gap-2">
-              <Label htmlFor="option-three" className="text-sm">
-                الإسم
-              </Label>
-              <RadioGroupItem value="client_name" id="option-three" />
+            <div className="flex gap-2">
+              <Label>الإسم</Label>
+              <RadioGroupItem value="client_name" />
             </div>
           </RadioGroup>
 
-          <div className="flex items-center gap-2 border border-gray-200 rounded-xl px-2 py-1.5 shadow-sm focus-within:ring-2 focus-within:ring-slate-200">
+          <div className="flex gap-2 border rounded-xl px-2 py-1.5">
             <input
               value={searchQuery}
               onChange={handleSearchQuery}
               type="text"
-              placeholder="الاسم أو الرقم القومي أو رقم القضية"
-              className="flex-1 px-3 py-2 text-sm outline-none rounded-lg placeholder:text-gray-400 text-right"
+              className="flex-1 px-3 py-2 text-sm outline-none text-right"
             />
 
             <button
               onClick={handleSearchCase}
-              className="bg-slate-900 text-white text-sm px-5 py-2 rounded-lg hover:bg-slate-800 transition"
+              disabled={loadingSearch}
+              className="bg-slate-900 text-white px-5 py-2 rounded-lg"
             >
-              بحث
+              {loadingSearch ? "..." : "بحث"}
             </button>
           </div>
         </div>
@@ -246,20 +274,12 @@ const Cases = (): React.ReactElement => {
   );
 };
 
-type InfoRowProps = {
-  icon?: any;
-  label: string;
-  value: any;
-};
-
-function InfoRow({ icon: Icon, label, value }: InfoRowProps) {
+function InfoRow({ icon: Icon, label, value }: any) {
   return (
-    <div className="flex items-center gap-3 text-sm text-gray-700">
-      <Icon size={18} className="text-slate-500 shrink-0" />
-
-      <span className="font-medium text-gray-800">{label}:</span>
-
-      <span className="text-gray-600">{value}</span>
+    <div className="flex items-center gap-3 text-sm">
+      <Icon size={18} />
+      <span>{label}:</span>
+      <span>{value}</span>
     </div>
   );
 }

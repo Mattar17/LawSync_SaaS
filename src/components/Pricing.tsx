@@ -1,5 +1,5 @@
 import { DownloadIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type FeatureState = "supported" | "not_supported" | "infinitity" | "clock";
 type ButtonType = "whatsapp" | "monthly_key" | "free";
@@ -118,6 +118,23 @@ const PricingCard = ({
 }: PricingCardProps): React.ReactElement => {
   const [soon, setSoon] = useState<boolean>(false);
   const [downloadCount, setDownloadCount] = useState<number>(0);
+  const apiUrl =
+    "https://law-sync-activation-api.vercel.app/api/analytics/downloads";
+  useEffect(() => {
+    async function fetchDownloadCount(apiUrl: string) {
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": import.meta.env.VITE_API_KEY,
+        },
+      });
+      if (!res.ok) throw new Error("error while fetching downloadCount");
+      const data = await res.json();
+      setDownloadCount(data);
+    }
+    fetchDownloadCount(apiUrl);
+  }, []);
 
   const handleClick = async (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -129,22 +146,20 @@ const PricingCard = ({
     } else if (buttonType === "monthly_key") {
       setSoon(true);
     } else if (buttonType === "free") {
-      // const res = await fetch(
-      //   "https://api.counterapi.dev/v2/mohamed-salahs-team-3220/lawsync/up",
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${import.meta.env.VITE_COUNTER_TOKEN}`,
-      //     },
-      //   },
-      // );
-
-      // const data = await res.json();
-      // setDownloadCount(data.data);
-
       window.open(
         "https://www.mediafire.com/file/nluokrbc5x30yc8/LawSync+Setup+1.1.1.exe/file",
         "_blank",
       );
+      const res = await fetch(apiUrl, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": import.meta.env.VITE_API_KEY,
+        },
+      });
+      if (!res.ok) throw new Error("error while decreament downloadCount");
+      const data = await res.json();
+      if (data.success) setDownloadCount((prev) => prev + 1);
     }
   };
 

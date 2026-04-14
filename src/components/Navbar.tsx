@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 const navLinks = [
   { id: "#contact", label: "تواصل معنا" },
@@ -40,11 +41,13 @@ const Navbar = (): React.ReactElement => {
               {isOpen ? "✕" : "☰"}
             </button>
           </div>
-          <img
-            src="/Logo.png"
-            alt="Logo"
-            className="max-h-16 max-w-45 md:h-16 md:w-45"
-          />
+          <NavLink to="/">
+            <img
+              src="/Logo.png"
+              alt="Logo"
+              className="max-h-16 max-w-45 md:h-16 md:w-45"
+            />
+          </NavLink>
         </div>
       </div>
 
