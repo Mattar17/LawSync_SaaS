@@ -69,14 +69,17 @@ const LawyerPortal = (): React.ReactElement => {
     setLoadingSubmit(lawyerId);
 
     try {
-      const res = await fetch("http://localhost:8000/api/portal-access", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": import.meta.env.VITE_API_KEY,
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/api/portal-access`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": import.meta.env.VITE_API_KEY,
+          },
+          body: JSON.stringify({ password, id: lawyerId }),
         },
-        body: JSON.stringify({ password, id: lawyerId }),
-      });
+      );
 
       const data = await res.json();
 

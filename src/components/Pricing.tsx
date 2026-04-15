@@ -177,7 +177,7 @@ const PricingCard = ({
   };
 
   return (
-    <div className="relative w-full max-w-[420px] flex flex-col items-center bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.10)] p-8 md:p-12">
+    <div className="relative w-full max-w-[420px] flex flex-col items-center bg-white rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.20)] p-8 md:p-12">
       <div className="mb-4">
         <span dir="ltr" className="text-4xl font-bold text-[#101828]">
           {price}
