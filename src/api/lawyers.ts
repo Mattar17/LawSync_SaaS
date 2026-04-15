@@ -48,8 +48,9 @@ export const updateLawyerInfo = async (lawyerId: string, body: object) => {
     },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error("Error while updating lawyer!!!!");
-  return res.json();
+  const data = await res.json();
+  if (!data.success) return { success: false, message: "حدث خطأ ما" };
+  return data;
 };
 
 export const updatePortalPassword = async (lawyerId: string, body: object) => {
