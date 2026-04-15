@@ -1,4 +1,4 @@
-const base_url = "http://localhost:8000/api/cases";
+const base_url = `${import.meta.env.VITE_BASE_URL}/api/cases`;
 
 export const getAllCases = async (id: string) => {
   const res = await fetch(`${base_url}/${id}`, {

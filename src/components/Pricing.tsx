@@ -130,8 +130,7 @@ const PricingCard = ({
 }: PricingCardProps): React.ReactElement => {
   const [soon, setSoon] = useState<boolean>(false);
   const [downloadCount, setDownloadCount] = useState<number>(0);
-  const apiUrl =
-    "https://law-sync-activation-api.vercel.app/api/analytics/downloads";
+  const apiUrl = `${import.meta.env.VITE_BASE_URL}/api/analytics/downloads`;
   useEffect(() => {
     async function fetchDownloadCount(apiUrl: string) {
       const res = await fetch(apiUrl, {
@@ -148,25 +147,6 @@ const PricingCard = ({
     fetchDownloadCount(apiUrl);
   }, []);
 
-  useEffect(() => {
-    const fetchDownloadsCounter = async function () {
-      const res = await fetch(
-        "https://law-sync-activation-api.vercel.app/api/analytics/downloads",
-        {
-          method: "POST",
-          headers: {
-            "x-api-key": import.meta.env.VITE_API_KEY,
-          },
-        },
-      );
-      if (!res.ok) throw new Error("Error while fetching downloads");
-      const data = await res.json();
-      console.log(data);
-      setDownloadCount(data);
-    };
-    fetchDownloadsCounter();
-  }, []);
-
   const handleClick = async (
     e: React.MouseEvent<HTMLButtonElement>,
   ): Promise<void> => {
@@ -177,15 +157,12 @@ const PricingCard = ({
     } else if (buttonType === "monthly_key") {
       setSoon(true);
     } else if (buttonType === "free") {
-      const res = await fetch(
-        "https://law-sync-activation-api.vercel.app/api/analytics/downloads?increment=1",
-        {
-          method: "POST",
-          headers: {
-            "x-api-key": import.meta.env.VITE_API_KEY,
-          },
+      const res = await fetch(`${apiUrl}?increment=1`, {
+        method: "POST",
+        headers: {
+          "x-api-key": import.meta.env.VITE_API_KEY,
         },
-      );
+      });
 
       const data = await res.json();
       if (data.success) {

@@ -1,5 +1,4 @@
-const base_url = "http://localhost:8000/api/lawyers";
-import ILawyer from "@/interfaces/ILawyer";
+const base_url = `${import.meta.env.VITE_BASE_URL}/api/lawyers`;
 import Cookies from "js-cookie";
 
 const apiKey = import.meta.env.VITE_API_KEY;

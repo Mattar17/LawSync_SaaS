@@ -87,7 +87,7 @@ const Cases = (): React.ReactElement => {
 
     setsearchedCase(caseFound);
     setLoadingSearch(false);
-    setCurrentIndex(0); // 🔥 important fix
+    setCurrentIndex(0);
 
     if (caseFound.length === 0) {
       showToast("لم يتم العثور على نتائج");
@@ -232,21 +232,30 @@ const Cases = (): React.ReactElement => {
         {/* SEARCH */}
         <div className="bg-white shadow-lg border rounded-2xl p-6 w-full md:w-[360px] flex flex-col gap-6">
           <RadioGroup
-            className="flex flex-col items-end gap-4"
-            defaultValue={searchCriteria}
+            value={searchCriteria}
             onValueChange={(v) => setSearchCriteria(v as searchCriteriaT)}
+            className="flex flex-col items-end gap-4"
           >
-            <div className="flex gap-2">
+            <div
+              onClick={() => setSearchCriteria("case_number")}
+              className="flex gap-2"
+            >
               <Label>رقم القضية</Label>
               <RadioGroupItem value="case_number" />
             </div>
 
-            <div className="flex gap-2">
+            <div
+              onClick={() => setSearchCriteria("client_national_id")}
+              className="flex gap-2"
+            >
               <Label>الرقم القومي</Label>
               <RadioGroupItem value="client_national_id" />
             </div>
 
-            <div className="flex gap-2">
+            <div
+              onClick={() => setSearchCriteria("client_name")}
+              className="flex gap-2"
+            >
               <Label>الإسم</Label>
               <RadioGroupItem value="client_name" />
             </div>
