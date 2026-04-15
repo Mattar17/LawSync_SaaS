@@ -231,35 +231,46 @@ const Cases = (): React.ReactElement => {
 
         {/* SEARCH */}
         <div className="bg-white shadow-lg border rounded-2xl p-6 w-full md:w-[360px] flex flex-col gap-6">
-          <RadioGroup
-            value={searchCriteria}
-            onValueChange={(v) => setSearchCriteria(v as searchCriteriaT)}
-            className="flex flex-col items-end gap-4"
-          >
-            <div
-              onClick={() => setSearchCriteria("case_number")}
-              className="flex gap-2"
-            >
-              <Label>رقم القضية</Label>
-              <RadioGroupItem value="case_number" />
-            </div>
+          <div dir="ltr" className="flex flex-col items-end gap-4">
+            {/* Case Number */}
+            <label className="flex gap-2 items-center cursor-pointer">
+              <span>رقم القضية</span>
+              <input
+                type="radio"
+                name="searchCriteria"
+                value="case_number"
+                className="accent-slate-900"
+                checked={searchCriteria === "case_number"}
+                onChange={() => setSearchCriteria("case_number")}
+              />
+            </label>
 
-            <div
-              onClick={() => setSearchCriteria("client_national_id")}
-              className="flex gap-2"
-            >
-              <Label>الرقم القومي</Label>
-              <RadioGroupItem value="client_national_id" />
-            </div>
+            {/* National ID */}
+            <label className="flex gap-2 items-center cursor-pointer">
+              <span>الرقم القومي</span>
+              <input
+                className="accent-slate-900"
+                type="radio"
+                name="searchCriteria"
+                value="client_national_id"
+                checked={searchCriteria === "client_national_id"}
+                onChange={() => setSearchCriteria("client_national_id")}
+              />
+            </label>
 
-            <div
-              onClick={() => setSearchCriteria("client_name")}
-              className="flex gap-2"
-            >
-              <Label>الإسم</Label>
-              <RadioGroupItem value="client_name" />
-            </div>
-          </RadioGroup>
+            {/* Client Name */}
+            <label className="flex gap-2 items-center cursor-pointer">
+              <span>الإسم</span>
+              <input
+                className="accent-slate-900"
+                type="radio"
+                name="searchCriteria"
+                value="client_name"
+                checked={searchCriteria === "client_name"}
+                onChange={() => setSearchCriteria("client_name")}
+              />
+            </label>
+          </div>
 
           <div className="flex gap-2 border rounded-xl px-2 py-1.5">
             <input
