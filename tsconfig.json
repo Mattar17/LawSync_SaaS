@@ -22,9 +22,5 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src"],
-
-  "aliases": {
-    "utils": "@/lib/utils"
-  }
+  "include": ["src"]
 }

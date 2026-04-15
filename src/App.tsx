@@ -35,8 +35,8 @@ function App(): React.ReactElement {
       );
     });
     const lenis = new Lenis({
-      duration: 2,
-      lerp: 0.1,
+      duration: 1,
+      lerp: 0.4,
     });
 
     function raf(time: number) {
