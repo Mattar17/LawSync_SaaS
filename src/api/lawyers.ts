@@ -12,9 +12,12 @@ export const getAllLawyersAdmin = async () => {
       Authorization: jwtToken,
     },
   });
-  if (!res.ok) throw new Error("Error while fetching lawyers!!!!");
-  return res.json();
+
+  const data = await res.json();
+  if (!data.success) return { success: false, message: "حدث خطأ ما" };
+  return data;
 };
+
 export const getAllLawyersPublic = async () => {
   const res = await fetch(`${base_url}`, {
     method: "GET",
@@ -22,20 +25,25 @@ export const getAllLawyersPublic = async () => {
       "x-api-key": apiKey,
     },
   });
-  if (!res.ok) throw new Error("Error while fetching lawyers!!!!");
-  return res.json();
+
+  const data = await res.json();
+  if (!data.success) return { success: false, message: "حدث خطأ ما" };
+  return data;
 };
 
 export const getLawyerById = async (lawyerId: string) => {
   console.log(lawyerId);
+
   const res = await fetch(`${base_url}/id/${lawyerId}`, {
     method: "GET",
     headers: {
       "x-api-key": apiKey,
     },
   });
-  if (!res.ok) throw new Error("Error while fetching lawyer by id!!!!");
-  return res.json();
+
+  const data = await res.json();
+  if (!data.success) return { success: false, message: "حدث خطأ ما" };
+  return data;
 };
 
 export const updateLawyerInfo = async (lawyerId: string, body: object) => {
@@ -48,6 +56,7 @@ export const updateLawyerInfo = async (lawyerId: string, body: object) => {
     },
     body: JSON.stringify(body),
   });
+
   const data = await res.json();
   if (!data.success) return { success: false, message: "حدث خطأ ما" };
   return data;
@@ -63,9 +72,12 @@ export const updatePortalPassword = async (lawyerId: string, body: object) => {
     },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error("Error while updating lawyer!!!!");
-  return res.json();
+
+  const data = await res.json();
+  if (!data.success) return { success: false, message: "حدث خطأ ما" };
+  return data;
 };
+
 export const updateProfilePassword = async (lawyerId: string, body: object) => {
   const res = await fetch(`${base_url}/${lawyerId}/update-profile-password`, {
     method: "POST",
@@ -78,8 +90,7 @@ export const updateProfilePassword = async (lawyerId: string, body: object) => {
   });
 
   const data = await res.json();
-
-  if (!res.ok) {
+  if (!data.success) {
     return {
       success: false,
       message: data.message || "Something went wrong",
@@ -88,6 +99,7 @@ export const updateProfilePassword = async (lawyerId: string, body: object) => {
 
   return data;
 };
+
 export const createLawyer = async (body: object) => {
   const res = await fetch(`${base_url}`, {
     method: "POST",
@@ -98,8 +110,10 @@ export const createLawyer = async (body: object) => {
     },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error("Error while creating lawyer!!!!");
-  return res.json();
+
+  const data = await res.json();
+  if (!data.success) return { success: false, message: "حدث خطأ ما" };
+  return data;
 };
 
 export const deleteLawyer = async (id: string) => {
@@ -111,12 +125,15 @@ export const deleteLawyer = async (id: string) => {
       Authorization: jwtToken,
     },
   });
-  if (!res.ok) throw new Error("Error while deleting lawyer!!!!");
-  return res.json();
+
+  const data = await res.json();
+  if (!data.success) return { success: false, message: "حدث خطأ ما" };
+  return data;
 };
 
 export const updateLawyerAvatar = async (id: string, formData: FormData) => {
   console.log(formData);
+
   const res = await fetch(`${base_url}/avatar/${id}`, {
     method: "POST",
     headers: {
@@ -125,6 +142,8 @@ export const updateLawyerAvatar = async (id: string, formData: FormData) => {
     },
     body: formData,
   });
-  if (!res.ok) throw new Error("Error while setting Avatar!!!!");
-  return res.json();
+
+  const data = await res.json();
+  if (!data.success) return { success: false, message: "حدث خطأ ما" };
+  return data;
 };
