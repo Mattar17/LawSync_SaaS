@@ -170,7 +170,7 @@ const PricingCard = ({
       }
 
       window.open(
-        "https://www.mediafire.com/file/hapdx0nr70tlkdz/LawSync+Setup+1.2.4.exe/file",
+        "https://www.mediafire.com/file/f1w0x1tcc6c7u3a/LawSync+Setup+1.2.10.exe/file",
         "_blank",
       );
     }
