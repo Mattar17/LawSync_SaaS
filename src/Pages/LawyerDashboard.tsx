@@ -243,8 +243,26 @@ export default function SettingsDashboard() {
     }
   };
 
+  async function handleSubscribe() {
+    console.log(id);
+
+    const res = await fetch(`http://localhost:8000/api/payment/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": import.meta.env.VITE_API_KEY,
+      },
+    });
+
+    const { link } = await res.json();
+    window.open(link);
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center p-6 relative">
+      <button className="font-underline text-2xl" onClick={handleSubscribe}>
+        {"يرجى تجديد الاشتراك"}
+      </button>
       {/* TOAST */}
       {toast && (
         <div className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-black/80 text-white px-6 py-3 rounded-xl shadow-lg z-50">
