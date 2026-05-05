@@ -22,6 +22,7 @@ export default function PaymentWebhookResponse() {
 
   return (
     <div>
+      <h1>Payment Status:</h1>
       <p>{success ? "Successfull payment" : "Failed to Pay!!!"}</p>
     </div>
   );
