@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 export default function PaymentWebhookResponse() {
+  const { success } = useParams();
   const [dataObj, setDataObj] = useState(null);
   useEffect(() => {
     async function getWebhookResponse() {
@@ -20,7 +22,7 @@ export default function PaymentWebhookResponse() {
 
   return (
     <div>
-      <p>{dataObj}</p>
+      <p>{success ? "Successfull payment" : "Failed to Pay!!!"}</p>
     </div>
   );
 }
