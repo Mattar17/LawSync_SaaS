@@ -260,12 +260,15 @@ export default function SettingsDashboard() {
 
   return (
     <>
-      <button
-        className="text-red-600 text-center bg-gray-100"
-        onClick={handleSubscribe}
-      >
-        {"يرجى تجديد الاشتراك"}
-      </button>
+      <div className="flex items-center">
+        <button
+          className="text-red-600 text-center bg-gray-100 mx-auto"
+          onClick={handleSubscribe}
+        >
+          {"يرجى تجديد الاشتراك"}
+        </button>
+      </div>
+
       <div className="min-h-screen bg-gray-100 flex justify-center p-6 relative">
         {/* TOAST */}
         {toast && (
