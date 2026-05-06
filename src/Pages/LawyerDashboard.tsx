@@ -259,199 +259,208 @@ export default function SettingsDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center p-6 relative">
-      <button className="font-underline text-2xl" onClick={handleSubscribe}>
+    <>
+      <button
+        className="text-red-600 text-center bg-gray-100"
+        onClick={handleSubscribe}
+      >
         {"يرجى تجديد الاشتراك"}
       </button>
-      {/* TOAST */}
-      {toast && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-black/80 text-white px-6 py-3 rounded-xl shadow-lg z-50">
-          {toast}
-        </div>
-      )}
-
-      <div className="w-full max-w-3xl space-y-6">
-        {/* HEADER */}
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">إعدادات الحساب</h1>
-
-          <div className="flex gap-2">
-            <TabButton
-              active={activeTab === "profile"}
-              onClick={() => setActiveTab("profile")}
-            >
-              المعلومات الشخصية
-            </TabButton>
-
-            <TabButton
-              active={activeTab === "password"}
-              onClick={() => setActiveTab("password")}
-            >
-              كلمة المرور
-            </TabButton>
-
-            <TabButton
-              active={activeTab === "portal"}
-              onClick={() => setActiveTab("portal")}
-            >
-              كلمة مرور البوابة
-            </TabButton>
+      <div className="min-h-screen bg-gray-100 flex justify-center p-6 relative">
+        {/* TOAST */}
+        {toast && (
+          <div className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-black/80 text-white px-6 py-3 rounded-xl shadow-lg z-50">
+            {toast}
           </div>
-        </div>
+        )}
 
-        {/* ================= PROFILE ================= */}
-        {activeTab === "profile" && (
-          <div className="bg-white p-6 rounded-2xl shadow space-y-6 font-medium">
-            {loadingFetch ? (
-              <p>Loading...</p>
-            ) : (
-              <>
-                {/* TOKEN */}
-                {token && (
-                  <div className="flex items-center justify-between border p-3 rounded-lg bg-gray-50">
-                    <div
-                      onClick={copyToken}
-                      className="cursor-pointer font-mono text-sm truncate"
-                    >
-                      {showToken ? token : "••••••••••••••••••••••••••"}
+        <div className="w-full max-w-3xl space-y-6">
+          {/* HEADER */}
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold">إعدادات الحساب</h1>
+
+            <div className="flex gap-2">
+              <TabButton
+                active={activeTab === "profile"}
+                onClick={() => setActiveTab("profile")}
+              >
+                المعلومات الشخصية
+              </TabButton>
+
+              <TabButton
+                active={activeTab === "password"}
+                onClick={() => setActiveTab("password")}
+              >
+                كلمة المرور
+              </TabButton>
+
+              <TabButton
+                active={activeTab === "portal"}
+                onClick={() => setActiveTab("portal")}
+              >
+                كلمة مرور البوابة
+              </TabButton>
+            </div>
+          </div>
+
+          {/* ================= PROFILE ================= */}
+          {activeTab === "profile" && (
+            <div className="bg-white p-6 rounded-2xl shadow space-y-6 font-medium">
+              {loadingFetch ? (
+                <p>Loading...</p>
+              ) : (
+                <>
+                  {/* TOKEN */}
+                  {token && (
+                    <div className="flex items-center justify-between border p-3 rounded-lg bg-gray-50">
+                      <div
+                        onClick={copyToken}
+                        className="cursor-pointer font-mono text-sm truncate"
+                      >
+                        {showToken ? token : "••••••••••••••••••••••••••"}
+                      </div>
+
+                      <button
+                        onClick={() => handleShowToken()}
+                        className="text-sm text-gray-800 font-semibold"
+                      >
+                        {showToken ? "إخفاء الرمز" : "إظهار الرمز"}
+                      </button>
                     </div>
+                  )}
 
+                  {/* INFO */}
+                  <input
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    className="w-full border p-2 rounded"
+                    placeholder="Name"
+                  />
+
+                  <textarea
+                    name="description"
+                    value={form.description}
+                    onChange={handleChange}
+                    className="w-full border p-2 rounded"
+                  />
+
+                  <div className="flex justify-end">
                     <button
-                      onClick={() => handleShowToken()}
-                      className="text-sm text-gray-800 font-semibold"
+                      onClick={handleProfileUpdate}
+                      disabled={loadingProfile}
+                      className="bg-black text-white px-6 py-2 rounded-lg"
                     >
-                      {showToken ? "إخفاء الرمز" : "إظهار الرمز"}
+                      {loadingProfile ? "جار الحفظ..." : "حفظ التغييرات"}
                     </button>
                   </div>
-                )}
 
-                {/* INFO */}
-                <input
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  className="w-full border p-2 rounded"
-                  placeholder="Name"
-                />
+                  {/* AVATAR SECTION (SEPARATED) */}
+                  <div className="border-t pt-6 space-y-4">
+                    <div className="flex items-center gap-6">
+                      <img
+                        src={
+                          preview ||
+                          "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                        }
+                        className="w-24 h-24 rounded-full object-cover border"
+                      />
 
-                <textarea
-                  name="description"
-                  value={form.description}
-                  onChange={handleChange}
-                  className="w-full border p-2 rounded"
-                />
+                      <input
+                        type="file"
+                        name="avatar"
+                        onChange={handleChange}
+                      />
 
-                <div className="flex justify-end">
-                  <button
-                    onClick={handleProfileUpdate}
-                    disabled={loadingProfile}
-                    className="bg-black text-white px-6 py-2 rounded-lg"
-                  >
-                    {loadingProfile ? "جار الحفظ..." : "حفظ التغييرات"}
-                  </button>
-                </div>
-
-                {/* AVATAR SECTION (SEPARATED) */}
-                <div className="border-t pt-6 space-y-4">
-                  <div className="flex items-center gap-6">
-                    <img
-                      src={
-                        preview ||
-                        "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                      }
-                      className="w-24 h-24 rounded-full object-cover border"
-                    />
-
-                    <input type="file" name="avatar" onChange={handleChange} />
-
-                    <button
-                      onClick={handleAvatarUpdate}
-                      disabled={loadingAvatar}
-                      className="mr-auto bg-black text-white px-4 py-2 rounded-lg"
-                    >
-                      {loadingAvatar ? "جاري العمل..." : "حفظ التغييرات"}
-                    </button>
+                      <button
+                        onClick={handleAvatarUpdate}
+                        disabled={loadingAvatar}
+                        className="mr-auto bg-black text-white px-4 py-2 rounded-lg"
+                      >
+                        {loadingAvatar ? "جاري العمل..." : "حفظ التغييرات"}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </>
-            )}
-          </div>
-        )}
+                </>
+              )}
+            </div>
+          )}
 
-        {/* ================= PASSWORD ================= */}
-        {activeTab === "password" && (
-          <div className="bg-white p-6 rounded-2xl space-y-4">
-            <input
-              name="oldPassword"
-              type="password"
-              placeholder="كلمة المرور الحالية"
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-            />
+          {/* ================= PASSWORD ================= */}
+          {activeTab === "password" && (
+            <div className="bg-white p-6 rounded-2xl space-y-4">
+              <input
+                name="oldPassword"
+                type="password"
+                placeholder="كلمة المرور الحالية"
+                onChange={handleChange}
+                className="w-full border p-2 rounded"
+              />
 
-            <input
-              name="newPassword"
-              type="password"
-              placeholder="كلمة المرور الجديدة"
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-            />
+              <input
+                name="newPassword"
+                type="password"
+                placeholder="كلمة المرور الجديدة"
+                onChange={handleChange}
+                className="w-full border p-2 rounded"
+              />
 
-            <input
-              name="confirmPassword"
-              type="password"
-              placeholder="تأكيد كلمة المرور"
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-            />
+              <input
+                name="confirmPassword"
+                type="password"
+                placeholder="تأكيد كلمة المرور"
+                onChange={handleChange}
+                className="w-full border p-2 rounded"
+              />
 
-            <button
-              onClick={handlePasswordChange}
-              disabled={loadingPassword}
-              className="w-full bg-black text-white py-2 rounded"
-            >
-              {loadingPassword ? "جاري الحفظ..." : "تغيير كلمة المرور"}
-            </button>
-          </div>
-        )}
+              <button
+                onClick={handlePasswordChange}
+                disabled={loadingPassword}
+                className="w-full bg-black text-white py-2 rounded"
+              >
+                {loadingPassword ? "جاري الحفظ..." : "تغيير كلمة المرور"}
+              </button>
+            </div>
+          )}
 
-        {/* ================= PORTAL ================= */}
-        {activeTab === "portal" && (
-          <div className="bg-white p-6 rounded-2xl space-y-4">
-            <input
-              name="oldPassword"
-              type="password"
-              placeholder="كلمة المرور الشخصية"
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-            />
+          {/* ================= PORTAL ================= */}
+          {activeTab === "portal" && (
+            <div className="bg-white p-6 rounded-2xl space-y-4">
+              <input
+                name="oldPassword"
+                type="password"
+                placeholder="كلمة المرور الشخصية"
+                onChange={handleChange}
+                className="w-full border p-2 rounded"
+              />
 
-            <input
-              name="newPortalPassword"
-              type="password"
-              placeholder="كلمة مرور البوابة الجديدة"
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-            />
+              <input
+                name="newPortalPassword"
+                type="password"
+                placeholder="كلمة مرور البوابة الجديدة"
+                onChange={handleChange}
+                className="w-full border p-2 rounded"
+              />
 
-            <input
-              name="confirmPortalPassword"
-              type="password"
-              placeholder="تأكيد كلمة المرور"
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-            />
+              <input
+                name="confirmPortalPassword"
+                type="password"
+                placeholder="تأكيد كلمة المرور"
+                onChange={handleChange}
+                className="w-full border p-2 rounded"
+              />
 
-            <button
-              onClick={handlePortalPasswordChange}
-              disabled={loadingPortal}
-              className="w-full bg-black text-white py-2 rounded"
-            >
-              {loadingPortal ? "جار الحفظ..." : "تغيير كلمة مرور البوابة"}
-            </button>
-          </div>
-        )}
+              <button
+                onClick={handlePortalPasswordChange}
+                disabled={loadingPortal}
+                className="w-full bg-black text-white py-2 rounded"
+              >
+                {loadingPortal ? "جار الحفظ..." : "تغيير كلمة مرور البوابة"}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
