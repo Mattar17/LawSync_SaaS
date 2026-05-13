@@ -13,7 +13,7 @@ const Hero = (): React.ReactElement => {
 
       <div className="relative h-full flex flex-col justify-center items-center gap-1 z-10 px-8 md:px-16 max-w-5xl mx-auto">
         <div className="flex flex-col justify-center items-center gap-1">
-          <h1 className="text-[20px] md:text-[38px] font-bold text-white">
+          <h1 className="text-[20px] font-heading md:text-[38px] font-bold text-white">
             إدارة قضاياك القانونية بسهولة واحترافية
           </h1>
           <p className="text-[8px] md:text-[16px] text-[#D4D4D4] font-semibold mb-12 max-w-2xl mx-auto">
@@ -24,9 +24,12 @@ const Hero = (): React.ReactElement => {
         <div className="w-[22rem] h-[2.5rem] flex flex-col sm:flex-row gap-8 justify-center text-[16px]">
           <button
             onClick={() => (window.location.hash = "#features")}
-            className="cursor-pointer w-full bg-[#F9FAFB] text-gray-900 font-semibold rounded-[6px] hover:bg-gray-200 transition-colors"
+            className="cursor-pointer w-full bg-black/20 text-gray-200 font-light rounded-[6px] hover:bg-gray-200/20 hover:rounded-none transition-colors"
           >
             اكتشف المميزات
+            <span className="text-blue-700 p-1 opacity-0 hover:opacity-100">
+              &larr;
+            </span>
           </button>
           <button
             onClick={() => (window.location.hash = "#pricing")}

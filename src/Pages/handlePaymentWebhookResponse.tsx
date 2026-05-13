@@ -1,11 +1,9 @@
 //import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
 export default function PaymentWebhookResponse() {
-  const { success } = useParams();
-  console.log(useParams());
-  console.log(success);
-  const isSuccess = success === "true";
+  const [searchParams] = useSearchParams();
+  const isSuccess = searchParams.get("success") === "true";
 
   return (
     <div>

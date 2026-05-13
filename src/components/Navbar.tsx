@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const navLinks = [
   { id: "#contact", label: "تواصل معنا" },
@@ -11,8 +12,26 @@ const navLinks = [
 const Navbar = (): React.ReactElement => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    function handleScroll() {
+      setScrolled(window.scrollY > 50);
+    }
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
-    <nav className="bg-white flex justify-center shadow-sm sticky top-0 z-50">
+    <nav
+      className={`sticky top-0 left-0 w-full z-50 transition-all duration-300 ${
+        scrolled ? "bg-white/5 backdrop-blur-md shadow-lg" : "bg-white"
+      }`}
+    >
       <div className="w-[95%] mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -20,14 +39,18 @@ const Navbar = (): React.ReactElement => {
           <div className="hidden md:flex">
             <ul className="flex gap-4">
               {navLinks.map((link) => (
-                <li key={link.id} className="inline-block ml-8">
+                <motion.li
+                  whileHover={{ scale: 1.1 }}
+                  key={link.id}
+                  className={`inline-block ml-8`}
+                >
                   <a
                     href={link.id}
-                    className="text-[#282828] font-medium hover:text-gray-600 transition-colors"
+                    className={`text-${scrolled ? "[#7CC3E1]" : "[#282828]"} font-normal font-heading hover:text-[#7CC3E1] transition-colors`}
                   >
                     {link.label}
                   </a>
-                </li>
+                </motion.li>
               ))}
             </ul>
           </div>
@@ -43,7 +66,7 @@ const Navbar = (): React.ReactElement => {
           </div>
           <NavLink to="/">
             <img
-              src="/Logo.png"
+              src="/icon2.png"
               alt="Logo"
               className="max-h-16 max-w-45 md:h-16 md:w-45"
             />
