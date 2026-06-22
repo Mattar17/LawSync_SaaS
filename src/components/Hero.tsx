@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+import { ArrowLeftIcon } from "lucide-react";
 const Hero = (): React.ReactElement => {
   return (
     <section className="section relative min-h-[650px] flex items-center justify-center">
@@ -21,22 +23,52 @@ const Hero = (): React.ReactElement => {
             مكان واحد آمن.
           </p>
         </div>
-        <div className="w-[22rem] h-[2.5rem] flex flex-col sm:flex-row gap-8 justify-center text-[16px]">
-          <button
+
+        <div className="w-[22rem] flex flex-col sm:flex-row gap-4 justify-center text-[16px]">
+          <motion.button
             onClick={() => (window.location.hash = "#features")}
-            className="cursor-pointer w-full bg-black/20 text-gray-200 font-light rounded-[6px] hover:bg-gray-200/20 hover:rounded-none transition-colors"
+            className="group h-[2.75rem] w-full bg-black/20 text-gray-200 font-light rounded-md hover:bg-gray-200/20 transition-colors duration-300 flex items-center justify-center"
+            initial="rest"
+            whileHover="hover"
+            animate="rest"
           >
-            اكتشف المميزات
-            <span className="text-blue-700 p-1 opacity-0 hover:opacity-100">
-              &larr;
-            </span>
-          </button>
-          <button
+            <span>اكتشف المميزات</span>
+
+            <motion.div
+              variants={{
+                rest: {
+                  width: 0,
+                  opacity: 0,
+                  marginRight: 0,
+                },
+                hover: {
+                  width: 20,
+                  opacity: 1,
+                  marginRight: 8,
+                },
+              }}
+              transition={{
+                duration: 0.25,
+                ease: "easeOut",
+              }}
+              className="overflow-hidden flex items-center justify-center text-[#ffffff]"
+            >
+              <ArrowLeftIcon className="w-4 h-4" />
+            </motion.div>
+          </motion.button>
+
+          <motion.button
             onClick={() => (window.location.hash = "#pricing")}
-            className="cursor-pointer w-full bg-[#7CC3E1] text-gray-200 font-semibold rounded-[6px] hover:bg-[#7CC3E1]/90 transition-colors"
+            className="h-[2.75rem] w-full bg-[#7CC3E1] text-gray-900 font-semibold rounded-md flex items-center justify-center"
+            whileHover={{
+              scale: 1.03,
+              boxShadow: "0 10px 25px rgba(124,195,225,0.25)",
+            }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.2 }}
           >
             ابدأ الآن
-          </button>
+          </motion.button>
         </div>
       </div>
     </section>

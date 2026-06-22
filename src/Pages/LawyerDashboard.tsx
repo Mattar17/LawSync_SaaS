@@ -51,16 +51,11 @@ export default function SettingsDashboard() {
 
   const [form, setForm] = useState({
     name: "",
-    description: "",
-    avatarFile: null,
-    oldPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-
-    oldPortalPassword: "",
-    newPortalPassword: "",
-    confirmPortalPassword: "",
+    bio: "",
+    profileUrl: "",
   });
+
+  const [avatarFile, setAvatarFile] = useState(null);
 
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -102,10 +97,11 @@ export default function SettingsDashboard() {
         setForm((prev) => ({
           ...prev,
           name: lawyer.name,
-          description: lawyer.description,
+          bio: lawyer.bio,
+          profileUrl: lawyer.picture_url,
         }));
 
-        setPreview(lawyer.avatar_url);
+        setPreview(lawyer.picture_url);
       } catch {
         showToast("Something went wrong");
       } finally {
@@ -121,6 +117,7 @@ export default function SettingsDashboard() {
 
     if ("files" in e.target && e.target.files) {
       const file = e.target.files[0];
+      console.log(file);
 
       if (file && !file.type.startsWith("image/")) {
         return showToast("Only images allowed");
@@ -129,9 +126,7 @@ export default function SettingsDashboard() {
       if (file && file.size > 2 * 1024 * 1024) {
         return showToast("Max size is 2MB");
       }
-
-      setForm((prev) => ({ ...prev, avatarFile: file }));
-
+      setAvatarFile(file);
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result as string);
       if (file) reader.readAsDataURL(file);
@@ -147,7 +142,7 @@ export default function SettingsDashboard() {
     try {
       const res = await updateLawyerInfo(id as string, {
         name: form.name,
-        description: form.description,
+        bio: form.bio,
       });
 
       if (!res.success) {
@@ -165,17 +160,20 @@ export default function SettingsDashboard() {
 
   // ================= AVATAR UPDATE =================
   const handleAvatarUpdate = async () => {
-    if (!form.avatarFile) {
+    console.log(avatarFile);
+    if (!avatarFile) {
       return showToast("Please select an image first");
     }
 
     const formData = new FormData();
-    formData.append("file", form.avatarFile);
+    formData.append("file", avatarFile);
     setLoadingAvatar(true);
+
+    console.log(formData);
 
     try {
       const res = await updateLawyerAvatar(id as string, formData);
-
+      console.log(formData);
       if (!res.success) {
         showToast(res.message || "Failed to update photo");
         return;
@@ -188,61 +186,6 @@ export default function SettingsDashboard() {
       setLoadingAvatar(false);
     }
   };
-
-  // ================= PASSWORD =================
-  const handlePasswordChange = async () => {
-    if (form.newPassword !== form.confirmPassword) {
-      return showToast("Passwords do not match");
-    }
-
-    setLoadingPassword(true);
-
-    try {
-      const res = await updateProfilePassword(id as string, {
-        currentPassword: form.oldPassword,
-        newPassword: form.newPassword,
-      });
-
-      if (!res.success) {
-        showToast(res.message || "Failed");
-        return;
-      }
-
-      showToast("Password updated");
-    } catch {
-      showToast("Something went wrong");
-    } finally {
-      setLoadingPassword(false);
-    }
-  };
-
-  // ================= PORTAL PASSWORD =================
-  const handlePortalPasswordChange = async () => {
-    if (form.newPortalPassword !== form.confirmPortalPassword) {
-      return showToast("Passwords do not match");
-    }
-
-    setLoadingPortal(true);
-
-    try {
-      const res = await updatePortalPassword(id as string, {
-        profilePassword: form.oldPassword,
-        newPortalPassword: form.newPortalPassword,
-      });
-
-      if (!res.success) {
-        showToast(res.message || "Failed");
-        return;
-      }
-
-      showToast("Portal password updated");
-    } catch {
-      showToast("Something went wrong");
-    } finally {
-      setLoadingPortal(false);
-    }
-  };
-
   async function handleSubscribe() {
     console.log(id);
 
@@ -342,8 +285,8 @@ export default function SettingsDashboard() {
                   />
 
                   <textarea
-                    name="description"
-                    value={form.description}
+                    name="bio"
+                    value={form.bio}
                     onChange={handleChange}
                     className="w-full border p-2 rounded"
                   />
@@ -417,7 +360,7 @@ export default function SettingsDashboard() {
               />
 
               <button
-                onClick={handlePasswordChange}
+                onClick={() => console.log("Change password")}
                 disabled={loadingPassword}
                 className="w-full bg-black text-white py-2 rounded"
               >
@@ -454,7 +397,7 @@ export default function SettingsDashboard() {
               />
 
               <button
-                onClick={handlePortalPasswordChange}
+                onClick={() => console.log("change portal password")}
                 disabled={loadingPortal}
                 className="w-full bg-black text-white py-2 rounded"
               >
