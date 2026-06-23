@@ -95,13 +95,6 @@ const navWorkspace = [
   { title: "القضايا", icon: Briefcase, badge: "12" },
   { title: "العملاء", icon: Users },
   { title: "المواعيد", icon: Calendar, badge: "3" },
-  { title: "المستندات", icon: FileText },
-];
-
-const navBilling = [
-  { title: "تسجيل الساعات", icon: Clock },
-  { title: "الفواتير", icon: Receipt, badge: "3" },
-  { title: "التقارير", icon: TrendingUp },
 ];
 
 const navFirm = [
@@ -121,19 +114,6 @@ const stats = [
     value: "8",
     delta: "مهمتان مستحقتان اليوم",
     color: "text-amber-600",
-  },
-  {
-    label: "ساعات العمل هذا الأسبوع",
-    value: "24.5",
-    delta: "الهدف: 40 ساعة",
-    color: "text-green-700",
-    progress: 61,
-  },
-  {
-    label: "مبالغ غير مفوترة",
-    value: "٤٢٬٠٠٠ ج.م",
-    delta: "3 فواتير قيد الانتظار",
-    color: "text-rose-600",
   },
 ];
 
@@ -220,33 +200,6 @@ const tasks = [
   },
 ];
 
-const schedule = [
-  {
-    time: "9:30",
-    title: "استشارة قانونية - أحمد فوزي",
-    location: "المكتب - غرفة 2",
-    color: "bg-blue-500",
-  },
-  {
-    time: "11:00",
-    title: "جلسة قضية البنك الأهلي",
-    location: "محكمة شبين الكوم",
-    color: "bg-rose-500",
-  },
-  {
-    time: "2:00",
-    title: "اتصال مع كريم منصور",
-    location: "مكالمة فيديو",
-    color: "bg-green-500",
-  },
-  {
-    time: "4:30",
-    title: "اجتماع مراجعة القضايا",
-    location: "قاعة الاجتماعات",
-    color: "bg-violet-500",
-  },
-];
-
 const recentActivity = [
   {
     text: "تم رفع مستند جديد في قضية البنك الأهلي",
@@ -271,27 +224,7 @@ const recentActivity = [
 function AppSidebar() {
   const navigate = useNavigate();
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-blue-600 text-white">
-                  <Scale className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">LawSync</span>
-                  <span className="truncate text-xs text-muted-foreground">
-                    Pro workspace
-                  </span>
-                </div>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
-
+    <Sidebar className="mt-10" collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Workspace</SidebarGroupLabel>
@@ -302,23 +235,6 @@ function AppSidebar() {
                   isActive={item.isActive}
                   tooltip={item.title}
                 >
-                  <item.icon />
-                  <span>{item.title}</span>
-                </SidebarMenuButton>
-                {item.badge && (
-                  <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
-                )}
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Billing</SidebarGroupLabel>
-          <SidebarMenu>
-            {navBilling.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton tooltip={item.title}>
                   <item.icon />
                   <span>{item.title}</span>
                 </SidebarMenuButton>
@@ -421,7 +337,7 @@ function AppSidebar() {
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 
 export default function LawyerDashboard() {
-  const today = new Date().toLocaleDateString("en-GB", {
+  const today = new Date().toLocaleDateString("ar-EG", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -439,16 +355,16 @@ export default function LawyerDashboard() {
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <div className="flex flex-1 items-center gap-2">
-              <h1 className="text-sm font-medium">Dashboard</h1>
+              <h1 className="text-sm font-medium">لوحة التحكم</h1>
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" className="gap-1.5">
                 <Plus className="size-3.5" />
-                New case
+                قضية جديدة
               </Button>
               <Button variant="outline" size="sm" className="gap-1.5">
                 <Clock className="size-3.5" />
-                Log time
+                السجل
               </Button>
             </div>
           </header>
@@ -457,11 +373,9 @@ export default function LawyerDashboard() {
             {/* Greeting */}
             <div>
               <h2 className="text-2xl font-semibold tracking-tight">
-                Good morning, Sarah 👋
+                مرحباً, محمد
               </h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                {today} · 3 hearings scheduled today
-              </p>
+              <p className="text-sm text-muted-foreground mt-1">{today}</p>
             </div>
 
             {/* Stat cards */}
@@ -489,25 +403,22 @@ export default function LawyerDashboard() {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       <Briefcase className="size-4 text-muted-foreground" />
-                      Active cases
+                      آخر القضايا
                     </CardTitle>
-                    <CardDescription>
-                      Your currently open matters
-                    </CardDescription>
                   </div>
                   <Button variant="ghost" size="sm" className="gap-1 text-xs">
-                    View all <ChevronRight className="size-3" />
+                    الذهاب لكل القضايا <ChevronRight className="size-3" />
                   </Button>
                 </CardHeader>
                 <CardContent className="p-0">
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="pl-6">Case</TableHead>
-                        <TableHead>Type</TableHead>
-                        <TableHead>Next date</TableHead>
+                        <TableHead className="pl-6">القضية</TableHead>
+                        <TableHead>التصنيف</TableHead>
+                        <TableHead>تاريخ الجلسة القادمة</TableHead>
                         <TableHead className="pr-6 text-right">
-                          Status
+                          الحالة
                         </TableHead>
                       </TableRow>
                     </TableHeader>
@@ -546,14 +457,14 @@ export default function LawyerDashboard() {
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-sm font-medium">
-                        Today's tasks
+                        مهام اليوم
                       </CardTitle>
                       <Button variant="ghost" size="icon" className="size-6">
                         <Plus className="size-3.5" />
                       </Button>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-2">
+                  <CardContent className="space-y-12">
                     {tasks.map((task) => (
                       <div key={task.id} className="flex items-center gap-3">
                         <Checkbox
@@ -584,91 +495,18 @@ export default function LawyerDashboard() {
                     ))}
                   </CardContent>
                 </Card>
-
-                {/* Today's schedule */}
-                <Card>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-medium">
-                        Today's schedule
-                      </CardTitle>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-xs h-6 gap-1"
-                      >
-                        Full <ChevronRight className="size-3" />
-                      </Button>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {schedule.map((ev, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <span className="w-10 text-right text-xs text-muted-foreground shrink-0 pt-0.5">
-                          {ev.time}
-                        </span>
-                        <div
-                          className={`mt-1.5 size-2 rounded-full shrink-0 ${ev.color}`}
-                        />
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium leading-tight truncate">
-                            {ev.title}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {ev.location}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
               </div>
             </div>
 
             {/* Bottom row — billing snapshot + recent activity */}
-            <div className="grid gap-4 sm:grid-cols-2">
-              {/* Billing snapshot */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-sm font-medium">
-                    <Receipt className="size-4 text-muted-foreground" />
-                    Billing snapshot
-                  </CardTitle>
-                  <CardDescription>This billing cycle</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {[
-                    { label: "Billed", value: "$18,400", pct: 74 },
-                    { label: "Unbilled", value: "$4,200", pct: 17 },
-                    { label: "Written off", value: "$2,200", pct: 9 },
-                  ].map((row) => (
-                    <div key={row.label} className="space-y-1">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">
-                          {row.label}
-                        </span>
-                        <span className="font-medium">{row.value}</span>
-                      </div>
-                    </div>
-                  ))}
-                  <Separator />
-                  <div className="flex justify-between text-sm font-medium">
-                    <span>Total tracked</span>
-                    <span>$24,800</span>
-                  </div>
-                </CardContent>
-              </Card>
-
+            <div className="grid gap-4 sm:grid-cols-1">
               {/* Recent activity */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-sm font-medium">
                     <Gavel className="size-4 text-muted-foreground" />
-                    Recent activity
+                    آخر المستجدات
                   </CardTitle>
-                  <CardDescription>
-                    Latest updates across your cases
-                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -684,13 +522,6 @@ export default function LawyerDashboard() {
                       </div>
                     ))}
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="mt-4 w-full text-xs gap-1"
-                  >
-                    View all activity <ChevronRight className="size-3" />
-                  </Button>
                 </CardContent>
               </Card>
             </div>
