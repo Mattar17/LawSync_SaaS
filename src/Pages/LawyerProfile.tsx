@@ -4,7 +4,6 @@ import { jwtDecode } from "jwt-decode";
 import {
   getLawyerById,
   updateLawyerInfo,
-  updatePortalPassword,
   updateProfilePassword,
   updateLawyerAvatar,
 } from "@/api/lawyers";
@@ -39,7 +38,6 @@ export default function LawyerProfile() {
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [loadingAvatar, setLoadingAvatar] = useState(false);
   const [loadingPassword, setLoadingPassword] = useState(false);
-  const [loadingPortal, setLoadingPortal] = useState(false);
 
   const [token, setToken] = useState<string | null>(null);
   const [showToken, setShowToken] = useState(false);
@@ -51,18 +49,15 @@ export default function LawyerProfile() {
 
   const [form, setForm] = useState({
     name: "",
-    description: "",
-    avatarFile: null,
+    bio: "",
+    picture_url: "",
     oldPassword: "",
     newPassword: "",
     confirmPassword: "",
-
-    oldPortalPassword: "",
-    newPortalPassword: "",
-    confirmPortalPassword: "",
   });
 
   const [preview, setPreview] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState(null);
 
   function handleShowToken(): any {
     const cookies = document.cookie.split(";");
@@ -102,10 +97,11 @@ export default function LawyerProfile() {
         setForm((prev) => ({
           ...prev,
           name: lawyer.name,
-          description: lawyer.description,
+          bio: lawyer.bio,
+          picture_url: lawyer.picture_url,
         }));
 
-        setPreview(lawyer.avatar_url);
+        setPreview(lawyer.picture_url);
       } catch {
         showToast("Something went wrong");
       } finally {
@@ -130,7 +126,7 @@ export default function LawyerProfile() {
         return showToast("Max size is 2MB");
       }
 
-      setForm((prev) => ({ ...prev, avatarFile: file }));
+      setAvatarFile(file);
 
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result as string);
@@ -147,7 +143,7 @@ export default function LawyerProfile() {
     try {
       const res = await updateLawyerInfo(id as string, {
         name: form.name,
-        description: form.description,
+        bio: form.bio,
       });
 
       if (!res.success) {
@@ -165,12 +161,12 @@ export default function LawyerProfile() {
 
   // ================= AVATAR UPDATE =================
   const handleAvatarUpdate = async () => {
-    if (!form.avatarFile) {
+    if (!avatarFile) {
       return showToast("Please select an image first");
     }
 
     const formData = new FormData();
-    formData.append("file", form.avatarFile);
+    formData.append("file", avatarFile);
     setLoadingAvatar(true);
 
     try {
@@ -213,33 +209,6 @@ export default function LawyerProfile() {
       showToast("Something went wrong");
     } finally {
       setLoadingPassword(false);
-    }
-  };
-
-  // ================= PORTAL PASSWORD =================
-  const handlePortalPasswordChange = async () => {
-    if (form.newPortalPassword !== form.confirmPortalPassword) {
-      return showToast("Passwords do not match");
-    }
-
-    setLoadingPortal(true);
-
-    try {
-      const res = await updatePortalPassword(id as string, {
-        profilePassword: form.oldPassword,
-        newPortalPassword: form.newPortalPassword,
-      });
-
-      if (!res.success) {
-        showToast(res.message || "Failed");
-        return;
-      }
-
-      showToast("Portal password updated");
-    } catch {
-      showToast("Something went wrong");
-    } finally {
-      setLoadingPortal(false);
     }
   };
 
@@ -293,13 +262,6 @@ export default function LawyerProfile() {
               >
                 كلمة المرور
               </TabButton>
-
-              <TabButton
-                active={activeTab === "portal"}
-                onClick={() => setActiveTab("portal")}
-              >
-                كلمة مرور البوابة
-              </TabButton>
             </div>
           </div>
 
@@ -339,8 +301,8 @@ export default function LawyerProfile() {
                   />
 
                   <textarea
-                    name="description"
-                    value={form.description}
+                    name="bio"
+                    value={form.bio}
                     onChange={handleChange}
                     className="w-full border p-2 rounded"
                   />
@@ -419,43 +381,6 @@ export default function LawyerProfile() {
                 className="w-full bg-black text-white py-2 rounded"
               >
                 {loadingPassword ? "جاري الحفظ..." : "تغيير كلمة المرور"}
-              </button>
-            </div>
-          )}
-
-          {/* ================= PORTAL ================= */}
-          {activeTab === "portal" && (
-            <div className="bg-white p-6 rounded-2xl space-y-4">
-              <input
-                name="oldPassword"
-                type="password"
-                placeholder="كلمة المرور الشخصية"
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              />
-
-              <input
-                name="newPortalPassword"
-                type="password"
-                placeholder="كلمة مرور البوابة الجديدة"
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              />
-
-              <input
-                name="confirmPortalPassword"
-                type="password"
-                placeholder="تأكيد كلمة المرور"
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              />
-
-              <button
-                onClick={handlePortalPasswordChange}
-                disabled={loadingPortal}
-                className="w-full bg-black text-white py-2 rounded"
-              >
-                {loadingPortal ? "جار الحفظ..." : "تغيير كلمة مرور البوابة"}
               </button>
             </div>
           )}

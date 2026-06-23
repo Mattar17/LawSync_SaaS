@@ -70,7 +70,7 @@ const Login = () => {
         useUserStore.getState().setUser(lawyerInfo);
         console.log(decoded);
         if (decoded.admin) navigate("/admin");
-        else navigate(`/profile/${decoded.lawyer_id}`);
+        else navigate(`/dashboard`);
       } catch (err) {
         setToast("حدث خطأ أثناء تسجيل الدخول");
         setTimeout(() => setToast(null), 3000);

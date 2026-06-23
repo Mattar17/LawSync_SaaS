@@ -68,6 +68,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode, type JwtPayload } from "jwt-decode";
+import Cookies from "js-cookie";
+
+interface MyJwtPayload extends JwtPayload {
+  admin?: boolean;
+  lawyer_email?: string;
+  lawyer_id?: string;
+}
+
+const decoded = jwtDecode(Cookies.get("jwt")!) as MyJwtPayload;
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -258,6 +269,7 @@ const recentActivity = [
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 function AppSidebar() {
+  const navigate = useNavigate();
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -384,7 +396,11 @@ function AppSidebar() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => navigate(`/profile/${decoded.lawyer_id}`)}
+                >
+                  Profile
+                </DropdownMenuItem>
                 <DropdownMenuItem>Billing</DropdownMenuItem>
                 <DropdownMenuItem>Notifications</DropdownMenuItem>
                 <DropdownMenuSeparator />
