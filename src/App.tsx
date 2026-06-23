@@ -13,6 +13,7 @@ import AdminDashboard from "./Pages/AdminDashboard";
 import PaymentWebhookResponse from "./Pages/handlePaymentWebhookResponse";
 import LawyerProfile from "./Pages/LawyerProfile";
 import LawyerDashboard from "./Pages/LawyerDashboard";
+import Register from "./Pages/Register";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -68,6 +69,7 @@ function App(): React.ReactElement {
           <Route path="/portal/:id" element={<LawyerCases />} />
           <Route path="/profile/:id" element={<LawyerProfile />}></Route>
           <Route path="/login" element={<Login />}></Route>
+          <Route path="/register" element={<Register />}></Route>
           <Route path="/admin" element={<AdminDashboard />}></Route>
           <Route path="/dashboard" element={<LawyerDashboard />}></Route>
         </Routes>

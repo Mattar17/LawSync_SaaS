@@ -157,6 +157,10 @@ const PricingCard = ({
     } else if (buttonType === "monthly_key") {
       setSoon(true);
     } else if (buttonType === "free") {
+      window.open(
+        "https://www.mediafire.com/file/f1w0x1tcc6c7u3a/LawSync+Setup+1.2.10.exe/file",
+        "_blank",
+      );
       const res = await fetch(`${apiUrl}?increment=1`, {
         method: "POST",
         headers: {
@@ -168,11 +172,6 @@ const PricingCard = ({
       if (data.success) {
         setDownloadCount((prev) => prev + 1);
       }
-
-      window.open(
-        "https://www.mediafire.com/file/f1w0x1tcc6c7u3a/LawSync+Setup+1.2.10.exe/file",
-        "_blank",
-      );
     }
   };
 
@@ -218,12 +217,6 @@ const PricingCard = ({
           </button>
 
           <div className="mt-2">
-            {buttonType === "free" && (
-              <span className="font-light text-gray-700">
-                عدد مرات التحميل :{downloadCount}
-              </span>
-            )}
-
             {soon && buttonType === "monthly_key" && (
               <p className="text-gray-500 font-semibold text-xl mt-2">قريباً</p>
             )}
