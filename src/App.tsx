@@ -8,10 +8,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "./Pages/AppLayout";
 import LawyerPortal from "./Pages/LawyerPortal";
 import LawyerCases from "./Pages/LawyerCases";
-import LawyerDashboard from "./Pages/LawyerDashboard";
 import Login from "./Pages/Login";
 import AdminDashboard from "./Pages/AdminDashboard";
 import PaymentWebhookResponse from "./Pages/handlePaymentWebhookResponse";
+import LawyerProfile from "./Pages/LawyerProfile";
+import LawyerDashboard from "./Pages/LawyerDashboard";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -52,7 +53,12 @@ function App(): React.ReactElement {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB]" id="smooth-wrapper">
+    <div
+      className="min-h-screen bg-[#F9FAFB]"
+      id="smooth-wrapper"
+      dir="rtl"
+      lang="ar"
+    >
       <BrowserRouter>
         <Navbar />
         <Routes>
@@ -60,9 +66,10 @@ function App(): React.ReactElement {
           <Route path="/" element={<AppLayout />} />
           <Route path="/portal" element={<LawyerPortal />} />
           <Route path="/portal/:id" element={<LawyerCases />} />
-          <Route path="/profile/:id" element={<LawyerDashboard />}></Route>
+          <Route path="/profile/:id" element={<LawyerProfile />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/admin" element={<AdminDashboard />}></Route>
+          <Route path="/dashboard" element={<LawyerDashboard />}></Route>
         </Routes>
       </BrowserRouter>
     </div>
