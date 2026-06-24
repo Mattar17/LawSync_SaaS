@@ -78,8 +78,6 @@ interface MyJwtPayload extends JwtPayload {
   lawyer_id?: string;
 }
 
-const decoded = jwtDecode(Cookies.get("jwt")!) as MyJwtPayload;
-
 // ─── Data ────────────────────────────────────────────────────────────────────
 
 const lawyer = {
@@ -223,6 +221,8 @@ const recentActivity = [
 
 function AppSidebar() {
   const navigate = useNavigate();
+  if (!Cookies.get("jwt")) navigate("/");
+  const decoded = jwtDecode(Cookies.get("jwt") ?? "") as MyJwtPayload;
   return (
     <Sidebar className="mt-10" collapsible="icon">
       <SidebarContent>

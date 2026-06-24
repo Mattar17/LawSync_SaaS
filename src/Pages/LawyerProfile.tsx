@@ -1,12 +1,19 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode, JwtPayload } from "jwt-decode";
+import Cookies from "js-cookie";
 import {
   getLawyerById,
   updateLawyerInfo,
   updateProfilePassword,
   updateLawyerAvatar,
 } from "@/api/lawyers";
+
+interface MyJwtPayload extends JwtPayload {
+  admin?: boolean;
+  lawyer_email?: string;
+  lawyer_id?: string;
+}
 
 function TabButton({ active, onClick, children }: any) {
   return (
@@ -41,6 +48,7 @@ export default function LawyerProfile() {
 
   const [token, setToken] = useState<string | null>(null);
   const [showToken, setShowToken] = useState(false);
+  const [officeName, setOfficeName] = useState("");
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -227,6 +235,25 @@ export default function LawyerProfile() {
     window.open(link);
   }
 
+  async function handleCreateOffice(e: any) {
+    e.preventDefault();
+    console.log("creating office .....");
+    const jwtToken = Cookies.get("jwt");
+    const decoded = jwtDecode(jwtToken!) as MyJwtPayload;
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/offices`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": import.meta.env.VITE_API_KEY,
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      body: JSON.stringify({ name: officeName, owner_id: decoded.lawyer_id }),
+    });
+
+    const data = await res.json();
+    console.log(data);
+  }
+
   return (
     <>
       <button
@@ -254,6 +281,12 @@ export default function LawyerProfile() {
                 onClick={() => setActiveTab("profile")}
               >
                 المعلومات الشخصية
+              </TabButton>
+              <TabButton
+                active={activeTab === "office"}
+                onClick={() => setActiveTab("office")}
+              >
+                إدارة المكتب
               </TabButton>
 
               <TabButton
@@ -346,6 +379,44 @@ export default function LawyerProfile() {
                 </>
               )}
             </div>
+          )}
+          {/* ================= OFFICE ================= */}
+
+          {activeTab === "office" && (
+            <>
+              <div>لا تمتلك مكتب , هل تريد إنشاء مكتبك الخاص؟</div>
+              <form
+                onSubmit={(e) => handleCreateOffice(e)}
+                className="space-y-4 font-medium"
+              >
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium mb-2"
+                  >
+                    اسم المكتب <span className="text-red-500">*</span>
+                  </label>
+
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    required
+                    placeholder="مثال: مكتب الصفوة للخدمات القانونية"
+                    maxLength={100}
+                    className="w-full rounded-md border px-3 py-2 font-light"
+                    onChange={(e) => setOfficeName(e.target.value)}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full rounded-md bg-primary py-2 text-white"
+                >
+                  إنشاء المكتب
+                </button>
+              </form>
+            </>
           )}
 
           {/* ================= PASSWORD ================= */}
