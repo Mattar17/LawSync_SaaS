@@ -71,6 +71,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { jwtDecode, type JwtPayload } from "jwt-decode";
 import Cookies from "js-cookie";
+import { useEffect } from "react";
+import { useUserStore } from "@/zustandStore/userStore";
 
 interface MyJwtPayload extends JwtPayload {
   admin?: boolean;
@@ -223,9 +225,36 @@ function AppSidebar() {
   const navigate = useNavigate();
   if (!Cookies.get("jwt")) navigate("/");
   const decoded = jwtDecode(Cookies.get("jwt") ?? "") as MyJwtPayload;
+
+  const { user, currentOffice, setCurrentOffice } = useUserStore();
+  console.log(currentOffice);
   return (
     <Sidebar className="mt-10" collapsible="icon">
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>المكاتب</SidebarGroupLabel>
+
+          <SidebarMenu>
+            {user?.offices?.map((office) => (
+              <SidebarMenuItem key={office.id}>
+                <SidebarMenuButton
+                  isActive={currentOffice?.id === office.id}
+                  onClick={() => setCurrentOffice(office)}
+                >
+                  <Briefcase />
+                  <span>{office.name}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+
+            <SidebarMenuItem>
+              <SidebarMenuButton onClick={() => navigate("/offices/new")}>
+                <Plus />
+                <span>إنشاء مكتب</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Workspace</SidebarGroupLabel>
           <SidebarMenu>
@@ -337,6 +366,37 @@ function AppSidebar() {
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 
 export default function LawyerDashboard() {
+  useEffect(() => {
+    async function loadOfficesData() {
+      const jwtToken = Cookies.get("jwt");
+      const decoded = jwtDecode(jwtToken!) as MyJwtPayload;
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/api/offices/${decoded.lawyer_id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": import.meta.env.VITE_API_KEY,
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        },
+      );
+
+      const result = await res.json();
+      const offices = result.data.map((item: any) => item.offices);
+      const store = useUserStore.getState();
+      store.setUser({
+        ...store.user!,
+        offices,
+      });
+
+      if (offices.length > 0) {
+        store.setCurrentOffice(offices[0]);
+      }
+    }
+
+    loadOfficesData();
+  }, []);
   const today = new Date().toLocaleDateString("ar-EG", {
     weekday: "long",
     day: "numeric",
