@@ -12,7 +12,7 @@ import Login from "./Pages/Login";
 import AdminDashboard from "./Pages/AdminDashboard";
 import PaymentWebhookResponse from "./Pages/handlePaymentWebhookResponse";
 import LawyerProfile from "./Pages/LawyerProfile";
-import LawyerDashboard from "./Pages/LawyerDashboard";
+import LawyerDashboard from "./Pages/dashboard/LawyerDashboard";
 import Register from "./Pages/Register";
 
 gsap.registerPlugin(ScrollTrigger);

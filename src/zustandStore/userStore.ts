@@ -6,6 +6,7 @@ type Office = {
   name: string;
   logo_url: string;
   description: string;
+  owner_id: string;
 };
 
 type User = {

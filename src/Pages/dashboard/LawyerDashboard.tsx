@@ -1,24 +1,7 @@
 "use client";
 
-import {
-  Briefcase,
-  Calendar,
-  ChevronRight,
-  Clock,
-  FileText,
-  Gavel,
-  LayoutDashboard,
-  MessageSquare,
-  MoreVertical,
-  Plus,
-  Receipt,
-  Scale,
-  Settings,
-  TrendingUp,
-  Users,
-} from "lucide-react";
+import { Briefcase, ChevronRight, Clock, Gavel, Plus } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,31 +11,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { Separator } from "@/components/ui/separator";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuBadge,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-  SidebarRail,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+
 import {
   Table,
   TableBody,
@@ -62,17 +23,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useNavigate } from "react-router-dom";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { jwtDecode, type JwtPayload } from "jwt-decode";
 import Cookies from "js-cookie";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useUserStore } from "@/zustandStore/userStore";
+import AppSidebar from "@/components/AppSidebar";
+import {
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 
 interface MyJwtPayload extends JwtPayload {
   admin?: boolean;
@@ -81,26 +42,6 @@ interface MyJwtPayload extends JwtPayload {
 }
 
 // ─── Data ────────────────────────────────────────────────────────────────────
-
-const lawyer = {
-  name: "أحمد محمد",
-  role: "محامٍ أول",
-  email: "ahmed@lawsync.com",
-  avatar: "",
-  initials: "أم",
-};
-
-const navWorkspace = [
-  { title: "لوحة التحكم", icon: LayoutDashboard, isActive: true },
-  { title: "القضايا", icon: Briefcase, badge: "12" },
-  { title: "العملاء", icon: Users },
-  { title: "المواعيد", icon: Calendar, badge: "3" },
-];
-
-const navFirm = [
-  { title: "الرسائل", icon: MessageSquare, badge: "5" },
-  { title: "الإعدادات", icon: Settings },
-];
 
 const stats = [
   {
@@ -221,151 +162,10 @@ const recentActivity = [
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function AppSidebar() {
-  const navigate = useNavigate();
-  if (!Cookies.get("jwt")) navigate("/");
-  const decoded = jwtDecode(Cookies.get("jwt") ?? "") as MyJwtPayload;
-
-  const { user, currentOffice, setCurrentOffice } = useUserStore();
-  console.log(currentOffice);
-  return (
-    <Sidebar className="mt-10" collapsible="icon">
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>المكاتب</SidebarGroupLabel>
-
-          <SidebarMenu>
-            {user?.offices?.map((office) => (
-              <SidebarMenuItem key={office.id}>
-                <SidebarMenuButton
-                  isActive={currentOffice?.id === office.id}
-                  onClick={() => setCurrentOffice(office)}
-                >
-                  <Briefcase />
-                  <span>{office.name}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-
-            <SidebarMenuItem>
-              <SidebarMenuButton onClick={() => navigate("/offices/new")}>
-                <Plus />
-                <span>إنشاء مكتب</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Workspace</SidebarGroupLabel>
-          <SidebarMenu>
-            {navWorkspace.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton
-                  isActive={item.isActive}
-                  tooltip={item.title}
-                >
-                  <item.icon />
-                  <span>{item.title}</span>
-                </SidebarMenuButton>
-                {item.badge && (
-                  <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
-                )}
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Firm</SidebarGroupLabel>
-          <SidebarMenu>
-            {navFirm.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton tooltip={item.title}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </SidebarMenuButton>
-                {item.badge && (
-                  <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
-                )}
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroup>
-      </SidebarContent>
-
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                  size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                >
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={lawyer.avatar} alt={lawyer.name} />
-                    <AvatarFallback className="rounded-lg bg-blue-100 text-blue-700">
-                      {lawyer.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">
-                      {lawyer.name}
-                    </span>
-                    <span className="truncate text-xs text-muted-foreground">
-                      {lawyer.role}
-                    </span>
-                  </div>
-                  <MoreVertical className="ml-auto size-4" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                side="bottom"
-                align="end"
-                sideOffset={4}
-              >
-                <DropdownMenuLabel className="p-0 font-normal">
-                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                    <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarFallback className="rounded-lg bg-blue-100 text-blue-700">
-                        {lawyer.initials}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">
-                        {lawyer.name}
-                      </span>
-                      <span className="truncate text-xs">{lawyer.email}</span>
-                    </div>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => navigate(`/profile/${decoded.lawyer_id}`)}
-                >
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem>Billing</DropdownMenuItem>
-                <DropdownMenuItem>Notifications</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive">
-                  Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
-
-      <SidebarRail />
-    </Sidebar>
-  );
-}
-
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 
 export default function LawyerDashboard() {
+  const [isOwner, setIsOwner] = useState(false);
   useEffect(() => {
     async function loadOfficesData() {
       const jwtToken = Cookies.get("jwt");
@@ -393,6 +193,7 @@ export default function LawyerDashboard() {
       if (offices.length > 0) {
         store.setCurrentOffice(offices[0]);
       }
+      if (decoded.lawyer_id === store.currentOffice?.owner_id) setIsOwner(true);
     }
 
     loadOfficesData();
@@ -403,6 +204,8 @@ export default function LawyerDashboard() {
     month: "long",
     year: "numeric",
   });
+  const { currentOffice } = useUserStore.getState();
+  console.log(isOwner);
 
   return (
     <TooltipProvider>
@@ -415,7 +218,9 @@ export default function LawyerDashboard() {
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <div className="flex flex-1 items-center gap-2">
-              <h1 className="text-sm font-medium">لوحة التحكم</h1>
+              <h1 className="text-sm font-medium">
+                {currentOffice?.name || "لوحة التحكم"}
+              </h1>
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" className="gap-1.5">
@@ -433,7 +238,7 @@ export default function LawyerDashboard() {
             {/* Greeting */}
             <div>
               <h2 className="text-2xl font-semibold tracking-tight">
-                مرحباً, محمد
+                {isOwner ? "مالك المكتب" : ""} مرحباً, محمد
               </h2>
               <p className="text-sm text-muted-foreground mt-1">{today}</p>
             </div>
