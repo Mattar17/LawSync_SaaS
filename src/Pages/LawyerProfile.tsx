@@ -2,14 +2,31 @@ import CreateOffice from "@/components/office/CreateOffice";
 import ProfileInformation from "@/components/profile/ProfileInforamtion";
 import useProfileSettings from "@/hooks/useProfileSettings";
 import { useParams } from "react-router-dom";
-function TabButton({ active, onClick, children }: any) {
+
+type Tab = "profile" | "office" | "password";
+
+interface TopTabProps {
+  active: boolean;
+  onClick: () => void;
+  icon: string;
+  children: React.ReactNode;
+}
+
+function TopTab({ active, onClick, icon, children }: TopTabProps) {
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 rounded-lg text-sm font-medium ${
-        active ? "bg-black text-white" : "bg-gray-200"
-      }`}
+      className={`
+        inline-flex items-center gap-2 px-4 py-2.5 text-sm border-b-2
+        transition-colors duration-150 whitespace-nowrap
+        ${
+          active
+            ? "border-b-[#B8975A] text-foreground font-medium"
+            : "border-b-transparent text-muted-foreground hover:text-foreground hover:border-b-border"
+        }
+      `}
     >
+      <i className={`ti ${icon} text-base shrink-0`} aria-hidden="true" />
       {children}
     </button>
   );
@@ -29,123 +46,207 @@ export default function LawyerProfile() {
     toast,
     setOfficeName,
     preview,
-
     handleChange,
     handleProfileUpdate,
     handleAvatarUpdate,
     handlePasswordChange,
     handleShowToken,
-    handleSubscribe,
     handleCreateOffice,
     copyToken,
   } = useProfileSettings(id!);
 
   return (
-    <>
-      <button
-        className="text-red-600 text-center bg-gray-100"
-        onClick={handleSubscribe}
-      >
-        {"يرجى تجديد الاشتراك"}
-      </button>
-      <div className="min-h-screen bg-gray-100 flex justify-center p-6 relative">
-        {/* TOAST */}
-        {toast && (
-          <div className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-black/80 text-white px-6 py-3 rounded-xl shadow-lg z-50">
-            {toast}
-          </div>
-        )}
+    <div className="min-h-screen bg-background flex items-start justify-center p-6 relative">
+      {/* TOAST */}
+      {toast && (
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-foreground/90 text-background px-6 py-3 rounded-xl shadow-lg z-50 text-sm">
+          {toast}
+        </div>
+      )}
 
-        <div className="w-full max-w-3xl space-y-6">
-          {/* HEADER */}
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold">إعدادات الحساب</h1>
+      <div className="w-full max-w-4xl">
+        {/* PAGE TITLE */}
+        <div className="mb-5 px-1">
+          <h1 className="text-xl font-semibold text-foreground">
+            إعدادات الحساب
+          </h1>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            إدارة معلوماتك الشخصية وإعدادات المكتب
+          </p>
+        </div>
 
-            <div className="flex gap-2">
-              <TabButton
-                active={activeTab === "profile"}
-                onClick={() => setActiveTab("profile")}
-              >
-                المعلومات الشخصية
-              </TabButton>
-              <TabButton
-                active={activeTab === "office"}
-                onClick={() => setActiveTab("office")}
-              >
-                إدارة المكتب
-              </TabButton>
+        {/* MAIN CARD */}
+        <div className="border border-border rounded-xl overflow-hidden bg-card shadow-sm">
+          {/* TOP TAB BAR */}
+          <nav
+            className="flex items-center gap-1 px-6 border-b border-border bg-muted/30"
+            aria-label="Settings navigation"
+            dir="rtl"
+          >
+            <TopTab
+              active={activeTab === "profile"}
+              onClick={() => setActiveTab("profile")}
+              icon="ti-user"
+            >
+              المعلومات الشخصية
+            </TopTab>
 
-              <TabButton
-                active={activeTab === "password"}
-                onClick={() => setActiveTab("password")}
-              >
-                كلمة المرور
-              </TabButton>
-            </div>
-          </div>
+            <TopTab
+              active={activeTab === "office"}
+              onClick={() => setActiveTab("office")}
+              icon="ti-building"
+            >
+              إدارة المكتب
+            </TopTab>
 
-          {activeTab === "profile" && (
-            <ProfileInformation
-              form={form}
-              loadingFetch={loadingFetch}
-              loadingProfile={loadingProfile}
-              handleChange={handleChange}
-              handleProfileUpdate={handleProfileUpdate}
-              showToken={showToken}
-              handleShowToken={handleShowToken}
-              copyToken={copyToken}
-              handleAvatarUpdate={handleAvatarUpdate}
-              loadingAvatar={loadingAvatar}
-              preview={preview ?? ""}
-            />
-          )}
-          {/* ================= OFFICE ================= */}
+            <TopTab
+              active={activeTab === "password"}
+              onClick={() => setActiveTab("password")}
+              icon="ti-lock"
+            >
+              كلمة المرور
+            </TopTab>
+          </nav>
 
-          {activeTab === "office" && (
-            <CreateOffice
-              handleCreateOffice={handleCreateOffice}
-              setOfficeName={setOfficeName}
-            />
-          )}
+          {/* CONTENT AREA */}
+          <main className="p-8" dir="rtl">
+            {/* ── PROFILE TAB ── */}
+            {activeTab === "profile" && (
+              <div className="space-y-6">
+                <div className="pb-4 border-b border-border">
+                  <h2 className="text-base font-semibold text-foreground">
+                    المعلومات الشخصية
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    تحديث بيانات ملفك الشخصي وصورتك
+                  </p>
+                </div>
 
-          {/* ================= PASSWORD ================= */}
-          {activeTab === "password" && (
-            <div className="bg-white p-6 rounded-2xl space-y-4">
-              <input
-                name="oldPassword"
-                type="password"
-                placeholder="كلمة المرور الحالية"
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              />
+                <ProfileInformation
+                  form={form}
+                  loadingFetch={loadingFetch}
+                  loadingProfile={loadingProfile}
+                  handleChange={handleChange}
+                  handleProfileUpdate={handleProfileUpdate}
+                  showToken={showToken}
+                  handleShowToken={handleShowToken}
+                  copyToken={copyToken}
+                  handleAvatarUpdate={handleAvatarUpdate}
+                  loadingAvatar={loadingAvatar}
+                  preview={preview ?? ""}
+                />
+              </div>
+            )}
 
-              <input
-                name="newPassword"
-                type="password"
-                placeholder="كلمة المرور الجديدة"
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              />
+            {/* ── OFFICE TAB ── */}
+            {activeTab === "office" && (
+              <div className="space-y-6">
+                <div className="pb-4 border-b border-border">
+                  <h2 className="text-base font-semibold text-foreground">
+                    إدارة المكتب
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    تفاصيل مكتب المحاماة الخاص بك
+                  </p>
+                </div>
 
-              <input
-                name="confirmPassword"
-                type="password"
-                placeholder="تأكيد كلمة المرور"
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              />
+                <CreateOffice
+                  handleCreateOffice={handleCreateOffice}
+                  setOfficeName={setOfficeName}
+                />
+              </div>
+            )}
 
-              <button
-                onClick={handlePasswordChange}
-                disabled={loadingPassword}
-                className="w-full bg-black text-white py-2 rounded"
-              >
-                {loadingPassword ? "جاري الحفظ..." : "تغيير كلمة المرور"}
-              </button>
-            </div>
-          )}
+            {/* ── PASSWORD TAB ── */}
+            {activeTab === "password" && (
+              <div className="space-y-6">
+                <div className="pb-4 border-b border-border">
+                  <h2 className="text-base font-semibold text-foreground">
+                    كلمة المرور
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    يُنصح باستخدام كلمة مرور قوية وفريدة
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 max-w-md">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                      كلمة المرور الحالية
+                    </label>
+                    <input
+                      name="oldPassword"
+                      type="password"
+                      placeholder="••••••••"
+                      onChange={handleChange}
+                      className="
+                        h-9 w-full rounded-lg border border-border bg-background
+                        px-3 text-sm text-foreground placeholder:text-muted-foreground
+                        outline-none focus:border-[#B8975A] focus:ring-2 focus:ring-[#B8975A]/15
+                        transition-colors
+                      "
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        كلمة المرور الجديدة
+                      </label>
+                      <input
+                        name="newPassword"
+                        type="password"
+                        placeholder="••••••••"
+                        onChange={handleChange}
+                        className="
+                          h-9 w-full rounded-lg border border-border bg-background
+                          px-3 text-sm text-foreground placeholder:text-muted-foreground
+                          outline-none focus:border-[#B8975A] focus:ring-2 focus:ring-[#B8975A]/15
+                          transition-colors
+                        "
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        تأكيد كلمة المرور
+                      </label>
+                      <input
+                        name="confirmPassword"
+                        type="password"
+                        placeholder="••••••••"
+                        onChange={handleChange}
+                        className="
+                          h-9 w-full rounded-lg border border-border bg-background
+                          px-3 text-sm text-foreground placeholder:text-muted-foreground
+                          outline-none focus:border-[#B8975A] focus:ring-2 focus:ring-[#B8975A]/15
+                          transition-colors
+                        "
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    onClick={handlePasswordChange}
+                    disabled={loadingPassword}
+                    className="
+                      inline-flex items-center gap-2 px-5 py-2 rounded-lg
+                      bg-foreground text-background text-sm font-medium
+                      hover:bg-foreground/85 disabled:opacity-50
+                      transition-colors cursor-pointer disabled:cursor-not-allowed
+                    "
+                  >
+                    <i className="ti ti-lock text-sm" aria-hidden="true" />
+                    {loadingPassword ? "جاري الحفظ..." : "تغيير كلمة المرور"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </main>
         </div>
       </div>
-    </>
+    </div>
   );
 }

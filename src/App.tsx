@@ -14,6 +14,7 @@ import PaymentWebhookResponse from "./Pages/handlePaymentWebhookResponse";
 import LawyerProfile from "./Pages/LawyerProfile";
 import LawyerDashboard from "./Pages/dashboard/LawyerDashboard";
 import Register from "./Pages/Register";
+import DashboardLayout from "./layouts/DashboardLayout";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -72,6 +73,23 @@ function App(): React.ReactElement {
           <Route path="/register" element={<Register />}></Route>
           <Route path="/admin" element={<AdminDashboard />}></Route>
           <Route path="/dashboard" element={<LawyerDashboard />}></Route>
+          <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<LawyerDashboard />} />
+
+            <Route path="/dashboard/profile/:id" element={<LawyerProfile />} />
+
+            {/* <Route path="/dashboard/office" element={<Office />} />
+
+        <Route path="/dashboard/cases" element={<Cases />} />
+
+        <Route path="/dashboard/calendar" element={<Calendar />} />
+
+        <Route path="/dashboard/team" element={<Team />} />
+
+        <Route path="/dashboard/invitations" element={<Invitations />} />
+
+        <Route path="/dashboard/settings" element={<Settings />} /> */}
+          </Route>
         </Routes>
       </BrowserRouter>
     </div>
