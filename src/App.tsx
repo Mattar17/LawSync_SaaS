@@ -15,6 +15,8 @@ import LawyerProfile from "./Pages/LawyerProfile";
 import LawyerDashboard from "./Pages/dashboard/LawyerDashboard";
 import Register from "./Pages/Register";
 import DashboardLayout from "./layouts/DashboardLayout";
+import OfficeSettings from "./Pages/dashboard/OfficeSettings";
+import Messages from "./Pages/dashboard/Messages";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -77,18 +79,14 @@ function App(): React.ReactElement {
             <Route path="/dashboard" element={<LawyerDashboard />} />
 
             <Route path="/dashboard/profile/:id" element={<LawyerProfile />} />
-
-            {/* <Route path="/dashboard/office" element={<Office />} />
-
-        <Route path="/dashboard/cases" element={<Cases />} />
-
-        <Route path="/dashboard/calendar" element={<Calendar />} />
-
-        <Route path="/dashboard/team" element={<Team />} />
-
-        <Route path="/dashboard/invitations" element={<Invitations />} />
-
-        <Route path="/dashboard/settings" element={<Settings />} /> */}
+            <Route
+              path="/dashboard/office/settings/:office_id"
+              element={<OfficeSettings></OfficeSettings>}
+            />
+            <Route
+              path="/dashboard/messages/:office_id"
+              element={<Messages />}
+            />
           </Route>
         </Routes>
       </BrowserRouter>

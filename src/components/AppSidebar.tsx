@@ -55,8 +55,17 @@ const navWorkspace = [
 ];
 
 const navFirm = [
-  { title: "الرسائل", icon: MessageSquare, badge: "5" },
-  { title: "الإعدادات", icon: Settings },
+  {
+    title: "الرسائل",
+    route: `/dashboard/messages`,
+    icon: MessageSquare,
+    badge: "5",
+  },
+  {
+    title: "الإعدادات",
+    route: "/dashboard/office/settings",
+    icon: Settings,
+  },
 ];
 
 interface MyJwtPayload extends JwtPayload {
@@ -113,7 +122,12 @@ export default function AppSidebar() {
             <SidebarMenu>
               {navFirm.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton tooltip={item.title}>
+                  <SidebarMenuButton
+                    onClick={() =>
+                      navigate(`${item.route}/${currentOffice?.id}`)
+                    }
+                    tooltip={item.title}
+                  >
                     <item.icon />
                     <span>{item.title}</span>
                   </SidebarMenuButton>
