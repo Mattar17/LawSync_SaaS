@@ -205,7 +205,6 @@ export default function LawyerDashboard() {
     year: "numeric",
   });
   const { currentOffice } = useUserStore.getState();
-  console.log(isOwner);
 
   return (
     <TooltipProvider>

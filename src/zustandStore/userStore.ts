@@ -10,10 +10,12 @@ type Office = {
 };
 
 type User = {
+  id: string;
   email: string;
   name: string;
   bio?: string;
   pictureUrl?: string;
+  hasOffice?: boolean;
   offices?: Office[];
 };
 

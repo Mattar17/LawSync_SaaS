@@ -58,6 +58,7 @@ const Login = () => {
         console.log(data.data.token, data.data.user);
 
         const lawyerInfo = {
+          id: data.data.user.id,
           name: data.data.user.name,
           bio: data.data.user.bio,
           email: data.data.user.email,

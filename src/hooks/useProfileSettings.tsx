@@ -1,18 +1,11 @@
 import { useState, useEffect } from "react";
-import { jwtDecode, JwtPayload } from "jwt-decode";
-import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 import {
   getLawyerById,
   updateLawyerInfo,
   updateProfilePassword,
   updateLawyerAvatar,
 } from "@/api/lawyers";
-
-interface MyJwtPayload extends JwtPayload {
-  admin?: boolean;
-  lawyer_email?: string;
-  lawyer_id?: string;
-}
 
 export default function useProfileSettings(id: string) {
   const copyToken = () => {
@@ -33,7 +26,6 @@ export default function useProfileSettings(id: string) {
 
   const [token, setToken] = useState<string | null>(null);
   const [showToken, setShowToken] = useState(false);
-  const [officeName, setOfficeName] = useState("");
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -220,24 +212,6 @@ export default function useProfileSettings(id: string) {
     window.open(link);
   }
 
-  async function handleCreateOffice(e: any) {
-    e.preventDefault();
-    console.log("creating office .....");
-    const jwtToken = Cookies.get("jwt");
-    const decoded = jwtDecode(jwtToken!) as MyJwtPayload;
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/offices`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": import.meta.env.VITE_API_KEY,
-        Authorization: `Bearer ${jwtToken}`,
-      },
-      body: JSON.stringify({ name: officeName, owner_id: decoded.lawyer_id }),
-    });
-
-    const data = await res.json();
-    console.log(data);
-  }
   return {
     form,
     preview,
@@ -250,15 +224,12 @@ export default function useProfileSettings(id: string) {
     activeTab,
     setActiveTab,
     toast,
-    setOfficeName,
-
     handleChange,
     handleProfileUpdate,
     handleAvatarUpdate,
     handlePasswordChange,
     handleShowToken,
     handleSubscribe,
-    handleCreateOffice,
     copyToken,
   };
 }

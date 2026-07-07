@@ -1,9 +1,6 @@
-import CreateOffice from "@/components/office/CreateOffice";
 import ProfileInformation from "@/components/profile/ProfileInforamtion";
 import useProfileSettings from "@/hooks/useProfileSettings";
 import { useParams } from "react-router-dom";
-
-type Tab = "profile" | "office" | "password";
 
 interface TopTabProps {
   active: boolean;
@@ -44,14 +41,12 @@ export default function LawyerProfile() {
     activeTab,
     setActiveTab,
     toast,
-    setOfficeName,
     preview,
     handleChange,
     handleProfileUpdate,
     handleAvatarUpdate,
     handlePasswordChange,
     handleShowToken,
-    handleCreateOffice,
     copyToken,
   } = useProfileSettings(id!);
 
@@ -90,15 +85,6 @@ export default function LawyerProfile() {
             >
               المعلومات الشخصية
             </TopTab>
-
-            <TopTab
-              active={activeTab === "office"}
-              onClick={() => setActiveTab("office")}
-              icon="ti-building"
-            >
-              إدارة المكتب
-            </TopTab>
-
             <TopTab
               active={activeTab === "password"}
               onClick={() => setActiveTab("password")}
@@ -134,25 +120,6 @@ export default function LawyerProfile() {
                   handleAvatarUpdate={handleAvatarUpdate}
                   loadingAvatar={loadingAvatar}
                   preview={preview ?? ""}
-                />
-              </div>
-            )}
-
-            {/* ── OFFICE TAB ── */}
-            {activeTab === "office" && (
-              <div className="space-y-6">
-                <div className="pb-4 border-b border-border">
-                  <h2 className="text-base font-semibold text-foreground">
-                    إدارة المكتب
-                  </h2>
-                  <p className="text-sm text-muted-foreground mt-0.5">
-                    تفاصيل مكتب المحاماة الخاص بك
-                  </p>
-                </div>
-
-                <CreateOffice
-                  handleCreateOffice={handleCreateOffice}
-                  setOfficeName={setOfficeName}
                 />
               </div>
             )}

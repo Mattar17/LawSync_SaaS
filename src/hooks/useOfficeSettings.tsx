@@ -1,5 +1,13 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { getOfficeById, updateOffice } from "@/api/office";
+import Cookies from "js-cookie";
+import { jwtDecode, JwtPayload } from "jwt-decode";
+
+interface MyJwtPayload extends JwtPayload {
+  admin?: boolean;
+  lawyer_email?: string;
+  lawyer_id?: string;
+}
 
 interface OfficeFormData {
   name: string;
@@ -13,6 +21,7 @@ export default function useOfficeSettings(id: string) {
 
   const [loadingFetch, setLoadingFetch] = useState(false);
   const [loadingOffice, setLoadingOffice] = useState(false);
+  const [officeName, setOfficeName] = useState("");
 
   const [form, setForm] = useState<OfficeFormData>({
     name: "",
@@ -90,6 +99,25 @@ export default function useOfficeSettings(id: string) {
     }
   };
 
+  async function handleCreateOffice(e: any) {
+    e.preventDefault();
+    console.log("creating office .....");
+    const jwtToken = Cookies.get("jwt");
+    const decoded = jwtDecode(jwtToken!) as MyJwtPayload;
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/offices`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": import.meta.env.VITE_API_KEY,
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      body: JSON.stringify({ name: officeName, owner_id: decoded.lawyer_id }),
+    });
+
+    const data = await res.json();
+    return data.data;
+  }
+
   return {
     form,
     loadingFetch,
@@ -98,5 +126,8 @@ export default function useOfficeSettings(id: string) {
 
     handleChange,
     handleOfficeUpdate,
+    handleCreateOffice,
+    officeName,
+    setOfficeName,
   };
 }
