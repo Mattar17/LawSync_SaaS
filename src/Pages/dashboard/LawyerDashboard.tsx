@@ -171,7 +171,7 @@ export default function LawyerDashboard() {
       const jwtToken = Cookies.get("jwt");
       const decoded = jwtDecode(jwtToken!) as MyJwtPayload;
       const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/api/offices/allOffices/${decoded.lawyer_id}`,
+        `${import.meta.env.VITE_BASE_URL}/api/offices/me`,
         {
           method: "GET",
           headers: {

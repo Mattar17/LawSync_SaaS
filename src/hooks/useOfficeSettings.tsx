@@ -41,8 +41,8 @@ export default function useOfficeSettings(id: string) {
     async function getCurrentOffice() {
       setLoadingFetch(true);
       try {
-        const data = await getOfficeById(id as string);
-
+        const data = await getOfficeById(id);
+        console.log(data);
         if (!data.success) {
           showToast(data.message || "Failed to load office");
           return;
