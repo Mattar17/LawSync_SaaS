@@ -91,3 +91,57 @@ export async function cancelInvite(inviteId: string) {
     message: data.message,
   };
 }
+
+export interface InviteWithOffice extends Invite {
+  offices: { id: string; name: string } | null;
+}
+
+// GET /api/invites/me
+export async function getMyInvites() {
+  const jwt = Cookies.get("jwt");
+
+  const res = await fetch(`${BASE_URL}/api/invites/me`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt}`,
+      "x-api-key": API_KEY,
+    },
+  });
+
+  const data = await res.json();
+
+  return {
+    success: res.ok,
+    data: (data.data as InviteWithOffice[]) ?? [],
+    message: data.message,
+  };
+}
+
+export type InviteResponseAction = "accepted" | "declined";
+
+// POST /api/invites/:inviteId/respond
+export async function respondToInvite(
+  inviteId: string,
+  action: InviteResponseAction,
+) {
+  const jwt = Cookies.get("jwt");
+
+  const res = await fetch(`${BASE_URL}/api/invites/${inviteId}/respond`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt}`,
+      "x-api-key": API_KEY,
+    },
+    body: JSON.stringify({ action }),
+  });
+
+  const data = await res.json();
+
+  return {
+    success: res.ok,
+    data: data.data as Invite | undefined,
+    message: data.message,
+  };
+}

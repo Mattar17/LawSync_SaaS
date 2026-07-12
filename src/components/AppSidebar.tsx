@@ -29,11 +29,12 @@ import {
   MoreVertical,
   Settings,
   Users,
+  MailPlus,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { jwtDecode, type JwtPayload } from "jwt-decode";
 import Cookies from "js-cookie";
 import { useUserStore } from "@/zustandStore/userStore";
@@ -98,6 +99,14 @@ export default function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/dashboard/office/invites">
+                    <MailPlus />
+                    <span>الدعوات</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroup>
           <SidebarGroup>
