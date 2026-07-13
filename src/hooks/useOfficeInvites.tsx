@@ -6,10 +6,9 @@ import {
   Invite,
   InviteRole,
 } from "@/api/invites";
+import { toast } from "sonner";
 
 export default function useOfficeInvites(officeId: string) {
-  const [toast, setToast] = useState<string | null>(null);
-
   const [invites, setInvites] = useState<Invite[]>([]);
   const [loadingFetch, setLoadingFetch] = useState(false);
   const [sending, setSending] = useState(false);
@@ -18,11 +17,6 @@ export default function useOfficeInvites(officeId: string) {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<InviteRole>("member");
 
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(null), 3000);
-  };
-
   const fetchInvites = useCallback(async () => {
     if (!officeId) return;
     setLoadingFetch(true);
@@ -30,13 +24,13 @@ export default function useOfficeInvites(officeId: string) {
       const res = await getOfficeInvites(officeId);
 
       if (!res.success) {
-        showToast(res.message || "فشل تحميل الدعوات");
+        toast.error(res.message || "فشل تحميل الدعوات");
         return;
       }
 
       setInvites(res.data);
     } catch {
-      showToast("حدث خطأ ما");
+      toast.error("حدث خطأ ما");
     } finally {
       setLoadingFetch(false);
     }
@@ -51,7 +45,7 @@ export default function useOfficeInvites(officeId: string) {
     e.preventDefault();
 
     if (!email.trim()) {
-      showToast("من فضلك أدخل البريد الإلكتروني");
+      toast.error("من فضلك أدخل البريد الإلكتروني");
       return;
     }
 
@@ -63,7 +57,7 @@ export default function useOfficeInvites(officeId: string) {
       });
 
       if (!res.success) {
-        showToast(res.message || "فشل إرسال الدعوة");
+        toast.error(res.message || "فشل إرسال الدعوة");
         return;
       }
 
@@ -73,9 +67,9 @@ export default function useOfficeInvites(officeId: string) {
 
       setEmail("");
       setRole("member");
-      showToast("تم إرسال الدعوة");
+      toast.success("تم إرسال الدعوة");
     } catch {
-      showToast("حدث خطأ ما");
+      toast.error("حدث خطأ ما");
     } finally {
       setSending(false);
     }
@@ -88,7 +82,7 @@ export default function useOfficeInvites(officeId: string) {
       const res = await cancelInvite(inviteId);
 
       if (!res.success) {
-        showToast(res.message || "فشل إلغاء الدعوة");
+        toast.error(res.message || "فشل إلغاء الدعوة");
         return;
       }
 
@@ -97,9 +91,9 @@ export default function useOfficeInvites(officeId: string) {
           inv.id === inviteId ? { ...inv, status: "cancelled" } : inv,
         ),
       );
-      showToast("تم إلغاء الدعوة");
+      toast.info("تم إلغاء الدعوة");
     } catch {
-      showToast("حدث خطأ ما");
+      toast.error("حدث خطأ ما");
     } finally {
       setCancelingId(null);
     }

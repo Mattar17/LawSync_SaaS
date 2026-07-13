@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Lenis from "lenis";
+import { Toaster } from "sonner";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -64,6 +65,8 @@ function App(): React.ReactElement {
       dir="rtl"
       lang="ar"
     >
+      <Toaster position="top-center" theme="dark" closeButton={true} />
+
       <BrowserRouter>
         <Navbar />
         <Routes>
