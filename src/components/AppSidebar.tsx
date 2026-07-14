@@ -14,7 +14,6 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
@@ -24,12 +23,12 @@ import {
 
 import {
   Briefcase,
-  Calendar,
   MessageSquare,
   MoreVertical,
   Settings,
   Users,
   MailPlus,
+  ListChecks,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -40,33 +39,15 @@ import Cookies from "js-cookie";
 import { useUserStore } from "@/zustandStore/userStore";
 import { TooltipProvider } from "./ui/tooltip";
 
-// DATA
-const lawyer = {
-  name: "أحمد محمد",
-  role: "محامٍ أول",
-  email: "ahmed@lawsync.com",
-  avatar: "",
-  initials: "أم",
-};
-
 const navWorkspace = [
-  { title: "القضايا", icon: Briefcase, badge: "12" },
-  { title: "الفريق", icon: Users },
-  { title: "المواعيد", icon: Calendar, badge: "3" },
-];
-
-const navFirm = [
   {
     title: "الرسائل",
     route: `/dashboard/messages`,
     icon: MessageSquare,
-    badge: "5",
   },
-  {
-    title: "الإعدادات",
-    route: "/dashboard/office/settings",
-    icon: Settings,
-  },
+  { title: "القضايا", icon: Briefcase },
+  { title: "الفريق", route: "/dashboard/members", icon: Users },
+  { title: "المهام", icon: ListChecks },
 ];
 
 interface MyJwtPayload extends JwtPayload {
@@ -80,6 +61,10 @@ export default function AppSidebar() {
   const decoded = jwtDecode(Cookies.get("jwt") ?? "") as MyJwtPayload;
 
   const { user, currentOffice, setCurrentOffice } = useUserStore();
+  function signOut() {
+    Cookies.remove("jwt");
+    navigate("/login");
+  }
   return (
     <TooltipProvider>
       <Sidebar collapsible="icon">
@@ -107,6 +92,14 @@ export default function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/dashboard/office/settings">
+                    <Settings />
+                    <span>الإعدادات</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroup>
           <SidebarGroup>
@@ -115,34 +108,11 @@ export default function AppSidebar() {
               {navWorkspace.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton tooltip={item.title}>
-                    <item.icon />
                     <span>{item.title}</span>
+                    <Link to={`${item.route}/${currentOffice?.id}`}>
+                      <item.icon />
+                    </Link>
                   </SidebarMenuButton>
-                  {item.badge && (
-                    <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
-                  )}
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
-
-          <SidebarGroup>
-            <SidebarGroupLabel>Firm</SidebarGroupLabel>
-            <SidebarMenu>
-              {navFirm.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    onClick={() =>
-                      navigate(`${item.route}/${currentOffice?.id}`)
-                    }
-                    tooltip={item.title}
-                  >
-                    <item.icon />
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
-                  {item.badge && (
-                    <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
-                  )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -159,17 +129,14 @@ export default function AppSidebar() {
                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                   >
                     <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage src={lawyer.avatar} alt={lawyer.name} />
+                      <AvatarImage src={user?.pictureUrl} alt={user?.name} />
                       <AvatarFallback className="rounded-lg bg-blue-100 text-blue-700">
-                        {lawyer.initials}
+                        L
                       </AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">
-                        {lawyer.name}
-                      </span>
-                      <span className="truncate text-xs text-muted-foreground">
-                        {lawyer.role}
+                        {user?.name}
                       </span>
                     </div>
                     <MoreVertical className="ml-auto size-4" />
@@ -185,14 +152,14 @@ export default function AppSidebar() {
                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                       <Avatar className="h-8 w-8 rounded-lg">
                         <AvatarFallback className="rounded-lg bg-blue-100 text-blue-700">
-                          {lawyer.initials}
+                          L
                         </AvatarFallback>
                       </Avatar>
                       <div className="grid flex-1 text-left text-sm leading-tight">
                         <span className="truncate font-semibold">
-                          {lawyer.name}
+                          {user?.name}
                         </span>
-                        <span className="truncate text-xs">{lawyer.email}</span>
+                        <span className="truncate text-xs">{user?.email}</span>
                       </div>
                     </div>
                   </DropdownMenuLabel>
@@ -207,7 +174,10 @@ export default function AppSidebar() {
                   <DropdownMenuItem>Billing</DropdownMenuItem>
                   <DropdownMenuItem>Notifications</DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive">
+                  <DropdownMenuItem
+                    className="text-destructive"
+                    onClick={() => signOut()}
+                  >
                     Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>

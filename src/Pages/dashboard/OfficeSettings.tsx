@@ -21,7 +21,6 @@ export default function OfficeSettings() {
 
   async function handleOfficeCreationAndUpdateStore(e: any) {
     const office = await handleCreateOffice(e);
-    console.log(office);
     setCurrentOffice({
       id: office.id,
       name: office.name,

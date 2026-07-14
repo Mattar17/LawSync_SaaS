@@ -1,5 +1,6 @@
 // userStore.ts
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 type Office = {
   id: string;
@@ -27,10 +28,15 @@ type UserStore = {
   clearUser: () => void;
 };
 
-export const useUserStore = create<UserStore>((set) => ({
-  user: null,
-  currentOffice: null,
-  setCurrentOffice: (office) => set({ currentOffice: office }),
-  setUser: (user) => set({ user }),
-  clearUser: () => set({ user: null }),
-}));
+export const useUserStore = create<UserStore>()(
+  persist(
+    (set) => ({
+      user: null,
+      currentOffice: null,
+      setCurrentOffice: (office) => set({ currentOffice: office }),
+      setUser: (user) => set({ user }),
+      clearUser: () => set({ user: null, currentOffice: null }),
+    }),
+    { name: "lawsync-user-store" },
+  ),
+);
