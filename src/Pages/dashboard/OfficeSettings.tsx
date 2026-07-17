@@ -2,7 +2,6 @@ import { useIsOfficeOwner } from "@/hooks/useIsOfficeOwner";
 import useOfficeSettings from "@/hooks/useOfficeSettings";
 import { useUserStore } from "@/zustandStore/userStore";
 import CreateOffice from "@/components/office/CreateOffice";
-import OfficeInvites from "@/components/office/OfficeInvites";
 
 export default function OfficeSettings() {
   const { currentOffice, setCurrentOffice } = useUserStore();
@@ -165,11 +164,6 @@ export default function OfficeSettings() {
               </button>
             </div>
           </form>
-
-          {/* OFFICE INVITES — owner only */}
-          <div className="mt-8 pt-8 border-t border-border">
-            <OfficeInvites officeId={currentOffice?.id ?? ""} />
-          </div>
         </>
       ) : (
         <div className="space-y-6">

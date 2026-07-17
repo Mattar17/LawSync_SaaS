@@ -32,8 +32,6 @@ export default function OfficeInvites({ officeId }: OfficeInvitesProps) {
     loadingFetch,
     sending,
     cancelingId,
-    toast,
-
     email,
     setEmail,
     role,
@@ -45,12 +43,6 @@ export default function OfficeInvites({ officeId }: OfficeInvitesProps) {
 
   return (
     <div className="space-y-6" dir="rtl">
-      {toast && (
-        <div className="absolute top-2 mx-auto bg-black text-white px-4 py-2 rounded shadow">
-          {toast}
-        </div>
-      )}
-
       <div className="pb-4 border-b border-border">
         <h2 className="text-base font-semibold text-foreground">
           دعوات المكتب
@@ -127,7 +119,7 @@ export default function OfficeInvites({ officeId }: OfficeInvitesProps) {
       </form>
 
       {/* INVITES LIST */}
-      <div className="space-y-2">
+      <div className="space-y-2 h-82 overflow-scroll custom-scrollbar">
         {loadingFetch ? (
           <div className="flex items-center justify-center py-10">
             <i
