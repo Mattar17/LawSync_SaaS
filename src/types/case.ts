@@ -1,3 +1,34 @@
+export const CASE_STATUSES = [
+  "قضية جديدة",
+  "قيد المراجعة",
+  "تم رفع الدعوى",
+  "قيد النظر",
+  "انتظار الجلسة",
+  "تم تحديد جلسة",
+  "قيد التحقيق",
+  "انتظار الحكم",
+  "تم الاستئناف",
+  "تنفيذ الحكم",
+  "موقوفة",
+  "مغلقة",
+  "كسبت",
+  "خُسرت",
+  "تمت التسوية",
+  "رُفضت",
+  "تم التنازل عنها",
+] as const;
+
+export type CASE_STATUSES = (typeof CASE_STATUSES)[number];
+
+export const PARTY_ROLES = [
+  "مدعي",
+  "مدعى عليه",
+  "مستأنف",
+  "مستأنف ضده",
+] as const;
+
+export type PARTY_ROLES = (typeof PARTY_ROLES)[number];
+
 export interface Case {
   id: string;
   office_id: string;
@@ -18,24 +49,3 @@ export interface Case {
   assigned_lawyer_id?: string | null;
   created_at: string;
 }
-
-export type CASE_STATUSES =
-  | "قضية جديدة"
-  | "قيد المراجعة"
-  | "تم رفع الدعوى"
-  | "قيد النظر"
-  | "انتظار الجلسة"
-  | "تم تحديد جلسة"
-  | "قيد التحقيق"
-  | "انتظار الحكم"
-  | "تم الاستئناف"
-  | "تنفيذ الحكم"
-  | "موقوفة"
-  | "مغلقة"
-  | "كسبت"
-  | "خُسرت"
-  | "تمت التسوية"
-  | "رُفضت"
-  | "تم التنازل عنها";
-
-export type PARTY_ROLES = "مدعي" | "مدعى عليه" | "مستأنف" | "مستأنف ضده";

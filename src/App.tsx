@@ -8,7 +8,6 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "./Pages/AppLayout";
 import LawyerPortal from "./Pages/LawyerPortal";
-import LawyerCases from "./Pages/LawyerCases";
 import Login from "./Pages/Login";
 import AdminDashboard from "./Pages/AdminDashboard";
 import PaymentWebhookResponse from "./Pages/handlePaymentWebhookResponse";
@@ -20,6 +19,7 @@ import OfficeSettings from "./Pages/dashboard/OfficeSettings";
 import Messages from "./Pages/dashboard/Messages";
 import LawyerInvites from "./Pages/dashboard/LawyerInvites";
 import OfficeMembers from "./Pages/dashboard/OfficeMembers";
+import CasesPage from "./Pages/dashboard/Cases";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -74,7 +74,6 @@ function App(): React.ReactElement {
           <Route path="/payment_webhook" element={<PaymentWebhookResponse />} />
           <Route path="/" element={<AppLayout />} />
           <Route path="/portal" element={<LawyerPortal />} />
-          <Route path="/portal/:id" element={<LawyerCases />} />
           <Route path="/profile/:id" element={<LawyerProfile />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
@@ -96,6 +95,7 @@ function App(): React.ReactElement {
               path="/dashboard/members/:office_id"
               element={<OfficeMembers />}
             />
+            <Route path="/dashboard/cases/:office_id" element={<CasesPage />} />
             <Route
               path="/dashboard/office/invites"
               element={<LawyerInvites />}

@@ -21,6 +21,9 @@ export default function useCases(officeId: string) {
     currentOffice.id === officeId &&
     currentOffice.owner_id === user.id
   );
+  console.log("user => ", user);
+  console.log("office => ", currentOffice);
+  console.log("owner? => ", isOwner);
 
   const [cases, setCases] = useState<Case[]>([]);
   const [loadingFetch, setLoadingFetch] = useState(false);
@@ -40,7 +43,7 @@ export default function useCases(officeId: string) {
         toast.error(res.message || "فشل تحميل القضايا");
         return;
       }
-
+      console.log(res);
       setCases(res.data);
     } catch {
       toast.error("حدث خطأ ما");
@@ -88,8 +91,13 @@ export default function useCases(officeId: string) {
   const handleUpdateCase = async (caseId: string, form: Partial<Case>) => {
     setUpdatingId(caseId);
     try {
-      const res = await updateCase(officeId, caseId, form);
-
+      const payload = {
+        ...form,
+        latest_court_session_date: form.latest_court_session_date || null,
+        next_court_session_date: form.next_court_session_date || null,
+      };
+      const res = await updateCase(officeId, caseId, payload);
+      console.log("CASE UPDATE FORM => ", payload);
       if (!res.success) {
         toast.error(res.message || "فشل تعديل القضية");
         return;
