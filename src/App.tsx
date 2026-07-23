@@ -20,6 +20,7 @@ import Messages from "./Pages/dashboard/Messages";
 import LawyerInvites from "./Pages/dashboard/LawyerInvites";
 import OfficeMembers from "./Pages/dashboard/OfficeMembers";
 import CasesPage from "./Pages/dashboard/Cases";
+import CaseDetailsPage from "./Pages/dashboard/CaseDetails";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -101,6 +102,7 @@ function App(): React.ReactElement {
               element={<LawyerInvites />}
             />
           </Route>
+          <Route path="/cases/:caseId" element={<CaseDetailsPage />} />
         </Routes>
       </BrowserRouter>
     </div>

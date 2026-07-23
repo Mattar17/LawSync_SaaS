@@ -1,5 +1,5 @@
 import { useState, FormEvent } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import useCases from "@/hooks/useCases";
 import { useOfficeMembers } from "@/hooks/useOfficeMembers";
 import { CreateCaseInput } from "@/api/cases";
@@ -57,6 +57,7 @@ import { useUserStore } from "@/zustandStore/userStore";
 
 export default function CasesPage() {
   //const { office_id } = useParams<{ office_id: string }>();
+  const navigate = useNavigate();
   const { currentOffice } = useUserStore();
   const {
     cases,
@@ -113,6 +114,9 @@ export default function CasesPage() {
               isOwner={isOwner}
               deleting={deletingId === c.id}
               onEdit={() => setEditingCase(c)}
+              onView={() =>
+                navigate(`/cases/${c.id}`, { state: { caseItem: c } })
+              }
               onAssign={() => setAssigningCase(c)}
               onDelete={() => handleDeleteCase(c.id)}
             />
@@ -171,6 +175,7 @@ function CaseCard({
   onEdit,
   onAssign,
   onDelete,
+  onView,
 }: {
   caseItem: Case;
   isOwner: boolean;
@@ -178,9 +183,13 @@ function CaseCard({
   onEdit: () => void;
   onAssign: () => void;
   onDelete: () => void;
+  onView: () => void;
 }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-4 space-y-3">
+    <div
+      className="rounded-lg border border-border bg-card p-4 space-y-3"
+      onClick={onView}
+    >
       <div className="flex items-start justify-between">
         <div>
           <h3 className="font-medium text-navy-900 line-clamp-1">
@@ -198,11 +207,19 @@ function CaseCard({
               size="icon"
               className="h-8 w-8 rounded-lg"
               disabled={deleting}
+              onClick={(e) => e.stopPropagation()} // stop card click firing
             >
               <IconDotsVertical size={16} />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
+          <DropdownMenuContent
+            align="start"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <DropdownMenuItem onClick={onView} className="gap-2">
+              <IconGavel size={16} />
+              عرض التفاصيل
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={onEdit} className="gap-2">
               <IconEdit size={16} />
               تعديل
@@ -547,7 +564,7 @@ function EditCaseDialog({
 }
 
 // ================= ASSIGN LAWYER (owner only) =================
-function AssignLawyerDialog({
+export function AssignLawyerDialog({
   caseItem,
   members,
   assigning,

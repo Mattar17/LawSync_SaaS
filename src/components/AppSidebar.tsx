@@ -106,14 +106,14 @@ export default function AppSidebar() {
             <SidebarGroupLabel>Workspace</SidebarGroupLabel>
             <SidebarMenu>
               {navWorkspace.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton tooltip={item.title}>
-                    <span>{item.title}</span>
-                    <Link to={`${item.route}/${currentOffice?.id}`}>
+                <Link to={`${item.route}/${currentOffice?.id}`}>
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton tooltip={item.title}>
                       <item.icon />
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </Link>
               ))}
             </SidebarMenu>
           </SidebarGroup>

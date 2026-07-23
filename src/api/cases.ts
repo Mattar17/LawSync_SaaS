@@ -110,7 +110,7 @@ export async function updateCase(
 export async function assignLawyerToCase(
   officeId: string,
   caseId: string,
-  lawyerToAssignId: string,
+  lawyerToAssignId: string | null,
 ) {
   const jwt = Cookies.get("jwt");
 

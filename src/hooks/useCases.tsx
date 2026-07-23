@@ -144,7 +144,10 @@ export default function useCases(officeId: string) {
   };
 
   // ================= ASSIGN LAWYER (owner only) =================
-  const handleAssignLawyer = async (caseId: string, lawyerId: string) => {
+  const handleAssignLawyer = async (
+    caseId: string,
+    lawyerId: string | null,
+  ) => {
     if (!isOwner) {
       toast.error("مالك المكتب فقط يمكنه تعيين محامي");
       return;
@@ -164,7 +167,7 @@ export default function useCases(officeId: string) {
           c.id === caseId ? { ...c, assigned_lawyer_id: lawyerId } : c,
         ),
       );
-      toast.success("تم تعيين المحامي علي القضية بنجاح");
+      toast.success(res.message || "تم تعيين المحامي علي القضية بنجاح");
     } catch {
       toast.error("حدث خطأ ما");
     } finally {
