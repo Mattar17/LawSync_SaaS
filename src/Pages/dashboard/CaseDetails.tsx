@@ -24,7 +24,7 @@ import {
   IconCalendarEvent,
 } from "@tabler/icons-react";
 import { useUserStore } from "@/zustandStore/userStore";
-import { AssignLawyerDialog } from "@/Pages/dashboard/Cases"; // adjust import path
+import { AssignLawyerDialog } from "@/Pages/dashboard/Cases";
 import { useOfficeMembers } from "@/hooks/useOfficeMembers";
 
 export default function CaseDetailsPage() {
@@ -94,6 +94,31 @@ export default function CaseDetailsPage() {
             <p>{caseItem.client_opponent_name}</p>
           </div>
         </div>
+
+        {(caseItem.case_type ||
+          caseItem.case_degree ||
+          caseItem.client_type) && (
+          <div className="grid grid-cols-3 gap-4 text-sm">
+            {caseItem.case_type && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">نوع القضية</p>
+                <p>{caseItem.case_type}</p>
+              </div>
+            )}
+            {caseItem.case_degree && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">الدرجة</p>
+                <p>{caseItem.case_degree}</p>
+              </div>
+            )}
+            {caseItem.client_type && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">نوع الموكل</p>
+                <p>{caseItem.client_type}</p>
+              </div>
+            )}
+          </div>
+        )}
 
         {caseItem.description && (
           <div>

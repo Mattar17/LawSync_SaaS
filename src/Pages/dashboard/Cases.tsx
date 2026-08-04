@@ -1,5 +1,5 @@
 import { useState, FormEvent } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useCases from "@/hooks/useCases";
 import { useOfficeMembers } from "@/hooks/useOfficeMembers";
 import { CreateCaseInput } from "@/api/cases";
@@ -52,11 +52,16 @@ import {
   IconCalendarEvent,
 } from "@tabler/icons-react";
 
-import { CASE_STATUSES, PARTY_ROLES } from "@/types/case";
+import {
+  CASE_STATUSES,
+  PARTY_ROLES,
+  CASE_TYPES,
+  CASE_DEGREES,
+  CLIENT_TYPES,
+} from "@/types/case";
 import { useUserStore } from "@/zustandStore/userStore";
 
 export default function CasesPage() {
-  //const { office_id } = useParams<{ office_id: string }>();
   const navigate = useNavigate();
   const { currentOffice } = useUserStore();
   const {
@@ -323,14 +328,6 @@ function CreateCaseDialog({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
-            <Field label="عنوان القضية">
-              <Input
-                required
-                className="h-9 rounded-lg"
-                value={form.title ?? ""}
-                onChange={(e) => set("title", e.target.value)}
-              />
-            </Field>
             <Field label="رقم القضية">
               <Input
                 required
@@ -390,11 +387,56 @@ function CreateCaseDialog({
                 }
               />
             </Field>
-            <Field label="صفة الخصم">
-              <RoleSelect
-                value={form.client_opponent_role}
-                onChange={(v) => set("client_opponent_role", v as PARTY_ROLES)}
-              />
+            <Field label="نوع القضية">
+              <Select
+                value={form.case_type ?? undefined}
+                onValueChange={(v: CASE_TYPES) => set("case_type", v)}
+              >
+                <SelectTrigger className="h-9 rounded-lg">
+                  <SelectValue placeholder="اختر نوع القضية" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CASE_TYPES.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field label="الدرجة">
+              <Select
+                value={form.case_degree ?? undefined}
+                onValueChange={(v: CASE_DEGREES) => set("case_degree", v)}
+              >
+                <SelectTrigger className="h-9 rounded-lg">
+                  <SelectValue placeholder="اختر درجة التقاضي" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CASE_DEGREES.map((degree) => (
+                    <SelectItem key={degree} value={degree}>
+                      {degree}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field label="نوع الموكل">
+              <Select
+                value={form.client_type ?? undefined}
+                onValueChange={(v: CLIENT_TYPES) => set("client_type", v)}
+              >
+                <SelectTrigger className="h-9 rounded-lg">
+                  <SelectValue placeholder="اختر نوع الموكل" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CLIENT_TYPES.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </Field>
           </div>
 
@@ -443,10 +485,12 @@ function EditCaseDialog({
     latest_court_session_date: caseItem.latest_court_session_date ?? "",
     latest_update: caseItem.latest_update,
     ...(isOwner && {
-      title: caseItem.title,
       description: caseItem.description ?? "",
       client_name: caseItem.client_name,
       client_opponent_name: caseItem.client_opponent_name,
+      case_type: caseItem.case_type ?? undefined,
+      case_degree: caseItem.case_degree ?? undefined,
+      client_type: caseItem.client_type ?? undefined,
     }),
   });
 
@@ -469,13 +513,6 @@ function EditCaseDialog({
           {/* Owner-only fields */}
           {isOwner && (
             <>
-              <Field label="عنوان القضية">
-                <Input
-                  className="h-9 rounded-lg"
-                  value={form.title ?? ""}
-                  onChange={(e) => set("title", e.target.value)}
-                />
-              </Field>
               <Field label="اسم الموكل">
                 <Input
                   className="h-9 rounded-lg"
@@ -490,6 +527,62 @@ function EditCaseDialog({
                   onChange={(e) => set("client_opponent_name", e.target.value)}
                 />
               </Field>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="نوع القضية">
+                  <Select
+                    value={form.case_type ?? undefined}
+                    onValueChange={(v: CASE_TYPES) => set("case_type", v)}
+                  >
+                    <SelectTrigger className="h-9 rounded-lg">
+                      <SelectValue placeholder="اختر نوع القضية" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CASE_TYPES.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+                <Field label="الدرجة">
+                  <Select
+                    value={form.case_degree ?? undefined}
+                    onValueChange={(v: CASE_DEGREES) => set("case_degree", v)}
+                  >
+                    <SelectTrigger className="h-9 rounded-lg">
+                      <SelectValue placeholder="اختر درجة التقاضي" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CASE_DEGREES.map((degree) => (
+                        <SelectItem key={degree} value={degree}>
+                          {degree}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </div>
+
+              <Field label="نوع الموكل">
+                <Select
+                  value={form.client_type ?? undefined}
+                  onValueChange={(v: CLIENT_TYPES) => set("client_type", v)}
+                >
+                  <SelectTrigger className="h-9 rounded-lg">
+                    <SelectValue placeholder="اختر نوع الموكل" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CLIENT_TYPES.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+
               <Field label="وصف القضية">
                 <Textarea
                   className="rounded-lg"

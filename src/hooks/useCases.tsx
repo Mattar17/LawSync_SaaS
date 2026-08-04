@@ -21,9 +21,6 @@ export default function useCases(officeId: string) {
     currentOffice.id === officeId &&
     currentOffice.owner_id === user.id
   );
-  console.log("user => ", user);
-  console.log("office => ", currentOffice);
-  console.log("owner? => ", isOwner);
 
   const [cases, setCases] = useState<Case[]>([]);
   const [loadingFetch, setLoadingFetch] = useState(false);
@@ -85,9 +82,6 @@ export default function useCases(officeId: string) {
   };
 
   // ================= UPDATE CASE (owner: full, lawyer: restricted) =================
-  // The backend enforces which fields each role may send — this just
-  // forwards whatever the calling form collected, scoped by field set
-  // the component chose to render for the current role.
   const handleUpdateCase = async (caseId: string, form: Partial<Case>) => {
     setUpdatingId(caseId);
     try {

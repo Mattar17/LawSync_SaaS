@@ -34,6 +34,9 @@ import {
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import useCases from "@/hooks/useCases";
+import { Case } from "@/types/case";
+import { useNavigate } from "react-router-dom";
 
 interface MyJwtPayload extends JwtPayload {
   admin?: boolean;
@@ -166,6 +169,9 @@ const recentActivity = [
 
 export default function LawyerDashboard() {
   const [isOwner, setIsOwner] = useState(false);
+  let activeCases: Case[];
+  const store = useUserStore.getState();
+  activeCases = useCases(store.currentOffice?.id ?? "").cases;
   useEffect(() => {
     async function loadOfficesData() {
       const jwtToken = Cookies.get("jwt");
@@ -184,7 +190,6 @@ export default function LawyerDashboard() {
 
       const result = await res.json();
       const offices = result.data.map((item: any) => item.offices);
-      const store = useUserStore.getState();
       store.setUser({
         ...store.user!,
         offices,
@@ -205,6 +210,7 @@ export default function LawyerDashboard() {
     year: "numeric",
   });
   const { currentOffice } = useUserStore.getState();
+  const navigate = useNavigate();
 
   return (
     <TooltipProvider>
@@ -244,19 +250,14 @@ export default function LawyerDashboard() {
 
             {/* Stat cards */}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {stats.map((s) => (
-                <Card key={s.label}>
-                  <CardHeader className="pb-2">
-                    <CardDescription>{s.label}</CardDescription>
-                    <CardTitle className={`text-3xl ${s.color}`}>
-                      {s.value}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-xs text-muted-foreground">{s.delta}</p>
-                  </CardContent>
-                </Card>
-              ))}
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardDescription>القضايا النشطة</CardDescription>
+                  <CardTitle className={`text-3xl text-blue-600`}>
+                    {activeCases?.length}
+                  </CardTitle>
+                </CardHeader>
+              </Card>
             </div>
 
             {/* Active cases table + right column */}
@@ -270,7 +271,14 @@ export default function LawyerDashboard() {
                       آخر القضايا
                     </CardTitle>
                   </div>
-                  <Button variant="ghost" size="sm" className="gap-1 text-xs">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="gap-1 text-xs"
+                    onClick={() =>
+                      navigate(`/dashboard/cases/${store.currentOffice?.id}`)
+                    }
+                  >
                     الذهاب لكل القضايا <ChevronRight className="size-3" />
                   </Button>
                 </CardHeader>
@@ -278,22 +286,24 @@ export default function LawyerDashboard() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="pl-6">القضية</TableHead>
-                        <TableHead>التصنيف</TableHead>
-                        <TableHead>تاريخ الجلسة القادمة</TableHead>
-                        <TableHead className="pr-6 text-right">
-                          الحالة
+                        <TableHead className="ps-6 text-start">
+                          القضية
                         </TableHead>
+                        <TableHead className="text-start">التصنيف</TableHead>
+                        <TableHead className="text-start">
+                          تاريخ الجلسة القادمة
+                        </TableHead>
+                        <TableHead className="pe-6 text-end">الحالة</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {activeCases.map((c) => (
+                      {activeCases?.map((c: any) => (
                         <TableRow
                           key={c.id}
                           className="cursor-pointer hover:bg-muted/50"
                         >
-                          <TableCell className="pl-6">
-                            <div className="font-medium text-sm">{c.name}</div>
+                          <TableCell className="ps-6">
+                            <div className="font-medium text-sm">{c.title}</div>
                             <div className="text-xs text-muted-foreground">
                               {c.id}
                             </div>
@@ -302,10 +312,12 @@ export default function LawyerDashboard() {
                             {c.type}
                           </TableCell>
                           <TableCell className="text-sm text-muted-foreground">
-                            {c.nextDate}
+                            {c.next_court_session_date}
                           </TableCell>
-                          <TableCell className="pr-6 text-right">
-                            <Badge variant={c.statusVariant}>{c.status}</Badge>
+                          <TableCell className="pe-6 text-end">
+                            <Badge variant={c.statusVariant}>
+                              {c.case_status}
+                            </Badge>
                           </TableCell>
                         </TableRow>
                       ))}
