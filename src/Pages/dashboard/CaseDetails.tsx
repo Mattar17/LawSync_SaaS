@@ -22,6 +22,15 @@ import {
   IconUserPlus,
   IconUserMinus,
   IconCalendarEvent,
+  IconUser,
+  IconUserX,
+  IconCategory,
+  IconStack2,
+  IconUsers,
+  IconBuildingBank,
+  IconLayoutGrid,
+  IconFileDescription,
+  IconClock,
 } from "@tabler/icons-react";
 import { useUserStore } from "@/zustandStore/userStore";
 import { AssignLawyerDialog } from "@/Pages/dashboard/Cases";
@@ -69,7 +78,7 @@ export default function CaseDetailsPage() {
         رجوع
       </button>
 
-      <div className="rounded-lg border border-border bg-card p-6 space-y-4">
+      <div className="rounded-lg border border-border bg-card p-6 space-y-5">
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-lg font-semibold text-navy-900">
@@ -84,70 +93,75 @@ export default function CaseDetailsPage() {
           </Badge>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">الموكل</p>
-            <p>{caseItem.client_name}</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">الخصم</p>
-            <p>{caseItem.client_opponent_name}</p>
-          </div>
+        <div className="divide-y divide-border">
+          <DetailRowPair
+            left={{
+              icon: IconUser,
+              label: "الموكل",
+              value: caseItem.client_name,
+            }}
+            right={{
+              icon: IconUserX,
+              label: "الخصم",
+              value: caseItem.client_opponent_name,
+            }}
+          />
+          <DetailRowPair
+            left={{
+              icon: IconCategory,
+              label: "نوع القضية",
+              value: caseItem.case_type,
+            }}
+            right={{
+              icon: IconStack2,
+              label: "الدرجة",
+              value: caseItem.case_degree,
+            }}
+          />
+          <DetailRowPair
+            left={{
+              icon: IconUsers,
+              label: "نوع الموكل",
+              value: caseItem.client_type,
+            }}
+            right={{
+              icon: IconBuildingBank,
+              label: "المحكمة",
+              value: caseItem.court_name,
+            }}
+          />
+          <DetailRowPair
+            left={{
+              icon: IconLayoutGrid,
+              label: "الدائرة",
+              value: caseItem.court_circuit,
+            }}
+            right={{
+              icon: IconFileDescription,
+              label: "وصف القضية",
+              value: caseItem.description,
+            }}
+          />
+          <DetailRowPair
+            left={{
+              icon: IconCalendarEvent,
+              label: "آخر جلسة",
+              value: caseItem.latest_court_session_date,
+            }}
+            right={{
+              icon: IconCalendarEvent,
+              label: "الجلسة القادمة",
+              value: caseItem.next_court_session_date,
+            }}
+          />
+          <DetailRowPair
+            left={{
+              icon: IconClock,
+              label: "آخر تحديث",
+              value: caseItem.latest_update,
+            }}
+          />
         </div>
-
-        {(caseItem.case_type ||
-          caseItem.case_degree ||
-          caseItem.client_type) && (
-          <div className="grid grid-cols-3 gap-4 text-sm">
-            {caseItem.case_type && (
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">نوع القضية</p>
-                <p>{caseItem.case_type}</p>
-              </div>
-            )}
-            {caseItem.case_degree && (
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">الدرجة</p>
-                <p>{caseItem.case_degree}</p>
-              </div>
-            )}
-            {caseItem.client_type && (
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">نوع الموكل</p>
-                <p>{caseItem.client_type}</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {caseItem.description && (
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">وصف القضية</p>
-            <p className="text-sm">{caseItem.description}</p>
-          </div>
-        )}
-
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          {caseItem.latest_court_session_date && (
-            <div className="flex items-center gap-1.5">
-              <IconCalendarEvent size={14} className="text-muted-foreground" />
-              <span>آخر جلسة: {caseItem.latest_court_session_date}</span>
-            </div>
-          )}
-          {caseItem.next_court_session_date && (
-            <div className="flex items-center gap-1.5">
-              <IconCalendarEvent size={14} className="text-muted-foreground" />
-              <span>الجلسة القادمة: {caseItem.next_court_session_date}</span>
-            </div>
-          )}
-        </div>
-
-        {caseItem.latest_update && (
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">آخر تحديث</p>
-            <p className="text-sm">{caseItem.latest_update}</p>
-          </div>
-        )}
       </div>
 
       {/* Assigned lawyer section */}
@@ -204,6 +218,46 @@ export default function CaseDetailsPage() {
           }}
         />
       )}
+    </div>
+  );
+}
+
+type DetailField = {
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  label: string;
+  value?: string | null;
+};
+
+function DetailRowPair({
+  left,
+  right,
+}: {
+  left: DetailField;
+  right?: DetailField;
+}) {
+  const hasLeft = Boolean(left.value);
+  const hasRight = Boolean(right?.value);
+
+  if (!hasLeft && !hasRight) return null;
+
+  return (
+    <div className="grid grid-cols-2 gap-4 py-3">
+      {hasLeft ? <DetailItem {...left} /> : <div />}
+      {hasRight ? <DetailItem {...right!} /> : <div />}
+    </div>
+  );
+}
+
+function DetailItem({ icon: Icon, label, value }: DetailField) {
+  return (
+    <div className="flex items-center gap-3 min-w-0">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#B8975A]/10 text-[#B8975A]">
+        <Icon size={16} />
+      </div>
+      <div className="flex flex-col min-w-0">
+        <span className="text-xs text-muted-foreground">{label}</span>
+        <span className="text-sm text-navy-900 truncate">{value}</span>
+      </div>
     </div>
   );
 }

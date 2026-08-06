@@ -387,6 +387,24 @@ function CreateCaseDialog({
                 }
               />
             </Field>
+            <Field label="المحكمة">
+              <Input
+                required
+                maxLength={50}
+                className="h-9 rounded-lg"
+                value={form.court_name ?? ""}
+                onChange={(e) => set("court_name", e.target.value)}
+              />
+            </Field>
+            <Field label="دائرة/رقم الدائرة">
+              <Input
+                required
+                maxLength={50}
+                className="h-9 rounded-lg"
+                value={form.court_circuit ?? ""}
+                onChange={(e) => set("court_circuit", e.target.value)}
+              />
+            </Field>
             <Field label="نوع القضية">
               <Select
                 value={form.case_type ?? undefined}
@@ -484,6 +502,8 @@ function EditCaseDialog({
     next_court_session_date: caseItem.next_court_session_date ?? "",
     latest_court_session_date: caseItem.latest_court_session_date ?? "",
     latest_update: caseItem.latest_update,
+    court_circuit: caseItem.court_circuit,
+    court_name: caseItem.court_name,
     ...(isOwner && {
       description: caseItem.description ?? "",
       client_name: caseItem.client_name,
@@ -629,6 +649,22 @@ function EditCaseDialog({
                 className="h-9 rounded-lg"
                 value={form.next_court_session_date ?? ""}
                 onChange={(e) => set("next_court_session_date", e.target.value)}
+              />
+            </Field>
+            <Field label="المحكمة">
+              <Input
+                type="text"
+                className="h-9 rounded-lg"
+                value={form.court_name ?? ""}
+                onChange={(e) => set("court_name", e.target.value)}
+              />
+            </Field>
+            <Field label="دائرة/رقم الدائرة">
+              <Input
+                type="text"
+                className="h-9 rounded-lg"
+                value={form.court_circuit ?? ""}
+                onChange={(e) => set("court_circuit", e.target.value)}
               />
             </Field>
           </div>

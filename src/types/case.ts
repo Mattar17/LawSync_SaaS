@@ -73,6 +73,8 @@ export interface Case {
   case_type?: CASE_TYPES | null;
   case_degree?: CASE_DEGREES | null;
   client_type?: CLIENT_TYPES | null;
+  court_name?: string | null;
+  court_circuit?: string | null;
   latest_court_session_date?: string | null;
   next_court_session_date?: string | null;
   case_status: CASE_STATUSES;
