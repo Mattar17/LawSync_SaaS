@@ -2,16 +2,26 @@ import React from "react";
 import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Lenis from "lenis";
+import { Toaster } from "sonner";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "./Pages/AppLayout";
 import LawyerPortal from "./Pages/LawyerPortal";
-import LawyerCases from "./Pages/LawyerCases";
-import LawyerDashboard from "./Pages/LawyerDashboard";
 import Login from "./Pages/Login";
 import AdminDashboard from "./Pages/AdminDashboard";
 import PaymentWebhookResponse from "./Pages/handlePaymentWebhookResponse";
+import LawyerProfile from "./Pages/LawyerProfile";
+import LawyerDashboard from "./Pages/dashboard/LawyerDashboard";
+import Register from "./Pages/Register";
+import DashboardLayout from "./layouts/DashboardLayout";
+import OfficeSettings from "./Pages/dashboard/OfficeSettings";
+import Messages from "./Pages/dashboard/Messages";
+import LawyerInvites from "./Pages/dashboard/LawyerInvites";
+import OfficeMembers from "./Pages/dashboard/OfficeMembers";
+import CasesPage from "./Pages/dashboard/Cases";
+import CaseDetailsPage from "./Pages/dashboard/CaseDetails";
+import BooksPage from "./Pages/Books";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -52,17 +62,49 @@ function App(): React.ReactElement {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB]" id="smooth-wrapper">
+    <div
+      className="min-h-screen bg-[#F9FAFB]"
+      id="smooth-wrapper"
+      dir="rtl"
+      lang="ar"
+    >
+      <Toaster position="top-center" theme="dark" closeButton={true} />
+
       <BrowserRouter>
         <Navbar />
         <Routes>
+          <Route path="/admin/books" element={<BooksPage />} />
           <Route path="/payment_webhook" element={<PaymentWebhookResponse />} />
           <Route path="/" element={<AppLayout />} />
           <Route path="/portal" element={<LawyerPortal />} />
-          <Route path="/portal/:id" element={<LawyerCases />} />
-          <Route path="/profile/:id" element={<LawyerDashboard />}></Route>
+          <Route path="/profile/:id" element={<LawyerProfile />}></Route>
           <Route path="/login" element={<Login />}></Route>
+          <Route path="/register" element={<Register />}></Route>
           <Route path="/admin" element={<AdminDashboard />}></Route>
+          <Route path="/dashboard" element={<LawyerDashboard />}></Route>
+          <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<LawyerDashboard />} />
+
+            <Route path="/dashboard/profile/:id" element={<LawyerProfile />} />
+            <Route
+              path="/dashboard/office/settings"
+              element={<OfficeSettings></OfficeSettings>}
+            />
+            <Route
+              path="/dashboard/messages/:office_id"
+              element={<Messages />}
+            />
+            <Route
+              path="/dashboard/members/:office_id"
+              element={<OfficeMembers />}
+            />
+            <Route path="/dashboard/cases/:office_id" element={<CasesPage />} />
+            <Route
+              path="/dashboard/office/invites"
+              element={<LawyerInvites />}
+            />
+          </Route>
+          <Route path="/cases/:caseId" element={<CaseDetailsPage />} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -51,7 +51,6 @@ const LawyerPortal = (): React.ReactElement => {
       }
     }
     getLawyers();
-    filteredLawyers.map((l) => console.log(l.avatar_url));
   }, []);
 
   const handleSearchQuery = (e: any) => {
@@ -147,7 +146,7 @@ const LawyerPortal = (): React.ReactElement => {
                   <Avatar className="w-20 h-20">
                     <AvatarImage
                       src={
-                        l.avatar_url ||
+                        l.picture_url ||
                         `https://ui-avatars.com/api/?name=L&background=cccccc`
                       }
                     />
@@ -159,7 +158,7 @@ const LawyerPortal = (): React.ReactElement => {
 
                 <CardHeader className="text-center">
                   <CardTitle>{l.name}</CardTitle>
-                  <CardDescription>{l.description}</CardDescription>
+                  <CardDescription>{l.bio}</CardDescription>
                 </CardHeader>
 
                 <CardFooter className="bg-gray-900 flex justify-center mt-auto p-4">

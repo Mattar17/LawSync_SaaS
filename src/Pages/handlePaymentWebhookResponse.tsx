@@ -1,29 +1,14 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+//import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 export default function PaymentWebhookResponse() {
-  const { success } = useParams();
-  const [dataObj, setDataObj] = useState(null);
-  useEffect(() => {
-    async function getWebhookResponse() {
-      const res = await fetch(
-        "https://law-sync-activation-api.vercel.app/api/payment/webhook",
-        {
-          method: "POST",
-        },
-      );
-      const data = await res.json();
-      console.log(data);
-      setDataObj(data);
-    }
-
-    getWebhookResponse();
-  }, []);
+  const [searchParams] = useSearchParams();
+  const isSuccess = searchParams.get("success") === "true";
 
   return (
     <div>
       <h1>Payment Status:</h1>
-      <p>{success ? "Successfull payment" : "Failed to Pay!!!"}</p>
+      <p>{isSuccess ? "Successfull payment" : "Failed to Pay!!!"}</p>
     </div>
   );
 }

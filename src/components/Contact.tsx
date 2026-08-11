@@ -114,11 +114,11 @@ const Contact = (): React.ReactElement => {
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row justify-center items-start gap-12 max-w-6xl w-full mx-auto px-6">
+      <div className="flex flex-col lg:flex-row justify-center items-stretch gap-12 max-w-6xl w-full mx-auto px-6">
         {/* Contact Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-8 w-full lg:w-1/2">
+        <div className="flex flex-col gap-4 w-full lg:w-1/2">
           {/* Email */}
-          <div className="bg-white/30 backdrop-blur-sm rounded-xl p-8 text-center">
+          <div className="min-h-[140px] bg-white/30 backdrop-blur-sm rounded-xl p-6 text-center flex flex-col justify-center">
             <h3 className="font-semibold text-gray-900 mb-2">
               البريد الإلكتروني
             </h3>
@@ -135,7 +135,7 @@ const Contact = (): React.ReactElement => {
           </div>
 
           {/* WhatsApp */}
-          <div className="bg-white/30 backdrop-blur-sm rounded-xl p-8 text-center">
+          <div className="min-h-[140px] bg-white/30 backdrop-blur-sm rounded-xl p-6 text-center flex flex-col justify-center">
             <h3 className="font-semibold text-gray-900 mb-2">واتساب</h3>
 
             <div className="flex items-center justify-center">
@@ -145,6 +145,7 @@ const Contact = (): React.ReactElement => {
                 dir="ltr"
                 href="https://wa.link/j1tymm"
                 target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-800 underline"
               >
                 +201096901460
@@ -155,9 +156,10 @@ const Contact = (): React.ReactElement => {
           {/* Message shortcut */}
           <div
             onClick={handleMessageClick}
-            className="cursor-pointer bg-white/30 backdrop-blur-sm rounded-xl p-8 text-center"
+            className="min-h-[140px] cursor-pointer bg-white/30 backdrop-blur-sm rounded-xl p-6 text-center flex flex-col justify-center"
           >
             <h3 className="font-semibold text-gray-900 mb-2">اترك رسالتك</h3>
+
             <p className="text-gray-800">متاح 24 ساعة</p>
           </div>
         </div>
