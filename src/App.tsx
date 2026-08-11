@@ -21,6 +21,7 @@ import LawyerInvites from "./Pages/dashboard/LawyerInvites";
 import OfficeMembers from "./Pages/dashboard/OfficeMembers";
 import CasesPage from "./Pages/dashboard/Cases";
 import CaseDetailsPage from "./Pages/dashboard/CaseDetails";
+import BooksPage from "./Pages/Books";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -72,6 +73,7 @@ function App(): React.ReactElement {
       <BrowserRouter>
         <Navbar />
         <Routes>
+          <Route path="/admin/books" element={<BooksPage />} />
           <Route path="/payment_webhook" element={<PaymentWebhookResponse />} />
           <Route path="/" element={<AppLayout />} />
           <Route path="/portal" element={<LawyerPortal />} />
