@@ -3,7 +3,7 @@ import useBooks from "@/hooks/useBooks";
 import CategoryCard from "@/components/books/CategoryCard";
 import BookCard from "@/components/books/BookCard";
 import AddTile from "@/components/books/AddTile";
-import CreateCategoryDialog from "@/components/books/CreateCategorydialog";
+import CreateCategoryDialog from "@/components/books/CreateCategoryDialog";
 import UploadBookDialog from "@/components/books/UploadBookDialog";
 import EditBookDialog from "@/components/books/EditBookDialog";
 import { Book } from "@/api/books";
