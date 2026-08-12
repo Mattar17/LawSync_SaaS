@@ -85,29 +85,32 @@ export default function useBooks() {
   }, []);
 
   // ================= CREATE CATEGORY =================
-  const handleCreateCategory = async (name: string) => {
-    setCreatingCategory(true);
-    try {
-      const res = await createCategory({ name });
+  const handleCreateCategory = useCallback(
+    async (name: string) => {
+      setCreatingCategory(true);
+      try {
+        const res = await createCategory({ name });
 
-      if (!res.success) {
-        toast.error(res.message || "فشل إضافة القسم");
+        if (!res.success) {
+          toast.error(res.message || "فشل إضافة القسم");
+          return false;
+        }
+        console.log("response data", res.data);
+        if (res.data) {
+          setCategories((prev) => [res.data as BookCategory, ...prev]);
+        }
+
+        toast.success("تم إضافة القسم بنجاح");
+        return true;
+      } catch {
+        toast.error("حدث خطأ ما");
         return false;
+      } finally {
+        setCreatingCategory(false);
       }
-
-      if (res.data) {
-        setCategories((prev) => [res.data as BookCategory, ...prev]);
-      }
-
-      toast.success("تم إضافة القسم بنجاح");
-      return true;
-    } catch {
-      toast.error("حدث خطأ ما");
-      return false;
-    } finally {
-      setCreatingCategory(false);
-    }
-  };
+    },
+    [creatingCategory],
+  );
 
   // ================= DELETE CATEGORY =================
   const handleDeleteCategory = async (categoryId: string) => {

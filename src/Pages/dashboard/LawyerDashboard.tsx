@@ -44,71 +44,6 @@ interface MyJwtPayload extends JwtPayload {
   lawyer_id?: string;
 }
 
-// ─── Data ────────────────────────────────────────────────────────────────────
-
-const stats = [
-  {
-    label: "القضايا النشطة",
-    value: "12",
-    delta: "+2 عن الشهر الماضي",
-    color: "text-blue-600",
-  },
-  {
-    label: "المهام المعلقة",
-    value: "8",
-    delta: "مهمتان مستحقتان اليوم",
-    color: "text-amber-600",
-  },
-];
-
-const activeCases = [
-  {
-    id: "LS-2024-041",
-    name: "محمد السيد ضد البنك الأهلي",
-    type: "مدني",
-    nextDate: "جلسة ٣ يوليو",
-    status: "نشطة",
-    statusVariant: "default" as const,
-    priority: "normal",
-  },
-  {
-    id: "LS-2024-038",
-    name: "شركة النور للمقاولات",
-    type: "تجاري",
-    nextDate: "مراجعة العقود",
-    status: "تحت الدراسة",
-    statusVariant: "secondary" as const,
-    priority: "normal",
-  },
-  {
-    id: "LS-2024-035",
-    name: "النيابة العامة ضد كريم منصور",
-    type: "جنائي",
-    nextDate: "جلسة ٨ يوليو",
-    status: "عاجلة",
-    statusVariant: "destructive" as const,
-    priority: "high",
-  },
-  {
-    id: "LS-2024-029",
-    name: "دعوى حضانة - نور وتامر",
-    type: "أحوال شخصية",
-    nextDate: "جلسة صلح ١٥ يوليو",
-    status: "معلقة",
-    statusVariant: "outline" as const,
-    priority: "normal",
-  },
-  {
-    id: "LS-2024-022",
-    name: "نزاع علامة تجارية",
-    type: "ملكية فكرية",
-    nextDate: "تقديم مذكرة ٢٠ يوليو",
-    status: "نشطة",
-    statusVariant: "default" as const,
-    priority: "normal",
-  },
-];
-
 const tasks = [
   {
     id: "t1",
@@ -189,12 +124,14 @@ export default function LawyerDashboard() {
       );
 
       const result = await res.json();
-      const offices = result.data.map((item: any) => item.offices);
+      console.log("api result", result);
+      const offices = result.data?.map((item: any) => item.offices);
       store.setUser({
         ...store.user!,
         offices,
       });
-
+      console.log("user: ", store.user);
+      console.log("Current Office", store.currentOffice);
       if (offices.length > 0) {
         store.setCurrentOffice(offices[0]);
       }

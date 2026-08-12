@@ -63,6 +63,7 @@ const Login = () => {
           bio: data.data.user.bio,
           email: data.data.user.email,
           pictureUrl: data.data.user.pictureUrl,
+          isAdmin: data.data.user.isAdmin,
         };
 
         Cookies.set("jwt", data.data.token);
