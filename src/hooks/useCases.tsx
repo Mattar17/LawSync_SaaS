@@ -32,6 +32,7 @@ export default function useCases(officeId: string) {
 
   const fetchCases = useCallback(async () => {
     if (!officeId) return;
+
     setLoadingFetch(true);
     try {
       const res = await getOfficeCases(officeId);

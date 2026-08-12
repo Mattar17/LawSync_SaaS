@@ -69,6 +69,11 @@ export default function AppSidebar() {
     <TooltipProvider>
       <Sidebar collapsible="icon">
         <SidebarContent className="mt-12">
+          {user?.isAdmin && (
+            <SidebarMenuButton onClick={() => navigate("/admin/books")}>
+              صفحة الأدمن
+            </SidebarMenuButton>
+          )}
           <SidebarGroup>
             <SidebarGroupLabel>المكاتب</SidebarGroupLabel>
 
