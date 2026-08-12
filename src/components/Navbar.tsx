@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 const navLinks = [
   { id: "#contact", label: "تواصل معنا" },
   { id: "#pricing", label: "الأسعار" },
-  { id: "/portal", label: "بوابة المحامي" },
+  { id: "/login", label: "بوابة المحامي" },
   { id: "#features", label: "عن البرنامج" },
 ];
 

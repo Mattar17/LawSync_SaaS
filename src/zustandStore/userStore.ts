@@ -15,6 +15,7 @@ type User = {
   email: string;
   name: string;
   bio?: string;
+  isAdmin: boolean;
   pictureUrl?: string;
   hasOffice?: boolean;
   offices?: Office[];
