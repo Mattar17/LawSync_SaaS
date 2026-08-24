@@ -47,7 +47,7 @@ const navWorkspace = [
   },
   { title: "القضايا", route: "/dashboard/cases", icon: Briefcase },
   { title: "الفريق", route: "/dashboard/members", icon: Users },
-  { title: "المهام", route: "dashboard/tasks", icon: ListChecks },
+  { title: "المهام", route: "/dashboard/tasks", icon: ListChecks },
 ];
 
 interface MyJwtPayload extends JwtPayload {
