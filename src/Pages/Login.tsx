@@ -69,6 +69,8 @@ const Login = () => {
         Cookies.set("jwt", data.data.token);
         console.log(data.data.token);
         const decoded = jwtDecode(data.data.token) as MyJwtPayload;
+        // Do not carry an office selection across accounts.
+        useUserStore.getState().clearUser();
         useUserStore.getState().setUser(lawyerInfo);
         console.log(decoded);
         if (decoded.admin) navigate("/admin");
