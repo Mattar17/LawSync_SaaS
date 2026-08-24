@@ -22,6 +22,8 @@ import OfficeMembers from "./Pages/dashboard/OfficeMembers";
 import CasesPage from "./Pages/dashboard/Cases";
 import CaseDetailsPage from "./Pages/dashboard/CaseDetails";
 import BooksPage from "./Pages/Books";
+import TasksPage from "./Pages/dashboard/Tasks";
+import TaskDetailsPage from "./Pages/dashboard/TaskDetails";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -99,12 +101,14 @@ function App(): React.ReactElement {
               element={<OfficeMembers />}
             />
             <Route path="/dashboard/cases/:office_id" element={<CasesPage />} />
+            <Route path="/dashboard/tasks/:office_id" element={<TasksPage />} />
             <Route
               path="/dashboard/office/invites"
               element={<LawyerInvites />}
             />
           </Route>
           <Route path="/cases/:caseId" element={<CaseDetailsPage />} />
+          <Route path="/tasks/:taskId" element={<TaskDetailsPage />} />
         </Routes>
       </BrowserRouter>
     </div>
