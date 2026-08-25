@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const navLinks = [
@@ -10,9 +10,12 @@ const navLinks = [
 ];
 
 const Navbar = (): React.ReactElement => {
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [scrolled, setScrolled] = useState(false);
+
+  if (location.pathname.startsWith("/dashboard")) return <></>;
 
   useEffect(() => {
     function handleScroll() {

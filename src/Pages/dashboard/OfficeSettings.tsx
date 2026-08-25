@@ -40,148 +40,161 @@ export default function OfficeSettings() {
   }
 
   return (
-    <>
-      {/* TOAST */}
-      {toast && (
-        <div className="absolute top-2 mx-auto bg-black text-white px-4 py-2 rounded shadow">
-          {toast}
+    <div dir="rtl" className="dashboard-page">
+      <div className="dashboard-container">
+        <div className="mb-6">
+          <p className="dashboard-kicker">إدارة المكتب</p>
+          <h1 className="dashboard-title">إعدادات المكتب</h1>
+          <p className="dashboard-subtitle">
+            حدّث بيانات المكتب الظاهرة لفريقك
+          </p>
         </div>
-      )}
-      {isOfficeOwner ? (
-        <>
-          <form onSubmit={handleOfficeUpdate} className="space-y-6" dir="rtl">
-            <div className="grid grid-cols-1 gap-4 max-w-md">
-              {/* اسم المكتب */}
-              <div className="flex flex-col gap-1.5">
-                <label
-                  htmlFor="name"
-                  className="text-xs font-medium text-muted-foreground uppercase tracking-wide"
-                >
-                  اسم المكتب
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  value={form.name}
-                  placeholder="مكتب المحاماة..."
-                  onChange={handleChange}
-                  className="
+        {/* TOAST */}
+        {toast && (
+          <div className="absolute top-2 mx-auto bg-black text-white px-4 py-2 rounded shadow">
+            {toast}
+          </div>
+        )}
+        {isOfficeOwner ? (
+          <>
+            <form
+              onSubmit={handleOfficeUpdate}
+              className="dashboard-panel max-w-2xl space-y-6 p-6"
+              dir="rtl"
+            >
+              <div className="grid grid-cols-1 gap-4 max-w-md">
+                {/* اسم المكتب */}
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    htmlFor="name"
+                    className="text-xs font-medium text-muted-foreground uppercase tracking-wide"
+                  >
+                    اسم المكتب
+                  </label>
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    value={form.name}
+                    placeholder="مكتب المحاماة..."
+                    onChange={handleChange}
+                    className="
             h-9 w-full rounded-lg border border-border bg-background
             px-3 text-sm text-foreground placeholder:text-muted-foreground
             outline-none focus:border-[#B8975A] focus:ring-2 focus:ring-[#B8975A]/15
             transition-colors
             "
-                />
-              </div>
+                  />
+                </div>
 
-              {/* العنوان */}
-              <div className="flex flex-col gap-1.5">
-                <label
-                  htmlFor="address"
-                  className="text-xs font-medium text-muted-foreground uppercase tracking-wide"
-                >
-                  العنوان
-                </label>
-                <input
-                  id="address"
-                  name="address"
-                  type="text"
-                  value={form.address}
-                  placeholder="المدينة، الشارع، رقم المبنى"
-                  onChange={handleChange}
-                  className="
+                {/* العنوان */}
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    htmlFor="address"
+                    className="text-xs font-medium text-muted-foreground uppercase tracking-wide"
+                  >
+                    العنوان
+                  </label>
+                  <input
+                    id="address"
+                    name="address"
+                    type="text"
+                    value={form.address}
+                    placeholder="المدينة، الشارع، رقم المبنى"
+                    onChange={handleChange}
+                    className="
             h-9 w-full rounded-lg border border-border bg-background
             px-3 text-sm text-foreground placeholder:text-muted-foreground
             outline-none focus:border-[#B8975A] focus:ring-2 focus:ring-[#B8975A]/15
             transition-colors
             "
-                />
-              </div>
+                  />
+                </div>
 
-              {/* رقم الهاتف */}
-              <div className="flex flex-col gap-1.5">
-                <label
-                  htmlFor="phone"
-                  className="text-xs font-medium text-muted-foreground uppercase tracking-wide"
-                >
-                  رقم الهاتف
-                </label>
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  value={form.phone}
-                  placeholder="01xxxxxxxxx"
-                  onChange={handleChange}
-                  className="
+                {/* رقم الهاتف */}
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    htmlFor="phone"
+                    className="text-xs font-medium text-muted-foreground uppercase tracking-wide"
+                  >
+                    رقم الهاتف
+                  </label>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={form.phone}
+                    placeholder="01xxxxxxxxx"
+                    onChange={handleChange}
+                    className="
             h-9 w-full rounded-lg border border-border bg-background
             px-3 text-sm text-foreground placeholder:text-muted-foreground
             outline-none focus:border-[#B8975A] focus:ring-2 focus:ring-[#B8975A]/15
             transition-colors
             "
-                />
-              </div>
+                  />
+                </div>
 
-              {/* الوصف */}
-              <div className="flex flex-col gap-1.5">
-                <label
-                  htmlFor="description"
-                  className="text-xs font-medium text-muted-foreground uppercase tracking-wide"
-                >
-                  الوصف
-                </label>
-                <textarea
-                  id="description"
-                  name="description"
-                  rows={4}
-                  value={form.description}
-                  placeholder="نبذة مختصرة عن مكتب المحاماة..."
-                  onChange={handleChange}
-                  className="
+                {/* الوصف */}
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    htmlFor="description"
+                    className="text-xs font-medium text-muted-foreground uppercase tracking-wide"
+                  >
+                    الوصف
+                  </label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    rows={4}
+                    value={form.description}
+                    placeholder="نبذة مختصرة عن مكتب المحاماة..."
+                    onChange={handleChange}
+                    className="
             w-full resize-none rounded-lg border border-border bg-background
             px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground
             outline-none focus:border-[#B8975A] focus:ring-2 focus:ring-[#B8975A]/15
             transition-colors
             "
-                />
+                  />
+                </div>
               </div>
-            </div>
 
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled={loadingOffice}
-                className="
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={loadingOffice}
+                  className="
           inline-flex items-center gap-2 px-5 py-2 rounded-lg
           bg-foreground text-background text-sm font-medium
           hover:bg-foreground/85 disabled:opacity-50
           transition-colors cursor-pointer disabled:cursor-not-allowed
           "
-              >
-                <i className="ti ti-building text-sm" aria-hidden="true" />
-                {loadingOffice ? "جاري الحفظ..." : "حفظ بيانات المكتب"}
-              </button>
+                >
+                  <i className="ti ti-building text-sm" aria-hidden="true" />
+                  {loadingOffice ? "جاري الحفظ..." : "حفظ بيانات المكتب"}
+                </button>
+              </div>
+            </form>
+          </>
+        ) : (
+          <div className="dashboard-panel max-w-2xl space-y-6 p-6">
+            <div className="pb-4 border-b border-border">
+              <h2 className="text-base font-semibold text-foreground">
+                إدارة المكتب
+              </h2>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                تفاصيل مكتب المحاماة الخاص بك
+              </p>
             </div>
-          </form>
-        </>
-      ) : (
-        <div className="space-y-6">
-          <div className="pb-4 border-b border-border">
-            <h2 className="text-base font-semibold text-foreground">
-              إدارة المكتب
-            </h2>
-            <p className="text-sm text-muted-foreground mt-0.5">
-              تفاصيل مكتب المحاماة الخاص بك
-            </p>
-          </div>
 
-          <CreateOffice
-            handleCreateOffice={handleOfficeCreationAndUpdateStore}
-            setOfficeName={setOfficeName}
-          />
-        </div>
-      )}
-    </>
+            <CreateOffice
+              handleCreateOffice={handleOfficeCreationAndUpdateStore}
+              setOfficeName={setOfficeName}
+            />
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

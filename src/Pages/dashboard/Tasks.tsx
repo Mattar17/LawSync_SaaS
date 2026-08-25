@@ -128,18 +128,13 @@ export default function TasksPage() {
     : 0;
 
   return (
-    <div dir="rtl" className="min-h-full bg-[#f8f8f6] p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto max-w-375">
+    <div dir="rtl" className="dashboard-page">
+      <div className="dashboard-container">
         <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="mb-3 flex items-center gap-2 text-xs font-semibold tracking-wide text-[#d1624e]">
-              <span className="h-2 w-2 rounded-full bg-[#d1624e] shadow-[0_0_0_4px_rgba(209,98,78,0.12)]" />
-              مساحة العمل اليومية
-            </div>
-            <h1 className="font-heading text-4xl font-semibold tracking-tight text-[#202522]">
-              المهام
-            </h1>
-            <p className="mt-2 text-sm text-[#68716b]">
+            <div className="dashboard-kicker">مساحة العمل اليومية</div>
+            <h1 className="dashboard-title">المهام</h1>
+            <p className="dashboard-subtitle">
               {taskState.isOwner ? "جميع مهام المكتب" : "المهام المسندة إليك"}
             </p>
           </div>
