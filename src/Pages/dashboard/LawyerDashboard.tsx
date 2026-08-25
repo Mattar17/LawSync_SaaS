@@ -1,6 +1,15 @@
 "use client";
 
-import { Briefcase, ChevronRight, Clock, Gavel, Plus } from "lucide-react";
+import {
+  Activity,
+  Briefcase,
+  CalendarDays,
+  CheckCircle2,
+  ChevronLeft,
+  Clock,
+  Gavel,
+  Plus,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -149,196 +158,248 @@ export default function LawyerDashboard() {
   const { currentOffice } = useUserStore.getState();
   const navigate = useNavigate();
 
+  const completedTasks = tasks.filter((task) => task.done).length;
+  const urgentTasks = tasks.filter((task) => task.urgent && !task.done).length;
+  const upcomingSessions = activeCases.filter(
+    (item: any) => item.next_court_session_date,
+  ).length;
+
+  const stats = [
+    {
+      label: "القضايا النشطة",
+      value: activeCases.length,
+      icon: Briefcase,
+      tone: "bg-[#f9e8e4] text-[#c45a48]",
+    },
+    {
+      label: "جلسات قادمة",
+      value: upcomingSessions,
+      icon: CalendarDays,
+      tone: "bg-[#e9f1eb] text-[#5f9675]",
+    },
+    {
+      label: "مهام عاجلة",
+      value: urgentTasks,
+      icon: Clock,
+      tone: "bg-[#f8efdf] text-[#b38342]",
+    },
+    {
+      label: "منجزة اليوم",
+      value: completedTasks,
+      icon: CheckCircle2,
+      tone: "bg-[#edf0ed] text-[#68736b]",
+    },
+  ];
+
   return (
     <TooltipProvider>
       <SidebarProvider>
         <AppSidebar />
-
         <SidebarInset>
-          {/* Top bar */}
-          <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <div className="flex flex-1 items-center gap-2">
-              <h1 className="text-sm font-medium">
+          <header className="flex h-16 shrink-0 items-center gap-3 border-b border-[#e5e6e1] bg-white px-4 sm:px-6">
+            <SidebarTrigger className="text-[#68716b]" />
+            <Separator orientation="vertical" className="h-5 bg-[#e5e6e1]" />
+            <div className="flex-1">
+              <p className="text-xs text-[#89918b]">مساحة العمل</p>
+              <h1 className="text-sm font-semibold text-[#202522]">
                 {currentOffice?.name || "لوحة التحكم"}
               </h1>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="gap-1.5">
-                <Plus className="size-3.5" />
-                قضية جديدة
-              </Button>
-              <Button variant="outline" size="sm" className="gap-1.5">
-                <Clock className="size-3.5" />
-                السجل
-              </Button>
-            </div>
+            <Button className="h-10 rounded-lg bg-[#d1624e] px-4 text-white shadow-[0_5px_14px_rgba(209,98,78,0.18)] hover:bg-[#bc5543] gap-1.5">
+              <Plus className="size-4" /> قضية جديدة
+            </Button>
           </header>
 
-          <div className="flex flex-1 flex-col gap-6 p-6">
-            {/* Greeting */}
-            <div>
-              <h2 className="text-2xl font-semibold tracking-tight">
-                {isOwner ? "مالك المكتب" : ""} مرحباً, محمد
-              </h2>
-              <p className="text-sm text-muted-foreground mt-1">{today}</p>
-            </div>
+          <main dir="rtl" className="min-h-full bg-[#f8f8f6] p-4 sm:p-6 lg:p-8">
+            <div className="mx-auto max-w-375">
+              <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="mb-3 flex items-center gap-2 text-xs font-semibold tracking-wide text-[#d1624e]">
+                    <span className="size-2 rounded-full bg-[#d1624e] shadow-[0_0_0_4px_rgba(209,98,78,0.12)]" />
+                    ملخص المكتب
+                  </p>
+                  <h2 className="font-heading text-4xl font-semibold tracking-tight text-[#202522]">
+                    مرحباً، محمد
+                  </h2>
+                  <p className="mt-2 text-sm text-[#68716b]">
+                    {isOwner ? "مالك المكتب" : "مساحة عملك اليومية"} · {today}
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  className="h-10 rounded-lg border-[#e5e6e1] bg-white text-[#68716b] hover:bg-[#fdfcf9] gap-2"
+                >
+                  <Clock className="size-4" /> السجل
+                </Button>
+              </div>
 
-            {/* Stat cards */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardDescription>القضايا النشطة</CardDescription>
-                  <CardTitle className={`text-3xl text-blue-600`}>
-                    {activeCases?.length}
-                  </CardTitle>
-                </CardHeader>
-              </Card>
-            </div>
+              <div className="mb-6 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-[#e5e6e1] bg-[#e5e6e1] shadow-[0_8px_24px_rgba(32,37,34,0.04)] lg:grid-cols-4">
+                {stats.map((stat) => {
+                  const StatIcon = stat.icon;
+                  return (
+                    <div
+                      key={stat.label}
+                      className="flex items-center gap-3 bg-white px-4 py-4 sm:px-5"
+                    >
+                      <div
+                        className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${stat.tone}`}
+                      >
+                        <StatIcon className="size-5" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-[#89918b]">{stat.label}</p>
+                        <p className="mt-1 text-2xl font-semibold text-[#202522]">
+                          {stat.value}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
 
-            {/* Active cases table + right column */}
-            <div className="grid gap-4 lg:grid-cols-3">
-              {/* Cases table — spans 2 cols */}
-              <Card className="lg:col-span-2">
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <Briefcase className="size-4 text-muted-foreground" />
-                      آخر القضايا
-                    </CardTitle>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="gap-1 text-xs"
-                    onClick={() =>
-                      navigate(`/dashboard/cases/${store.currentOffice?.id}`)
-                    }
-                  >
-                    الذهاب لكل القضايا <ChevronRight className="size-3" />
-                  </Button>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="ps-6 text-start">
-                          القضية
-                        </TableHead>
-                        <TableHead className="text-start">التصنيف</TableHead>
-                        <TableHead className="text-start">
-                          تاريخ الجلسة القادمة
-                        </TableHead>
-                        <TableHead className="pe-6 text-end">الحالة</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {activeCases?.map((c: any) => (
-                        <TableRow
-                          key={c.id}
-                          className="cursor-pointer hover:bg-muted/50"
-                        >
-                          <TableCell className="ps-6">
-                            <div className="font-medium text-sm">{c.title}</div>
-                            <div className="text-xs text-muted-foreground">
-                              {c.id}
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-sm text-muted-foreground">
-                            {c.type}
-                          </TableCell>
-                          <TableCell className="text-sm text-muted-foreground">
-                            {c.next_court_session_date}
-                          </TableCell>
-                          <TableCell className="pe-6 text-end">
-                            <Badge variant={c.statusVariant}>
-                              {c.case_status}
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-
-              {/* Right column — tasks + schedule stacked */}
-              <div className="flex flex-col gap-4">
-                {/* Today's tasks */}
-                <Card>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-medium">
-                        مهام اليوم
-                      </CardTitle>
-                      <Button variant="ghost" size="icon" className="size-6">
-                        <Plus className="size-3.5" />
+              <div className="grid gap-4 lg:grid-cols-[1.5fr_0.8fr]">
+                <Card className="overflow-hidden rounded-xl border-[#e5e6e1] bg-white py-0 shadow-[0_8px_24px_rgba(32,37,34,0.04)]">
+                  <CardHeader className="border-b border-[#eef0ec] px-5 py-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <CardTitle className="flex items-center gap-2 text-lg text-[#202522]">
+                          <Briefcase className="size-5 text-[#d1624e]" /> آخر
+                          القضايا
+                        </CardTitle>
+                        <CardDescription className="mt-1">
+                          القضايا التي تحتاج انتباهك
+                        </CardDescription>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="rounded-lg text-xs text-[#d1624e] hover:bg-[#f9e8e4]"
+                        onClick={() =>
+                          navigate(
+                            `/dashboard/cases/${store.currentOffice?.id}`,
+                          )
+                        }
+                      >
+                        كل القضايا <ChevronLeft className="size-4" />
                       </Button>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-12">
+                  <CardContent className="p-0">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="border-[#eef0ec] hover:bg-transparent">
+                          <TableHead className="px-5 text-start">
+                            القضية
+                          </TableHead>
+                          <TableHead className="text-start">التصنيف</TableHead>
+                          <TableHead className="text-start">
+                            الجلسة القادمة
+                          </TableHead>
+                          <TableHead className="px-5 text-end">
+                            الحالة
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {activeCases.slice(0, 5).map((c: any) => (
+                          <TableRow
+                            key={c.id}
+                            className="cursor-pointer border-[#eef0ec] hover:bg-[#fdfcf9]"
+                          >
+                            <TableCell className="px-5">
+                              <div className="font-semibold text-sm text-[#202522]">
+                                {c.title}
+                              </div>
+                              <div className="text-xs text-[#89918b]">
+                                {c.id}
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-sm text-[#68716b]">
+                              {c.type}
+                            </TableCell>
+                            <TableCell className="text-sm text-[#68716b]">
+                              {c.next_court_session_date || "لا يوجد موعد"}
+                            </TableCell>
+                            <TableCell className="px-5 text-end">
+                              <Badge
+                                variant={c.statusVariant}
+                                className="rounded-md"
+                              >
+                                {c.case_status}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                    {activeCases.length === 0 && (
+                      <p className="px-5 py-10 text-center text-sm text-[#89918b]">
+                        لا توجد قضايا نشطة حالياً
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <div className="rounded-xl border border-[#e5e6e1] bg-white p-5 shadow-[0_8px_24px_rgba(32,37,34,0.04)]">
+                  <div className="mb-5 flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-semibold tracking-wide text-[#89918b]">
+                        اليوم
+                      </p>
+                      <h3 className="mt-1 text-lg font-semibold text-[#202522]">
+                        قائمة العمل
+                      </h3>
+                    </div>
+                    <Activity className="size-5 text-[#d1624e]" />
+                  </div>
+                  <div className="space-y-4">
                     {tasks.map((task) => (
                       <div key={task.id} className="flex items-center gap-3">
                         <Checkbox
                           id={task.id}
                           checked={task.done}
-                          className="shrink-0"
+                          className="shrink-0 data-[state=checked]:border-[#75a88a] data-[state=checked]:bg-[#75a88a]"
                         />
                         <label
                           htmlFor={task.id}
-                          className={`flex-1 text-sm cursor-pointer ${
-                            task.done
-                              ? "line-through text-muted-foreground"
-                              : ""
-                          }`}
+                          className={`min-w-0 flex-1 cursor-pointer text-sm leading-5 ${task.done ? "text-[#89918b] line-through" : "text-[#374039]"}`}
                         >
                           {task.text}
                         </label>
                         <span
-                          className={`text-xs shrink-0 ${
-                            task.urgent
-                              ? "text-destructive font-medium"
-                              : "text-muted-foreground"
-                          }`}
+                          className={`shrink-0 text-xs ${task.urgent && !task.done ? "font-semibold text-[#d1624e]" : "text-[#89918b]"}`}
                         >
                           {task.due}
                         </span>
                       </div>
                     ))}
-                  </CardContent>
-                </Card>
+                  </div>
+                  <div className="mt-6 border-t border-[#eef0ec] pt-4 text-xs text-[#89918b]">
+                    {completedTasks} من {tasks.length} مهام مكتملة
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-xl border border-[#e5e6e1] bg-white p-5 shadow-[0_8px_24px_rgba(32,37,34,0.04)]">
+                <div className="mb-4 flex items-center gap-2">
+                  <Gavel className="size-5 text-[#d1624e]" />
+                  <h3 className="text-lg font-semibold text-[#202522]">
+                    آخر المستجدات
+                  </h3>
+                </div>
+                <div className="grid gap-4 md:grid-cols-4">
+                  {recentActivity.map((item, i) => (
+                    <div key={i} className="border-r-2 border-[#f0d1ca] pr-3">
+                      <p className="text-sm leading-6 text-[#374039]">
+                        {item.text}
+                      </p>
+                      <p className="mt-1 text-xs text-[#89918b]">{item.time}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-
-            {/* Bottom row — billing snapshot + recent activity */}
-            <div className="grid gap-4 sm:grid-cols-1">
-              {/* Recent activity */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-sm font-medium">
-                    <Gavel className="size-4 text-muted-foreground" />
-                    آخر المستجدات
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {recentActivity.map((item, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <div className="mt-1.5 size-1.5 rounded-full bg-blue-500 shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm leading-snug">{item.text}</p>
-                          <p className="text-xs text-muted-foreground mt-0.5">
-                            {item.time}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+          </main>
         </SidebarInset>
       </SidebarProvider>
     </TooltipProvider>

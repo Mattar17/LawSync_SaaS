@@ -71,10 +71,14 @@ export default function useTasks(officeId?: string) {
     if (!officeId) return;
     setUpdatingId(taskId);
     try {
-      const payload = {
-        ...form,
-        due_date: form.due_date || null,
-      };
+      const payload = isOwner
+        ? { ...form, due_date: form.due_date || null }
+        : {
+            notes: form.notes,
+            due_date: form.due_date || null,
+            status: form.status,
+          };
+      console.log("Updating task with payload:", payload);
       const res = await updateTask(officeId, taskId, payload);
       if (!res.success) return toast.error(res.message || "فشل تعديل المهمة");
       setTasks((previous) =>
