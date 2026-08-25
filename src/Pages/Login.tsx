@@ -88,7 +88,7 @@ const Login = () => {
 
   return (
     <div
-      dir="rtl"
+      dir="ltr"
       className="flex items-center justify-center min-h-screen bg-gray-50 relative"
     >
       {/* Toast */}
@@ -128,7 +128,7 @@ const Login = () => {
           className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4"
         >
           {/* Email */}
-          <div>
+          <div dir="ltr">
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
               البريد الإلكتروني
             </label>
@@ -161,7 +161,7 @@ const Login = () => {
           </div>
 
           {/* Password */}
-          <div>
+          <div dir="ltr">
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
               كلمة المرور
             </label>

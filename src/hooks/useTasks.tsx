@@ -52,7 +52,11 @@ export default function useTasks(officeId?: string) {
       return toast.error("مالك المكتب فقط يمكنه إضافة مهمة");
     setCreating(true);
     try {
-      const res = await createTask(officeId, form);
+      const payload = {
+        ...form,
+        due_date: form.due_date || null,
+      };
+      const res = await createTask(officeId, payload);
       if (!res.success) return toast.error(res.message || "فشل إضافة المهمة");
       if (res.data) setTasks((previous) => [res.data as Task, ...previous]);
       toast.success("تم إضافة المهمة بنجاح");
@@ -67,7 +71,11 @@ export default function useTasks(officeId?: string) {
     if (!officeId) return;
     setUpdatingId(taskId);
     try {
-      const res = await updateTask(officeId, taskId, form);
+      const payload = {
+        ...form,
+        due_date: form.due_date || null,
+      };
+      const res = await updateTask(officeId, taskId, payload);
       if (!res.success) return toast.error(res.message || "فشل تعديل المهمة");
       setTasks((previous) =>
         previous.map((task) =>

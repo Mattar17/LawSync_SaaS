@@ -1,4 +1,4 @@
-export const TASK_STATUSES = ["جديدة", "قيد التنفيذ", "مكتملة"] as const;
+export const TASK_STATUSES = ["لم تبدأ", "قيد التنفيذ", "مكتملة"] as const;
 
 export type TaskStatus = (typeof TASK_STATUSES)[number];
 
