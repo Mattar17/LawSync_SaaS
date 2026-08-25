@@ -72,16 +72,16 @@ export default function AppSidebar() {
     <TooltipProvider>
       <Sidebar
         collapsible="icon"
-        className="border-l border-[#e5e6e1] bg-white"
+        className="border-l border-[#dfe3ea] bg-white"
       >
         <SidebarHeader className="border-b border-[#eef0ec] p-3">
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
                 size="lg"
-                className="rounded-xl hover:bg-[#fdfcf9]"
+                className="rounded-xl hover:bg-[#f7f8fa]"
               >
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#d1624e] text-white shadow-[0_4px_10px_rgba(209,98,78,0.2)]">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#0e2038] text-[#b8975a] shadow-[0_4px_10px_rgba(14,32,56,0.18)]">
                   <Command className="size-5" />
                 </span>
                 <span className="grid flex-1 text-right leading-tight">
@@ -99,7 +99,7 @@ export default function AppSidebar() {
         <SidebarContent className="gap-1 px-2 py-4">
           {user?.isAdmin && (
             <SidebarMenuButton
-              className="mb-2 rounded-lg text-[#d1624e] hover:bg-[#f9e8e4]"
+              className="mb-2 rounded-lg text-[#b8975a] hover:bg-[#f5eee1]"
               onClick={() => navigate("/admin/books")}
             >
               صفحة الأدمن
@@ -116,7 +116,7 @@ export default function AppSidebar() {
                   <SidebarMenuButton
                     isActive={currentOffice?.id === office.id}
                     tooltip={office.name}
-                    className="rounded-lg text-[#68716b] hover:bg-[#fdfcf9] data-[active=true]:bg-[#f9e8e4] data-[active=true]:text-[#c45a48]"
+                    className="rounded-lg text-[#7c879b] hover:bg-[#f7f8fa] data-[active=true]:bg-[#f5eee1] data-[active=true]:text-[#8a6a34]"
                     onClick={() => setCurrentOffice(office)}
                   >
                     <Briefcase />
@@ -153,7 +153,7 @@ export default function AppSidebar() {
                     asChild
                     tooltip={item.title}
                     isActive={location.pathname.startsWith(item.route)}
-                    className="rounded-lg text-[#68716b] hover:bg-[#fdfcf9] data-[active=true]:bg-[#f9e8e4] data-[active=true]:text-[#c45a48]"
+                    className="rounded-lg text-[#7c879b] hover:bg-[#f7f8fa] data-[active=true]:bg-[#f5eee1] data-[active=true]:text-[#8a6a34]"
                   >
                     <Link to={`${item.route}/${currentOffice?.id}`}>
                       <item.icon />
@@ -177,7 +177,7 @@ export default function AppSidebar() {
                   >
                     <Avatar className="h-9 w-9 rounded-lg">
                       <AvatarImage src={user?.pictureUrl} alt={user?.name} />
-                      <AvatarFallback className="rounded-lg bg-[#f9e8e4] text-[#c45a48]">
+                      <AvatarFallback className="rounded-lg bg-[#f5eee1] text-[#8a6a34]">
                         L
                       </AvatarFallback>
                     </Avatar>
@@ -198,7 +198,7 @@ export default function AppSidebar() {
                   <DropdownMenuLabel className="p-0 font-normal">
                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                       <Avatar className="h-8 w-8 rounded-lg">
-                        <AvatarFallback className="rounded-lg bg-[#f9e8e4] text-[#c45a48]">
+                        <AvatarFallback className="rounded-lg bg-[#f5eee1] text-[#8a6a34]">
                           L
                         </AvatarFallback>
                       </Avatar>

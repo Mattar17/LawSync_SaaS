@@ -83,7 +83,6 @@ function App(): React.ReactElement {
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="/admin" element={<AdminDashboard />}></Route>
-          <Route path="/dashboard" element={<LawyerDashboard />}></Route>
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<LawyerDashboard />} />
 

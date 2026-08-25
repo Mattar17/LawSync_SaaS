@@ -5,14 +5,10 @@ import {
   Briefcase,
   CalendarDays,
   CheckCircle2,
-  ChevronLeft,
   Clock,
-  Gavel,
-  Plus,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -20,8 +16,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-import { Separator } from "@/components/ui/separator";
 
 import {
   Table,
@@ -37,12 +31,6 @@ import { jwtDecode, type JwtPayload } from "jwt-decode";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/zustandStore/userStore";
-import AppSidebar from "@/components/AppSidebar";
-import {
-  SidebarProvider,
-  SidebarInset,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
 import useCases from "@/hooks/useCases";
 import { Case } from "@/types/case";
 import { useNavigate } from "react-router-dom";
@@ -85,25 +73,6 @@ const tasks = [
     text: "إعداد مذكرة الحضانة",
     due: "٨ يوليو",
     done: false,
-  },
-];
-
-const recentActivity = [
-  {
-    text: "تم رفع مستند جديد في قضية البنك الأهلي",
-    time: "منذ 10 دقائق",
-  },
-  {
-    text: "تم سداد الفاتورة رقم INV-041",
-    time: "منذ ساعة",
-  },
-  {
-    text: "تم تعديل موعد جلسة قضية كريم منصور",
-    time: "منذ 3 ساعات",
-  },
-  {
-    text: "رسالة جديدة من أحمد فوزي",
-    time: "أمس",
   },
 ];
 
@@ -166,242 +135,312 @@ export default function LawyerDashboard() {
 
   const stats = [
     {
-      label: "القضايا النشطة",
-      value: activeCases.length,
-      icon: Briefcase,
-      tone: "bg-[#f9e8e4] text-[#c45a48]",
-    },
-    {
-      label: "جلسات قادمة",
-      value: upcomingSessions,
-      icon: CalendarDays,
-      tone: "bg-[#e9f1eb] text-[#5f9675]",
+      label: "منجزة اليوم",
+      value: completedTasks,
+      icon: CheckCircle2,
+      tone: "bg-[#e5f5ee] text-[#2f9e6e]",
     },
     {
       label: "مهام عاجلة",
       value: urgentTasks,
       icon: Clock,
-      tone: "bg-[#f8efdf] text-[#b38342]",
+      tone: "bg-[#faeae6] text-[#c0503f]",
     },
     {
-      label: "منجزة اليوم",
-      value: completedTasks,
-      icon: CheckCircle2,
-      tone: "bg-[#edf0ed] text-[#68736b]",
+      label: "جلسات قادمة",
+      value: upcomingSessions,
+      icon: CalendarDays,
+      tone: "bg-[#e7f0fa] text-[#3b6fa0]",
+    },
+    {
+      label: "القضايا النشطة",
+      value: activeCases.length,
+      icon: Briefcase,
+      tone: "bg-[#f5eee1] text-[#b8975a]",
+    },
+  ];
+
+  const caseStatus = [
+    {
+      label: "قضية جديدة",
+      count: activeCases.filter(
+        (item: any) => item.case_status === "قضية جديدة",
+      ).length,
+      color: "#b8975a",
+    },
+    {
+      label: "قيد المراجعة",
+      count: activeCases.filter(
+        (item: any) => item.case_status === "قيد المراجعة",
+      ).length,
+      color: "#3b6fa0",
+    },
+    {
+      label: "انتظار الحكم",
+      count: activeCases.filter(
+        (item: any) => item.case_status === "انتظار الحكم",
+      ).length,
+      color: "#7c5cbf",
     },
   ];
 
   return (
     <TooltipProvider>
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-3 border-b border-[#e5e6e1] bg-white px-4 sm:px-6">
-            <SidebarTrigger className="text-[#68716b]" />
-            <Separator orientation="vertical" className="h-5 bg-[#e5e6e1]" />
-            <div className="flex-1">
-              <p className="text-xs text-[#89918b]">مساحة العمل</p>
-              <h1 className="text-sm font-semibold text-[#202522]">
-                {currentOffice?.name || "لوحة التحكم"}
-              </h1>
+      <main dir="rtl" className="min-h-screen bg-[#f5f6f8] p-4 sm:p-7 lg:p-8">
+        <div className="mx-auto max-w-330">
+          <div className="mb-6">
+            <div>
+              <p className="mb-2 flex items-center gap-2 text-xs font-semibold text-[#7c879b]">
+                <span className="size-1.5 rounded-full bg-[#2f9e6e]" />
+                {currentOffice?.name || "مكتب المحاماة"}
+              </p>
+              <h2 className="font-heading text-3xl font-bold text-[#0e2038]">
+                مرحباً، محمد
+              </h2>
+              <p className="mt-1 text-sm text-[#7c879b]">
+                {isOwner ? "مالك المكتب" : "مساحة عملك اليومية"} — {today}
+              </p>
             </div>
-            <Button className="h-10 rounded-lg bg-[#d1624e] px-4 text-white shadow-[0_5px_14px_rgba(209,98,78,0.18)] hover:bg-[#bc5543] gap-1.5">
-              <Plus className="size-4" /> قضية جديدة
-            </Button>
-          </header>
+          </div>
 
-          <main dir="rtl" className="min-h-full bg-[#f8f8f6] p-4 sm:p-6 lg:p-8">
-            <div className="mx-auto max-w-375">
-              <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {stats.map((stat) => {
+              const StatIcon = stat.icon;
+              return (
+                <div
+                  key={stat.label}
+                  className="flex flex-col gap-3 rounded-[14px] border border-[#e7e9ee] bg-white p-4 shadow-[0_5px_18px_rgba(14,32,56,0.035)] sm:p-5"
+                >
+                  <div
+                    className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${stat.tone}`}
+                  >
+                    <StatIcon className="size-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-[#7c879b]">
+                      {stat.label}
+                    </p>
+                    <p className="mt-1 text-3xl font-bold text-[#0e2038]">
+                      {stat.value}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-[340px_1fr]">
+            <div className="rounded-[14px] border border-[#e7e9ee] bg-white p-5 shadow-[0_5px_18px_rgba(14,32,56,0.035)]">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-base font-bold text-[#0e2038]">
+                  قائمة العمل اليوم
+                </h3>
+                <Activity className="size-4 text-[#b8975a]" />
+              </div>
+              <div className="mb-4 flex items-center gap-4 border-b border-[#e7e9ee] pb-4">
+                <div className="relative size-16 shrink-0">
+                  <svg className="size-16 -rotate-90" viewBox="0 0 64 64">
+                    <circle
+                      cx="32"
+                      cy="32"
+                      r="26"
+                      fill="none"
+                      stroke="#f5eee1"
+                      strokeWidth="7"
+                    />
+                    <circle
+                      cx="32"
+                      cy="32"
+                      r="26"
+                      fill="none"
+                      stroke="#b8975a"
+                      strokeWidth="7"
+                      strokeLinecap="round"
+                      strokeDasharray="163"
+                      strokeDashoffset="130.4"
+                    />
+                  </svg>
+                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-[#0e2038]">
+                    20%
+                  </span>
+                </div>
                 <div>
-                  <p className="mb-3 flex items-center gap-2 text-xs font-semibold tracking-wide text-[#d1624e]">
-                    <span className="size-2 rounded-full bg-[#d1624e] shadow-[0_0_0_4px_rgba(209,98,78,0.12)]" />
-                    ملخص المكتب
+                  <p className="text-sm font-bold text-[#0e2038]">
+                    مهمة واحدة من ٥ مكتملة
                   </p>
-                  <h2 className="font-heading text-4xl font-semibold tracking-tight text-[#202522]">
-                    مرحباً، محمد
-                  </h2>
-                  <p className="mt-2 text-sm text-[#68716b]">
-                    {isOwner ? "مالك المكتب" : "مساحة عملك اليومية"} · {today}
+                  <p className="mt-1 text-xs text-[#7c879b]">
+                    ٢٠٪ من مهام اليوم
                   </p>
                 </div>
-                <Button
-                  variant="outline"
-                  className="h-10 rounded-lg border-[#e5e6e1] bg-white text-[#68716b] hover:bg-[#fdfcf9] gap-2"
-                >
-                  <Clock className="size-4" /> السجل
-                </Button>
               </div>
-
-              <div className="mb-6 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-[#e5e6e1] bg-[#e5e6e1] shadow-[0_8px_24px_rgba(32,37,34,0.04)] lg:grid-cols-4">
-                {stats.map((stat) => {
-                  const StatIcon = stat.icon;
-                  return (
-                    <div
-                      key={stat.label}
-                      className="flex items-center gap-3 bg-white px-4 py-4 sm:px-5"
+              <div className="space-y-0">
+                {tasks.map((task) => (
+                  <div
+                    key={task.id}
+                    className="flex items-center gap-2.5 border-b border-[#e7e9ee] py-2.5 last:border-0 last:pb-0"
+                  >
+                    <Checkbox
+                      id={`work-${task.id}`}
+                      checked={task.done}
+                      className="size-4.5 rounded-md data-[state=checked]:border-[#2f9e6e] data-[state=checked]:bg-[#2f9e6e]"
+                    />
+                    <label
+                      htmlFor={`work-${task.id}`}
+                      className={`min-w-0 flex-1 cursor-pointer text-[13px] font-medium ${task.done ? "text-[#7c879b] line-through" : "text-[#16263d]"}`}
                     >
-                      <div
-                        className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${stat.tone}`}
-                      >
-                        <StatIcon className="size-5" />
-                      </div>
-                      <div>
-                        <p className="text-xs text-[#89918b]">{stat.label}</p>
-                        <p className="mt-1 text-2xl font-semibold text-[#202522]">
-                          {stat.value}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="grid gap-4 lg:grid-cols-[1.5fr_0.8fr]">
-                <Card className="overflow-hidden rounded-xl border-[#e5e6e1] bg-white py-0 shadow-[0_8px_24px_rgba(32,37,34,0.04)]">
-                  <CardHeader className="border-b border-[#eef0ec] px-5 py-5">
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <CardTitle className="flex items-center gap-2 text-lg text-[#202522]">
-                          <Briefcase className="size-5 text-[#d1624e]" /> آخر
-                          القضايا
-                        </CardTitle>
-                        <CardDescription className="mt-1">
-                          القضايا التي تحتاج انتباهك
-                        </CardDescription>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="rounded-lg text-xs text-[#d1624e] hover:bg-[#f9e8e4]"
-                        onClick={() =>
-                          navigate(
-                            `/dashboard/cases/${store.currentOffice?.id}`,
-                          )
-                        }
-                      >
-                        كل القضايا <ChevronLeft className="size-4" />
-                      </Button>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="border-[#eef0ec] hover:bg-transparent">
-                          <TableHead className="px-5 text-start">
-                            القضية
-                          </TableHead>
-                          <TableHead className="text-start">التصنيف</TableHead>
-                          <TableHead className="text-start">
-                            الجلسة القادمة
-                          </TableHead>
-                          <TableHead className="px-5 text-end">
-                            الحالة
-                          </TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {activeCases.slice(0, 5).map((c: any) => (
-                          <TableRow
-                            key={c.id}
-                            className="cursor-pointer border-[#eef0ec] hover:bg-[#fdfcf9]"
-                          >
-                            <TableCell className="px-5">
-                              <div className="font-semibold text-sm text-[#202522]">
-                                {c.title}
-                              </div>
-                              <div className="text-xs text-[#89918b]">
-                                {c.id}
-                              </div>
-                            </TableCell>
-                            <TableCell className="text-sm text-[#68716b]">
-                              {c.type}
-                            </TableCell>
-                            <TableCell className="text-sm text-[#68716b]">
-                              {c.next_court_session_date || "لا يوجد موعد"}
-                            </TableCell>
-                            <TableCell className="px-5 text-end">
-                              <Badge
-                                variant={c.statusVariant}
-                                className="rounded-md"
-                              >
-                                {c.case_status}
-                              </Badge>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                    {activeCases.length === 0 && (
-                      <p className="px-5 py-10 text-center text-sm text-[#89918b]">
-                        لا توجد قضايا نشطة حالياً
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
-
-                <div className="rounded-xl border border-[#e5e6e1] bg-white p-5 shadow-[0_8px_24px_rgba(32,37,34,0.04)]">
-                  <div className="mb-5 flex items-center justify-between">
-                    <div>
-                      <p className="text-xs font-semibold tracking-wide text-[#89918b]">
-                        اليوم
-                      </p>
-                      <h3 className="mt-1 text-lg font-semibold text-[#202522]">
-                        قائمة العمل
-                      </h3>
-                    </div>
-                    <Activity className="size-5 text-[#d1624e]" />
+                      {task.text}
+                    </label>
+                    <span className="shrink-0 text-[11px] text-[#7c879b]">
+                      {task.due}
+                    </span>
                   </div>
-                  <div className="space-y-4">
-                    {tasks.map((task) => (
-                      <div key={task.id} className="flex items-center gap-3">
-                        <Checkbox
-                          id={task.id}
-                          checked={task.done}
-                          className="shrink-0 data-[state=checked]:border-[#75a88a] data-[state=checked]:bg-[#75a88a]"
-                        />
-                        <label
-                          htmlFor={task.id}
-                          className={`min-w-0 flex-1 cursor-pointer text-sm leading-5 ${task.done ? "text-[#89918b] line-through" : "text-[#374039]"}`}
-                        >
-                          {task.text}
-                        </label>
+                ))}
+              </div>
+            </div>
+
+            <Card className="overflow-hidden rounded-[14px] border-[#e7e9ee] bg-white py-0 shadow-[0_5px_18px_rgba(14,32,56,0.035)]">
+              <CardHeader className="border-b border-[#eef0ec] px-5 py-5">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <CardTitle className="flex items-center gap-2 text-lg text-[#202522]">
+                      <Briefcase className="size-5 text-[#b8975a]" /> آخر
+                      القضايا
+                    </CardTitle>
+                    <CardDescription className="mt-1">
+                      القضايا التي تحتاج انتباهك
+                    </CardDescription>
+                  </div>
+                  <span
+                    className="text-xs font-semibold text-[#b8975a]"
+                    onClick={() =>
+                      navigate(`/dashboard/cases/${store.currentOffice?.id}`)
+                    }
+                  >
+                    كل القضايا ‹
+                  </span>
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="flex items-center gap-5 border-b border-[#e7e9ee] px-5 py-4">
+                  <div className="relative size-23 shrink-0">
+                    <svg className="size-23 -rotate-90" viewBox="0 0 92 92">
+                      <circle
+                        cx="46"
+                        cy="46"
+                        r="34"
+                        fill="none"
+                        stroke="#eef0f3"
+                        strokeWidth="11"
+                      />
+                      <circle
+                        cx="46"
+                        cy="46"
+                        r="34"
+                        fill="none"
+                        stroke="#b8975a"
+                        strokeWidth="11"
+                        strokeDasharray="106.8 213.6"
+                        strokeLinecap="round"
+                      />
+                      <circle
+                        cx="46"
+                        cy="46"
+                        r="34"
+                        fill="none"
+                        stroke="#3b6fa0"
+                        strokeWidth="11"
+                        strokeDasharray="53.4 213.6"
+                        strokeDashoffset="-106.8"
+                        strokeLinecap="round"
+                      />
+                      <circle
+                        cx="46"
+                        cy="46"
+                        r="34"
+                        fill="none"
+                        stroke="#7c5cbf"
+                        strokeWidth="11"
+                        strokeDasharray="53.4 213.6"
+                        strokeDashoffset="-160.2"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className="text-xl font-bold leading-none text-[#0e2038]">
+                        {activeCases.length}
+                      </span>
+                      <span className="mt-1 text-[10px] text-[#7c879b]">
+                        قضايا
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex flex-1 flex-col gap-2">
+                    {caseStatus.map((status) => (
+                      <div
+                        key={status.label}
+                        className="flex items-center gap-2 text-xs"
+                      >
                         <span
-                          className={`shrink-0 text-xs ${task.urgent && !task.done ? "font-semibold text-[#d1624e]" : "text-[#89918b]"}`}
-                        >
-                          {task.due}
+                          className="size-2 shrink-0 rounded-full"
+                          style={{ backgroundColor: status.color }}
+                        />
+                        <span className="flex-1 font-medium text-[#16263d]">
+                          {status.label}
+                        </span>
+                        <span className="font-semibold text-[#7c879b]">
+                          {status.count}
                         </span>
                       </div>
                     ))}
                   </div>
-                  <div className="mt-6 border-t border-[#eef0ec] pt-4 text-xs text-[#89918b]">
-                    {completedTasks} من {tasks.length} مهام مكتملة
-                  </div>
                 </div>
-              </div>
-
-              <div className="mt-4 rounded-xl border border-[#e5e6e1] bg-white p-5 shadow-[0_8px_24px_rgba(32,37,34,0.04)]">
-                <div className="mb-4 flex items-center gap-2">
-                  <Gavel className="size-5 text-[#d1624e]" />
-                  <h3 className="text-lg font-semibold text-[#202522]">
-                    آخر المستجدات
-                  </h3>
-                </div>
-                <div className="grid gap-4 md:grid-cols-4">
-                  {recentActivity.map((item, i) => (
-                    <div key={i} className="border-r-2 border-[#f0d1ca] pr-3">
-                      <p className="text-sm leading-6 text-[#374039]">
-                        {item.text}
-                      </p>
-                      <p className="mt-1 text-xs text-[#89918b]">{item.time}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </main>
-        </SidebarInset>
-      </SidebarProvider>
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-[#eef0ec] hover:bg-transparent">
+                      <TableHead className="px-5 text-start">القضية</TableHead>
+                      <TableHead className="text-start">
+                        الجلسة القادمة
+                      </TableHead>
+                      <TableHead className="px-5 text-end">الحالة</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {activeCases.slice(0, 5).map((c: any) => (
+                      <TableRow
+                        key={c.id}
+                        className="cursor-pointer border-[#eef0ec] hover:bg-[#fdfcf9]"
+                      >
+                        <TableCell className="px-5">
+                          <div className="font-semibold text-sm text-[#202522]">
+                            {c.title}
+                          </div>
+                          <div className="text-xs text-[#89918b]">{c.id}</div>
+                        </TableCell>
+                        <TableCell className="text-sm text-[#68716b]">
+                          {c.next_court_session_date || "لا يوجد موعد"}
+                        </TableCell>
+                        <TableCell className="px-5 text-end">
+                          <Badge
+                            variant={c.statusVariant}
+                            className="rounded-full px-3 py-1"
+                          >
+                            {c.case_status}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                {activeCases.length === 0 && (
+                  <p className="px-5 py-10 text-center text-sm text-[#89918b]">
+                    لا توجد قضايا نشطة حالياً
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </main>
     </TooltipProvider>
   );
 }
