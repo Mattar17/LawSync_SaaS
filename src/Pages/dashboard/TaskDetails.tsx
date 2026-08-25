@@ -27,50 +27,55 @@ export default function TaskDetailsPage() {
       </div>
     );
   return (
-    <div dir="rtl" className="p-6 space-y-6 max-w-3xl">
-      <button
-        onClick={() => navigate(-1)}
-        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-navy-900"
-      >
-        <IconArrowRight size={16} /> رجوع
-      </button>
-      <div className="rounded-lg border border-border bg-card p-6 space-y-5">
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-lg font-semibold text-navy-900">
-              {task.title}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {task.description || "بدون وصف"}
-            </p>
+    <div dir="rtl" className="dashboard-page">
+      <div className="dashboard-container max-w-3xl space-y-6">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-navy-900"
+        >
+          <IconArrowRight size={16} /> رجوع
+        </button>
+        <div className="dashboard-panel space-y-5 p-6">
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-lg font-semibold text-navy-900">
+                {task.title}
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                {task.description || "بدون وصف"}
+              </p>
+            </div>
+            <Badge
+              variant="outline"
+              className="border-[#B8975A] text-[#B8975A]"
+            >
+              {task.status}
+            </Badge>
           </div>
-          <Badge variant="outline" className="border-[#B8975A] text-[#B8975A]">
-            {task.status}
-          </Badge>
-        </div>
-        <div className="divide-y divide-border">
-          <Detail
-            label="القضية المرتبطة"
-            value={
-              cases.find((caseItem) => caseItem.id === task.case_id)?.title
-            }
-            icon={<IconCheck size={16} />}
-          />
-          <Detail
-            label="موعد التسليم"
-            value={task.due_date}
-            icon={<IconCalendarEvent size={16} />}
-          />
-          <Detail
-            label="المحامي المعين"
-            value={task.assigned_lawyer_id || "لم يتم التعيين"}
-            icon={<IconUser size={16} />}
-          />
-          <Detail
-            label="تاريخ الإنشاء"
-            value={task.created_at}
-            icon={<IconCheck size={16} />}
-          />
+          <div className="divide-y divide-border">
+            <Detail
+              label="القضية المرتبطة"
+              value={
+                cases.find((caseItem) => caseItem.id === task.case_id)?.title
+              }
+              icon={<IconCheck size={16} />}
+            />
+            <Detail
+              label="موعد التسليم"
+              value={task.due_date}
+              icon={<IconCalendarEvent size={16} />}
+            />
+            <Detail
+              label="المحامي المعين"
+              value={task.assigned_lawyer_id || "لم يتم التعيين"}
+              icon={<IconUser size={16} />}
+            />
+            <Detail
+              label="تاريخ الإنشاء"
+              value={task.created_at}
+              icon={<IconCheck size={16} />}
+            />
+          </div>
         </div>
       </div>
     </div>

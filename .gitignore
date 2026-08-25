@@ -26,5 +26,4 @@ dist-ssr
 config.bat
 
 #env
-.env
 .env.example

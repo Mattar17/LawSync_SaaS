@@ -86,88 +86,91 @@ export default function CasesPage() {
   const [assigningCase, setAssigningCase] = useState<Case | null>(null);
 
   return (
-    <div dir="rtl" className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-navy-900">القضايا</h1>
-          <p className="text-sm text-muted-foreground">
-            {isOwner ? "جميع القضايا داخل المكتب" : "القضايا المسندة إليك"}
-          </p>
+    <div dir="rtl" className="dashboard-page">
+      <div className="dashboard-container space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="dashboard-kicker">مساحة العمل اليومية</p>
+            <h1 className="dashboard-title">القضايا</h1>
+            <p className="dashboard-subtitle">
+              {isOwner ? "جميع القضايا داخل المكتب" : "القضايا المسندة إليك"}
+            </p>
+          </div>
+
+          {isOwner && (
+            <Button
+              onClick={() => setCreateOpen(true)}
+              className="h-9 rounded-lg bg-[#B8975A] hover:bg-[#a3824c] text-white gap-1.5"
+            >
+              <IconPlus size={18} />
+              قضية جديدة
+            </Button>
+          )}
         </div>
+
+        {loadingFetch ? (
+          <CasesGridSkeleton />
+        ) : cases.length === 0 ? (
+          <EmptyState isOwner={isOwner} onAdd={() => setCreateOpen(true)} />
+        ) : (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {cases.map((c) => (
+              <CaseCard
+                key={c.id}
+                caseItem={c}
+                isOwner={isOwner}
+                deleting={deletingId === c.id}
+                onEdit={() => setEditingCase(c)}
+                onView={() =>
+                  navigate(`/cases/${c.id}`, { state: { caseItem: c } })
+                }
+                onAssign={() => setAssigningCase(c)}
+                onDelete={() => handleDeleteCase(c.id)}
+              />
+            ))}
+          </div>
+        )}
 
         {isOwner && (
-          <Button
-            onClick={() => setCreateOpen(true)}
-            className="h-9 rounded-lg bg-[#B8975A] hover:bg-[#a3824c] text-white gap-1.5"
-          >
-            <IconPlus size={18} />
-            قضية جديدة
-          </Button>
+          <CreateCaseDialog
+            open={createOpen}
+            onOpenChange={setCreateOpen}
+            creating={creating}
+            onSubmit={async (form) => {
+              await handleCreateCase(form);
+              setCreateOpen(false);
+            }}
+          />
+        )}
+
+        {editingCase && (
+          <EditCaseDialog
+            caseItem={editingCase}
+            isOwner={isOwner}
+            saving={updatingId === editingCase.id}
+            open={!!editingCase}
+            onOpenChange={(open) => !open && setEditingCase(null)}
+            onSubmit={async (form) => {
+              await handleUpdateCase(editingCase.id, form);
+              setEditingCase(null);
+            }}
+          />
+        )}
+
+        {isOwner && assigningCase && (
+          <AssignLawyerDialog
+            caseItem={assigningCase}
+            members={members.filter((m) => m.role === "member")}
+            assigning={assigningId === assigningCase.id}
+            open={!!assigningCase}
+            onOpenChange={(open) => !open && setAssigningCase(null)}
+            onAssign={async (lawyerId) => {
+              await handleAssignLawyer(assigningCase.id, lawyerId);
+              setAssigningCase(null);
+            }}
+          />
         )}
       </div>
-
-      {loadingFetch ? (
-        <CasesGridSkeleton />
-      ) : cases.length === 0 ? (
-        <EmptyState isOwner={isOwner} onAdd={() => setCreateOpen(true)} />
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {cases.map((c) => (
-            <CaseCard
-              key={c.id}
-              caseItem={c}
-              isOwner={isOwner}
-              deleting={deletingId === c.id}
-              onEdit={() => setEditingCase(c)}
-              onView={() =>
-                navigate(`/cases/${c.id}`, { state: { caseItem: c } })
-              }
-              onAssign={() => setAssigningCase(c)}
-              onDelete={() => handleDeleteCase(c.id)}
-            />
-          ))}
-        </div>
-      )}
-
-      {isOwner && (
-        <CreateCaseDialog
-          open={createOpen}
-          onOpenChange={setCreateOpen}
-          creating={creating}
-          onSubmit={async (form) => {
-            await handleCreateCase(form);
-            setCreateOpen(false);
-          }}
-        />
-      )}
-
-      {editingCase && (
-        <EditCaseDialog
-          caseItem={editingCase}
-          isOwner={isOwner}
-          saving={updatingId === editingCase.id}
-          open={!!editingCase}
-          onOpenChange={(open) => !open && setEditingCase(null)}
-          onSubmit={async (form) => {
-            await handleUpdateCase(editingCase.id, form);
-            setEditingCase(null);
-          }}
-        />
-      )}
-
-      {isOwner && assigningCase && (
-        <AssignLawyerDialog
-          caseItem={assigningCase}
-          members={members.filter((m) => m.role === "member")}
-          assigning={assigningId === assigningCase.id}
-          open={!!assigningCase}
-          onOpenChange={(open) => !open && setAssigningCase(null)}
-          onAssign={async (lawyerId) => {
-            await handleAssignLawyer(assigningCase.id, lawyerId);
-            setAssigningCase(null);
-          }}
-        />
-      )}
     </div>
   );
 }
