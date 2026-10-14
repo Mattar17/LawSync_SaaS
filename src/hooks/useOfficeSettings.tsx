@@ -1,6 +1,7 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { getOfficeById, updateOffice } from "@/api/office";
-import Cookies from "js-cookie";
+import { authStorage } from "@/api/authStorage";
+import { apiRequest } from "@/api/client";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
 interface MyJwtPayload extends JwtPayload {
@@ -102,20 +103,13 @@ export default function useOfficeSettings(id: string) {
   async function handleCreateOffice(e: any) {
     e.preventDefault();
     console.log("creating office .....");
-    const jwtToken = Cookies.get("jwt");
-    const decoded = jwtDecode(jwtToken!) as MyJwtPayload;
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/offices`, {
+    const accessToken = authStorage.getAccessToken();
+    const decoded = accessToken ? (jwtDecode(accessToken) as MyJwtPayload) : null;
+    const res = await apiRequest<any>("/api/offices", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": import.meta.env.VITE_API_KEY,
-        Authorization: `Bearer ${jwtToken}`,
-      },
-      body: JSON.stringify({ name: officeName, owner_id: decoded.lawyer_id }),
+      data: { name: officeName, owner_id: decoded?.lawyer_id },
     });
-
-    const data = await res.json();
-    return data.data;
+    return res.data;
   }
 
   return {

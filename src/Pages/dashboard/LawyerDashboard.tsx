@@ -34,6 +34,8 @@ import { useUserStore } from "@/zustandStore/userStore";
 import useCases from "@/hooks/useCases";
 import { Case } from "@/types/case";
 import { useNavigate } from "react-router-dom";
+import { authStorage } from "@/api/authStorage";
+import { getMyOffices } from "@/api/office";
 
 interface MyJwtPayload extends JwtPayload {
   admin?: boolean;
@@ -87,33 +89,21 @@ export default function LawyerDashboard() {
   activeCases = useCases(store.currentOffice?.id ?? "").cases;
   useEffect(() => {
     async function loadOfficesData() {
-      const jwtToken = Cookies.get("jwt");
-      const decoded = jwtDecode(jwtToken!) as MyJwtPayload;
-      const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/api/offices/me`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": import.meta.env.VITE_API_KEY,
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        },
-      );
-
-      const result = await res.json();
+      const token = authStorage.getAccessToken();
+      const decoded = token ? (jwtDecode(token) as MyJwtPayload) : null;
+      const result = await getMyOffices();
       console.log("api result", result);
-      const offices = result.data?.map((item: any) => item.offices);
+      const offices = result.data?.map((item: any) => item.offices ?? item) ?? [];
       store.setUser({
         ...store.user!,
         offices,
       });
-      console.log("user: ", store.user);
-      console.log("Current Office", store.currentOffice);
-      if (offices.length > 0) {
+      if (offices.length > 0 && !store.currentOffice) {
         store.setCurrentOffice(offices[0]);
       }
-      if (decoded.lawyer_id === store.currentOffice?.owner_id) setIsOwner(true);
+      if (decoded?.lawyer_id === (store.currentOffice?.owner_id || offices[0]?.owner_id)) {
+        setIsOwner(true);
+      }
     }
 
     loadOfficesData();

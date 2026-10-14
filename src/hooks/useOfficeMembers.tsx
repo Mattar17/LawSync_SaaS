@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import Cookies from "js-cookie";
-import { toast } from "sonner"; // swap for your existing showToast util if different
-
-const BASE_URL = import.meta.env.VITE_BASE_URL;
-const API_KEY = import.meta.env.VITE_API_KEY;
+import { toast } from "sonner";
+import { apiRequest } from "@/api/client";
 
 export interface OfficeMember {
   id: string;
@@ -13,31 +10,22 @@ export interface OfficeMember {
   role: "owner" | "member";
 }
 
-function authHeaders() {
-  return {
-    "Content-Type": "application/json",
-    "x-api-key": API_KEY,
-    Authorization: `Bearer ${Cookies.get("jwt") ?? ""}`,
-  };
-}
-
 export function useOfficeMembers(officeId?: string) {
   const [members, setMembers] = useState<OfficeMember[]>([]);
   const [loading, setLoading] = useState(true);
-  // per-member id currently being kicked, so only that row shows a spinner
   const [loadingFetch, setLoadingFetch] = useState<string | null>(null);
 
   const fetchMembers = useCallback(async () => {
     if (!officeId) return;
     setLoading(true);
     try {
-      const res = await fetch(`${BASE_URL}/api/offices/${officeId}/members`, {
-        headers: authHeaders(),
+      const res = await apiRequest<any>(`/api/offices/${officeId}/members`, {
+        method: "GET",
       });
-      if (!res.ok) throw new Error("فشل تحميل الأعضاء");
-      const data = await res.json();
-      setMembers(data.members ?? data);
-    } catch (err) {
+      if (!res.success) throw new Error(res.message || "فشل تحميل الأعضاء");
+      const list = res.data?.members ?? res.data ?? [];
+      setMembers(Array.isArray(list) ? list : []);
+    } catch {
       toast.error("تعذر تحميل قائمة الأعضاء");
     } finally {
       setLoading(false);
@@ -49,14 +37,14 @@ export function useOfficeMembers(officeId?: string) {
       if (!officeId) return;
       setLoadingFetch(memberId);
       try {
-        const res = await fetch(
-          `${BASE_URL}/api/offices/${officeId}/members/${memberId}`,
-          { method: "DELETE", headers: authHeaders() },
+        const res = await apiRequest<void>(
+          `/api/offices/${officeId}/members/${memberId}`,
+          { method: "DELETE" },
         );
-        if (!res.ok) throw new Error("فشل إزالة العضو");
+        if (!res.success) throw new Error(res.message || "فشل إزالة العضو");
         setMembers((prev) => prev.filter((m) => m.id !== memberId));
         toast.success("تمت إزالة المحامي من المكتب");
-      } catch (err) {
+      } catch {
         toast.error("تعذرت إزالة المحامي، حاول مرة أخرى");
       } finally {
         setLoadingFetch(null);

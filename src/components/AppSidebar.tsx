@@ -25,11 +25,10 @@ import {
 import {
   Briefcase,
   Command,
+  LayoutDashboard,
   MessageSquare,
   MoreVertical,
   Settings,
-  Users,
-  MailPlus,
   ListChecks,
 } from "lucide-react";
 
@@ -39,17 +38,40 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 import { jwtDecode, type JwtPayload } from "jwt-decode";
 import Cookies from "js-cookie";
 import { useUserStore } from "@/zustandStore/userStore";
+import { authStorage } from "@/api/authStorage";
 import { TooltipProvider } from "./ui/tooltip";
 
 const navWorkspace = [
   {
-    title: "الرسائل",
-    route: `/dashboard/messages`,
-    icon: MessageSquare,
+    title: "الرئيسية",
+    route: "/dashboard",
+    icon: LayoutDashboard,
+    exact: true,
   },
-  { title: "القضايا", route: "/dashboard/cases", icon: Briefcase },
-  { title: "الفريق", route: "/dashboard/members", icon: Users },
-  { title: "المهام", route: "/dashboard/tasks", icon: ListChecks },
+  {
+    title: "القضايا",
+    route: "/dashboard/cases",
+    icon: Briefcase,
+    exact: false,
+  },
+  {
+    title: "المهام",
+    route: "/dashboard/tasks",
+    icon: ListChecks,
+    exact: false,
+  },
+  {
+    title: "الرسائل",
+    route: "/dashboard/messages",
+    icon: MessageSquare,
+    exact: false,
+  },
+  {
+    title: "إعدادات المكتب",
+    route: "/dashboard/office/settings",
+    icon: Settings,
+    exact: true,
+  },
 ];
 
 interface MyJwtPayload extends JwtPayload {
@@ -60,26 +82,49 @@ interface MyJwtPayload extends JwtPayload {
 export default function AppSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
-  if (!Cookies.get("jwt")) navigate("/");
-  const decoded = jwtDecode(Cookies.get("jwt") ?? "") as MyJwtPayload;
+  const token = authStorage.getAccessToken();
 
-  const { user, currentOffice, setCurrentOffice } = useUserStore();
+  let decoded: MyJwtPayload | null = null;
+  try {
+    if (token) decoded = jwtDecode(token) as MyJwtPayload;
+  } catch {
+    decoded = null;
+  }
+
+  const { user, currentOffice, clearUser } = useUserStore();
   function signOut() {
-    Cookies.remove("jwt");
+    authStorage.clearTokens();
+    clearUser();
     navigate("/login");
   }
+
+  const isItemActive = (item: (typeof navWorkspace)[number]) => {
+    if (item.exact) {
+      return location.pathname === item.route;
+    }
+    return location.pathname.startsWith(item.route);
+  };
+
+  const getTargetRoute = (item: (typeof navWorkspace)[number]) => {
+    if (item.exact) {
+      return item.route;
+    }
+    return currentOffice?.id ? `${item.route}/${currentOffice.id}` : item.route;
+  };
+
   return (
     <TooltipProvider>
       <Sidebar
-        collapsible="icon"
-        className="border-l border-[#dfe3ea] bg-white"
+        collapsible="none"
+        className="w-64 min-w-64 h-screen sticky top-0 border-l border-[#dfe3ea] bg-white flex flex-col shrink-0"
       >
         <SidebarHeader className="border-b border-[#eef0ec] p-3">
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
                 size="lg"
-                className="rounded-xl hover:bg-[#f7f8fa]"
+                className="rounded-xl hover:bg-[#f7f8fa] cursor-pointer"
+                onClick={() => navigate("/dashboard")}
               >
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#0e2038] text-[#b8975a] shadow-[0_4px_10px_rgba(14,32,56,0.18)]">
                   <Command className="size-5" />
@@ -107,43 +152,6 @@ export default function AppSidebar() {
           )}
           <SidebarGroup>
             <SidebarGroupLabel className="px-3 text-[11px] font-semibold tracking-wide text-[#89918b]">
-              المكاتب
-            </SidebarGroupLabel>
-
-            <SidebarMenu>
-              {user?.offices?.map((office) => (
-                <SidebarMenuItem key={office.id}>
-                  <SidebarMenuButton
-                    isActive={currentOffice?.id === office.id}
-                    tooltip={office.name}
-                    className="rounded-lg text-[#7c879b] hover:bg-[#f7f8fa] data-[active=true]:bg-[#f5eee1] data-[active=true]:text-[#8a6a34]"
-                    onClick={() => setCurrentOffice(office)}
-                  >
-                    <Briefcase />
-                    <span className="truncate">{office.name}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/dashboard/office/invites" className="flex w-full">
-                    <MailPlus />
-                    <span>الدعوات</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/dashboard/office/settings" className="flex w-full">
-                    <Settings />
-                    <span>الإعدادات</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroup>
-          <SidebarGroup>
-            <SidebarGroupLabel className="px-3 text-[11px] font-semibold tracking-wide text-[#89918b]">
               مساحة العمل
             </SidebarGroupLabel>
             <SidebarMenu>
@@ -151,11 +159,10 @@ export default function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
-                    tooltip={item.title}
-                    isActive={location.pathname.startsWith(item.route)}
+                    isActive={isItemActive(item)}
                     className="rounded-lg text-[#7c879b] hover:bg-[#f7f8fa] data-[active=true]:bg-[#f5eee1] data-[active=true]:text-[#8a6a34]"
                   >
-                    <Link to={`${item.route}/${currentOffice?.id}`}>
+                    <Link to={getTargetRoute(item)}>
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
@@ -213,7 +220,7 @@ export default function AppSidebar() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={() =>
-                      navigate(`/dashboard/profile/${decoded.lawyer_id}`)
+                      navigate(`/dashboard/profile/${decoded?.lawyer_id}`)
                     }
                   >
                     Profile

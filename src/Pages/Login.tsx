@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { jwtDecode, type JwtPayload } from "jwt-decode";
 import { useUserStore } from "../zustandStore/userStore";
+import { authStorage } from "../api/authStorage";
 
 interface MyJwtPayload extends JwtPayload {
   admin?: boolean;
@@ -42,6 +43,7 @@ const Login = () => {
       try {
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/login`, {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
             "x-api-key": import.meta.env.VITE_API_KEY,
@@ -55,26 +57,38 @@ const Login = () => {
           setTimeout(() => setToast(null), 3000);
           return;
         }
-        console.log(data.data.token, data.data.user);
 
+        const accessToken: string =
+          data.data?.accessToken || data.data?.token || "";
+        const refreshToken: string | undefined =
+          data.data?.refreshToken || data.data?.newRefreshToken;
+
+        if (!accessToken) {
+          setToast("لم يتم استلام رمز الدخول من الخادم");
+          setTimeout(() => setToast(null), 3000);
+          return;
+        }
+
+        const userObj = data.data?.user || {};
         const lawyerInfo = {
-          id: data.data.user.id,
-          name: data.data.user.name,
-          bio: data.data.user.bio,
-          email: data.data.user.email,
-          pictureUrl: data.data.user.pictureUrl,
-          isAdmin: data.data.user.isAdmin,
+          id: userObj.id,
+          name: userObj.name,
+          bio: userObj.bio,
+          email: userObj.email,
+          pictureUrl: userObj.pictureUrl || userObj.picture_url,
+          isAdmin: userObj.isAdmin ?? userObj.is_admin ?? false,
+          isVerified: userObj.isVerified ?? userObj.is_verified ?? false,
         };
 
-        Cookies.set("jwt", data.data.token);
-        console.log(data.data.token);
-        const decoded = jwtDecode(data.data.token) as MyJwtPayload;
+        // Save access token (and refresh token if received)
+        authStorage.saveTokens(accessToken, refreshToken);
+
+        const decoded = jwtDecode(accessToken) as MyJwtPayload;
         // Do not carry an office selection across accounts.
         useUserStore.getState().clearUser();
         useUserStore.getState().setUser(lawyerInfo);
-        console.log(decoded);
-        if (decoded.admin) navigate("/admin");
-        else navigate(`/dashboard`);
+
+        navigate("/dashboard");
       } catch (err) {
         setToast("حدث خطأ أثناء تسجيل الدخول");
         setTimeout(() => setToast(null), 3000);

@@ -1,7 +1,4 @@
-import Cookies from "js-cookie";
-
-const BASE_URL = import.meta.env.VITE_BASE_URL;
-const API_KEY = import.meta.env.VITE_API_KEY;
+import { apiRequest } from "./client";
 
 export type OfficeRole = "admin" | "member";
 
@@ -16,20 +13,12 @@ export interface MyOffice {
 }
 
 export async function getOfficeById(id: string) {
-  const res = await fetch(`${BASE_URL}/api/offices/${id}`, {
+  const res = await apiRequest<any>(`/api/offices/${id}`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": API_KEY,
-    },
   });
-
-  const data = await res.json();
-
   return {
-    success: res.ok,
-    data: data.office,
-    message: data.message,
+    ...res,
+    data: res.data?.office ?? res.data,
   };
 }
 
@@ -42,61 +31,24 @@ export async function updateOffice(
     description?: string;
   },
 ) {
-  const jwt = Cookies.get("jwt");
-
-  const res = await fetch(`${BASE_URL}/api/offices/${id}`, {
+  const res = await apiRequest<any>(`/api/offices/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${jwt}`,
-      "x-api-key": API_KEY,
-    },
-    body: JSON.stringify(form),
+    data: form,
   });
-
-  const data = await res.json();
-
   return {
-    success: res.ok,
-    data: data.office,
-    message: data.message,
+    ...res,
+    data: res.data?.office ?? res.data,
   };
 }
 
 export async function getMyOffices() {
-  const jwt = Cookies.get("jwt");
-
-  const res = await fetch(`${BASE_URL}/api/offices/me`, {
+  return apiRequest<any[]>(`/api/offices/me`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${jwt}`,
-      "x-api-key": API_KEY,
-    },
   });
-  const data = await res.json();
-
-  return {
-    success: res.ok,
-    data: data.data,
-  };
 }
 
 export async function leaveOffice(officeId: string) {
-  const jwt = Cookies.get("jwt");
-
-  const res = await fetch(`${BASE_URL}/api/offices/${officeId}/leave`, {
+  return apiRequest<void>(`/api/offices/${officeId}/leave`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${jwt}`,
-      "x-api-key": API_KEY,
-    },
   });
-  const data = await res.json();
-
-  return {
-    success: res.ok,
-    message: data.message,
-  };
 }

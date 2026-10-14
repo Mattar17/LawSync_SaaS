@@ -92,6 +92,10 @@ function App(): React.ReactElement {
               element={<OfficeSettings></OfficeSettings>}
             />
             <Route
+              path="/dashboard/messages"
+              element={<Messages />}
+            />
+            <Route
               path="/dashboard/messages/:office_id"
               element={<Messages />}
             />
@@ -99,7 +103,9 @@ function App(): React.ReactElement {
               path="/dashboard/members/:office_id"
               element={<OfficeMembers />}
             />
+            <Route path="/dashboard/cases" element={<CasesPage />} />
             <Route path="/dashboard/cases/:office_id" element={<CasesPage />} />
+            <Route path="/dashboard/tasks" element={<TasksPage />} />
             <Route path="/dashboard/tasks/:office_id" element={<TasksPage />} />
             <Route
               path="/dashboard/office/invites"

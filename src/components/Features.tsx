@@ -1,81 +1,81 @@
-interface FeatureSection {
+import React from "react";
+import {
+  Briefcase,
+  FileText,
+  Calendar,
+  Users,
+  ShieldCheck,
+  Laptop,
+} from "lucide-react";
+
+interface FeatureItem {
   title: string;
-  features: string[];
+  description: string;
+  icon: React.ReactNode;
 }
 
-const featuresData: FeatureSection[] = [
+const features: FeatureItem[] = [
   {
-    title: "برنامج الكمبيوتر (Desktop)",
-    features: [
-      "🔐  حفظ الملفات والبيانات بأمان على جهازك",
-      "⚡  أداء سريع بدون الحاجة إلى الإنترنت",
-      "📂  إدارة كاملة للقضايا والمستندات",
-      "🗂️  تنظيم العملاء والجلسات بسهولة",
-      "🔄  تحديثات مستمرة للنظام",
-      "🧪  تجربة مجانية لمدة 7 أيام",
-      "🛡️  خصوصية وتحكم كامل في بياناتك",
-    ],
+    title: "إدارة القضايا",
+    description: "تابع كل قضية من أول ملف حتى الحكم، بتفاصيلها وأطرافها وحالتها.",
+    icon: <Briefcase className="w-6 h-6 text-[#d3b27a]" />,
   },
   {
-    title: "منصة المتابعة (Online)",
-    features: [
-      "🌐  تمكين العملاء من متابعة آخر تحديثات القضايا",
-      "📢  عرض مواعيد الجلسات والتطورات أولًا بأول",
-      "📱  إمكانية الوصول من أي جهاز وفي أي وقت",
-      "🔄  تحديث تلقائي عند إضافة أي بيانات جديدة",
-      "👥  تحسين التواصل بين المحامي والعميل",
-      "🔐  وصول آمن لكل عميل إلى قضاياه فقط",
-      "🚀  بدون الحاجة للحضور أو الاتصال المستمر",
-    ],
+    title: "المستندات",
+    description: "أرشفة منظمة للمستندات مع بحث سريع وصلاحيات وصول واضحة.",
+    icon: <FileText className="w-6 h-6 text-[#d3b27a]" />,
+  },
+  {
+    title: "الجلسات والمواعيد",
+    description: "تقويم موحد للجلسات والمواعيد مع تنبيهات حتى لا يفوتك شيء.",
+    icon: <Calendar className="w-6 h-6 text-[#d3b27a]" />,
+  },
+  {
+    title: "العملاء",
+    description: "سجل كامل لكل عميل وقضاياه، مع تواصل أوضح بين المكتب والعميل.",
+    icon: <Users className="w-6 h-6 text-[#d3b27a]" />,
+  },
+  {
+    title: "أمان وخصوصية",
+    description: "بياناتك القانونية محمية، والوصول إليها بحسب دور كل مستخدم.",
+    icon: <ShieldCheck className="w-6 h-6 text-[#d3b27a]" />,
+  },
+  {
+    title: "على كل أجهزتك",
+    description: "ويب وسطح مكتب وجوال، وبياناتك متزامنة أينما كنت.",
+    icon: <Laptop className="w-6 h-6 text-[#d3b27a]" />,
   },
 ];
 
-interface FeatureCardProps {
-  title: string;
-  features: string[];
-}
-
-const FeatureCard = ({
-  title,
-  features,
-}: FeatureCardProps): React.ReactElement => (
-  <div className="bg-white rounded-[12px] shadow-[0_8px_30px_rgba(0,0,0,0.10)] p-12">
-    <h3 className="text-2xl font-semibold text-center text-gray-800 mb-8">
-      {title}
-    </h3>
-    <ul className="space-y-4">
-      {features.map((feature: string, index: number) => (
-        <li
-          key={index}
-          className="flex items-center text-gray-600 text-[14px] md:text-[18px] font-medium"
-        >
-          {feature}
-        </li>
-      ))}
-    </ul>
-  </div>
-);
-
 const Features = (): React.ReactElement => {
   return (
-    <section
-      id="features"
-      className="section pt-[104px] pb-[104px] px-8 md:px-16 bg-[#F9FAFB]"
-    >
-      <div className="max-w-6xl mx-auto flex flex-col gap-[64px]">
-        <div className="text-center mb-16 flex flex-col items-center justify-center">
-          <h2 className="text-[18px] md:text-[38px] font-bold text-[#7CC3E1]">
-            كل ما يحتاجه مكتب المحاماة في نظام واحد
+    <section id="about" className="py-24 bg-[#f6f2ea]">
+      <div className="max-w-[1180px] mx-auto px-6">
+        <div className="text-center mb-14">
+          <div className="text-[#b89355] font-semibold text-sm tracking-wide">
+            المميزات
+          </div>
+          <h2 className="font-['El_Messiri',serif] text-3xl md:text-4xl font-bold text-[#0d1b2a] mt-2">
+            كل ما يحتاجه مكتبك في مكان واحد
           </h2>
-          <p className="w-full text-[14px] md:text-[18px] font-semibold text-gray-600 max-w-4xl mx-auto">
-            يجمع LawSync بين برنامج سطح المكتب القوي ومنصة سحابية تتيح لك
-            ولموكليك متابعة القضايا بسهولة وأمان.
-          </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {featuresData.map((section, index) => (
-            <FeatureCard key={index} {...section} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {features.map((feature, index) => (
+            <div
+              key={index}
+              className="bg-white border border-[#e6dfd0] rounded-2xl p-7 text-right shadow-xs hover:shadow-md transition-shadow"
+            >
+              <div className="w-12 h-12 rounded-xl bg-[#0d1b2a] flex items-center justify-center mb-5">
+                {feature.icon}
+              </div>
+              <h3 className="font-['El_Messiri',serif] text-xl font-bold text-[#0d1b2a] mb-2">
+                {feature.title}
+              </h3>
+              <p className="text-[#4a5a6b] text-base leading-relaxed m-0">
+                {feature.description}
+              </p>
+            </div>
           ))}
         </div>
       </div>
