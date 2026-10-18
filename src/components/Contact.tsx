@@ -179,14 +179,23 @@ const Contact = (): React.ReactElement => {
           <div className="font-['El_Messiri',serif] text-[#b89355] text-2xl font-bold">
             ميزان
           </div>
-          <div>
-            تواصل معنا:{" "}
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+            <span>تواصل معنا: </span>
             <a href="mailto:support@lawsync.com" className="text-[#e9e4d8] hover:text-[#d3b27a] transition-colors underline">
               support@lawsync.com
             </a>{" "}
             ·{" "}
             <a href="https://wa.me/201096901460" target="_blank" rel="noopener noreferrer" className="text-[#e9e4d8] hover:text-[#d3b27a] transition-colors" dir="ltr">
               +20 109 690 1460
+            </a>{" "}
+            ·{" "}
+            <a
+              href="/refund-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#e9e4d8] hover:text-[#d3b27a] transition-colors underline"
+            >
+              سياسة الاسترجاع
             </a>
           </div>
           <div className="text-xs text-[#a9b7c6]/80">

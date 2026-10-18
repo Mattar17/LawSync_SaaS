@@ -166,7 +166,7 @@ const Navbar = (): React.ReactElement | null => {
                 {navLinks.map((link) => (
                   <li key={link.id} className="inline-block">
                     <a
-                      href={link.id}
+                      href={location.pathname === "/" ? link.id : `/${link.id}`}
                       className="text-[#e9e4d8] font-medium hover:text-[#d3b27a] text-[15px] transition-colors py-2"
                     >
                       {link.label}
@@ -259,7 +259,7 @@ const Navbar = (): React.ReactElement | null => {
               {navLinks.map((link) => (
                 <a
                   key={link.id}
-                  href={link.id}
+                  href={location.pathname === "/" ? link.id : `/${link.id}`}
                   onClick={() => setIsOpen(false)}
                   className="px-3 py-2 text-[#e9e4d8] hover:text-[#d3b27a] text-center font-medium transition-colors"
                 >

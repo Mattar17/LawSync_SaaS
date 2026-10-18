@@ -24,6 +24,7 @@ import CaseDetailsPage from "./Pages/dashboard/CaseDetails";
 import BooksPage from "./Pages/Books";
 import TasksPage from "./Pages/dashboard/Tasks";
 import TaskDetailsPage from "./Pages/dashboard/TaskDetails";
+import RefundPolicy from "./Pages/RefundPolicy";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -78,6 +79,8 @@ function App(): React.ReactElement {
           <Route path="/admin/books" element={<BooksPage />} />
           <Route path="/payment_webhook" element={<PaymentWebhookResponse />} />
           <Route path="/" element={<AppLayout />} />
+          <Route path="/refund-policy" element={<RefundPolicy />} />
+          <Route path="/refund" element={<RefundPolicy />} />
           <Route path="/portal" element={<LawyerPortal />} />
           <Route path="/profile/:id" element={<LawyerProfile />}></Route>
           <Route path="/login" element={<Login />}></Route>
