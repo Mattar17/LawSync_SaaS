@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Check, Loader2 } from "lucide-react";
-import { CreatePaymentSession } from "../api/payment";
+import { CreatePaymentSession, PlanType } from "../api/payment";
 import { toast } from "sonner";
 
 interface PlanFeature {
@@ -8,7 +8,7 @@ interface PlanFeature {
 }
 
 interface PricingPlan {
-  id: string;
+  id: PlanType;
   header: string;
   badge?: string;
   monthlyPrice: number;
@@ -20,7 +20,7 @@ interface PricingPlan {
 
 const pricingPlans: PricingPlan[] = [
   {
-    id: "basic",
+    id: "standard",
     header: "الباقة الأساسية",
     badge: "200 ج.م شهرياً / 2,000 ج.م سنوياً",
     monthlyPrice: 200,
@@ -58,13 +58,7 @@ const Pricing = (): React.ReactElement => {
     setLoadingPlanId(plan.id);
 
     try {
-      const cycleText = billingCycle === "yearly" ? "سنوياً" : "شهرياً";
-      const priceText =
-        billingCycle === "yearly"
-          ? `${plan.yearlyPrice.toLocaleString("en-US")} EGP`
-          : `${plan.monthlyPrice.toLocaleString("en-US")} EGP`;
-      
-      const response = await CreatePaymentSession(); 
+      const response = await CreatePaymentSession(plan.id); 
       console.log(response); 
 
       if (response?.success && response.data?.sessionUrl) {
