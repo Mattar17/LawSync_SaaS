@@ -5,8 +5,8 @@
   "type": "module",
   "main": "./src/main.tsx",
   "scripts": {
-    "dev": "vite && npx json-server ./src/data/data.json",
-    "build": "vite build",
+    "dev": "node init && vite && npx json-server ./src/data/data.json",
+    "build": "node init && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
