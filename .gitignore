@@ -26,4 +26,3 @@ config.bat
 
 #env
 .env.example
-.env*
